@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; script-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nuri — The passkey is the wallet</title>
+<style>
+@font-face{font-family:Inter;src:url('./production-assets/inter-medium.woff2') format('woff2');font-weight:500}
+@font-face{font-family:Inter;src:url('./production-assets/inter-semibold.woff2') format('woff2');font-weight:600}
+@font-face{font-family:Inter;src:url('./production-assets/inter-bold.woff2') format('woff2');font-weight:700}
+@font-face{font-family:Harriet;src:url('./production-assets/harriet-display-thin.woff2') format('woff2');font-weight:300}
+@font-face{font-family:Sharp;src:url('./production-assets/sharp-grotesk-bold25.woff2') format('woff2');font-weight:700}
+:root{--ink:#2c232e;--ink-75:#615a62;--ink-50:#959196;--line:#cac8cb;--paper:#fffdf2;--white:#fff;--lilac:#beaaff;--lilac-deep:#7753c6;--lilac-wash:#efeaff;--orange:#ff8c5a;--teal:#6e9e96;--blue:#0038ff;--slide-seconds:10s}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#111;color:var(--ink);font-family:Inter,Arial,sans-serif;font-weight:500}button{font:inherit}.deck{width:100%;height:100%;position:relative}.slide{position:absolute;inset:0;display:grid;grid-template-rows:auto 1fr auto;gap:24px;padding:54px 72px 44px;overflow:hidden;opacity:0;visibility:hidden;transform:translateX(3%);background:var(--paper);transition:opacity .55s ease,transform .75s cubic-bezier(.2,.8,.2,1);isolation:isolate}.slide.active{opacity:1;visibility:visible;transform:none;z-index:2}.slide.out{opacity:0;transform:translateX(-3%);visibility:visible;z-index:1}.slide.dark{background:var(--ink);color:var(--white)}.slide.lilac{background:var(--lilac)}.slide.teal{background:var(--teal);color:var(--white)}.slide.white{background:var(--white)}
+.top,.bottom{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:5}.brand{width:34px;height:40px;color:currentColor}.top .chapter,.bottom{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.top .chapter{color:var(--ink-75)}.dark .top .chapter,.teal .top .chapter{color:rgba(255,255,255,.66)}.bottom{font-size:11px;color:var(--ink-50)}.dark .bottom,.teal .bottom{color:rgba(255,255,255,.52)}.content{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center;min-height:0}.kicker{margin:0 0 22px;font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--lilac-deep)}.dark .kicker,.teal .kicker{color:var(--lilac)}.display{margin:0;font-family:Harriet,Georgia,serif;font-size:clamp(64px,6.4vw,124px);font-weight:300;line-height:.91;letter-spacing:-.045em;max-width:12ch}.display.wide{max-width:15ch}.display.xl{font-size:clamp(82px,9vw,172px)}.sans-display{margin:0;font-family:Inter,Arial,sans-serif;font-size:clamp(58px,6vw,116px);font-weight:700;line-height:.92;letter-spacing:-.045em;max-width:12ch}.body-copy{margin:28px 0 0;max-width:38ch;font-size:clamp(20px,1.65vw,31px);line-height:1.34;color:var(--ink-75)}.dark .body-copy,.teal .body-copy{color:rgba(255,255,255,.76)}.accent{color:var(--lilac-deep)}.dark .accent{color:var(--lilac)}.teal .accent{color:var(--ink)}.orange{color:var(--orange)}.rule{height:1px;background:var(--line)}
+[data-animate]{opacity:0;transform:translateY(26px)}.active [data-animate]{animation:reveal .8s cubic-bezier(.2,.8,.2,1) forwards}.active [data-animate="2"]{animation-delay:.14s}.active [data-animate="3"]{animation-delay:.28s}.active [data-animate="4"]{animation-delay:.42s}@keyframes reveal{to{opacity:1;transform:none}}
+.cover .content{justify-content:space-between;padding:44px 0 22px}.cover-lockup{display:flex;align-items:flex-start;justify-content:space-between}.cover-logo{width:160px;height:auto}.cover-number{font:300 160px/.78 Harriet;color:rgba(44,35,46,.17)}.cover .display{max-width:10.5ch}.cover-claim{display:grid;grid-template-columns:1.2fr 1fr;gap:80px;align-items:end}.cover-claim p{margin:0;font-size:23px;line-height:1.35;max-width:34ch}.pills{display:flex;flex-wrap:wrap;gap:10px}.pill{border:1px solid currentColor;border-radius:999px;padding:11px 18px;font-size:14px;font-weight:600}
+.split{display:grid;grid-template-columns:1.06fr .94fr;gap:70px;align-items:center}.contrast{display:grid;gap:16px}.contrast-card{padding:28px 30px;border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.68)}.contrast-card strong{display:block;font-size:25px}.contrast-card p{margin:8px 0 0;color:var(--ink-75);font-size:18px;line-height:1.35}.contrast-card.nuri{background:var(--lilac);border-color:var(--lilac)}.contrast-card.nuri p{color:var(--ink)}
+.key-map{display:grid;grid-template-columns:1fr 1.15fr 1fr;grid-template-rows:1fr 1fr;gap:20px 50px;align-items:stretch;margin-top:36px}.root-key{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;justify-content:center;align-items:center;border-radius:999px;background:var(--lilac);text-align:center;aspect-ratio:1;max-height:390px;justify-self:center;align-self:center;padding:30px}.root-key img{width:42px;height:auto;margin-bottom:24px}.root-key small,.key-card small{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}.root-key strong{font:300 54px/.95 Harriet;margin-top:10px}.key-card{border-top:4px solid var(--teal);padding:24px;background:rgba(255,255,255,.06)}.key-card:nth-child(3),.key-card:nth-child(5){border-color:var(--orange)}.key-card strong{display:block;font-size:28px;margin:22px 0 8px}.key-card p{margin:0;font-size:16px;line-height:1.4;color:rgba(255,255,255,.62)}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:42px}.proof{border:1px solid var(--line);border-radius:24px;padding:28px;min-height:235px;background:rgba(255,255,255,.58)}.proof .num{font:300 58px/.8 Harriet;color:var(--lilac-deep)}.proof h3{margin:32px 0 10px;font-size:24px;line-height:1.05}.proof p{margin:0;color:var(--ink-75);font-size:17px;line-height:1.38}.security-strip{display:flex;align-items:center;justify-content:space-between;margin-top:22px;padding:18px 24px;background:var(--ink);color:var(--white);border-radius:8px;font-size:17px}.security-strip span:last-child{color:var(--lilac)}
+.signing{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:20px;align-items:center;margin-top:48px}.sign-node{min-height:250px;border:1px solid rgba(255,255,255,.22);border-radius:24px;padding:28px;display:flex;flex-direction:column;justify-content:space-between;background:rgba(255,255,255,.06)}.sign-node small{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--lilac)}.sign-node strong{font:300 40px/1 Harriet}.sign-node p{margin:0;color:rgba(255,255,255,.64);font-size:16px;line-height:1.4}.plus{font:300 56px/1 Harriet;color:var(--lilac)}.promise{display:flex;gap:10px;margin-top:24px}.promise span{border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:12px 17px;font-size:14px}
+.product-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:80px;align-items:center}.phones{height:620px;position:relative}.phone{position:absolute;width:280px;height:560px;object-fit:cover;object-position:top;border:8px solid var(--ink);border-radius:38px;background:var(--white);box-shadow:0 20px 45px rgba(44,35,46,.18)}.phone.one{left:30px;top:34px;transform:rotate(-4deg)}.phone.two{left:245px;top:0;transform:rotate(4deg)}.mini-list{display:grid;gap:0;margin-top:32px}.mini-item{display:grid;grid-template-columns:50px 1fr;gap:14px;padding:18px 0;border-top:1px solid var(--line);font-size:20px;line-height:1.25}.mini-item b{color:var(--lilac-deep);font-size:13px;letter-spacing:.08em}
+.rails{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:42px}.rail{border-radius:24px;padding:28px;min-height:170px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2)}.rail:nth-child(2){background:var(--lilac);color:var(--ink);border-color:var(--lilac)}.rail:nth-child(3){background:var(--teal);border-color:var(--teal)}.rail:nth-child(4){background:var(--orange);color:var(--ink);border-color:var(--orange)}.rail small{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em}.rail strong{display:block;font:300 40px/1 Harriet;margin:26px 0 8px}.rail p{margin:0;font-size:16px;line-height:1.35;color:inherit;opacity:.72}
+.allowance{display:grid;grid-template-columns:1fr 1fr;gap:74px;align-items:center}.policy{background:var(--white);color:var(--ink);border-radius:24px;padding:30px;border:1px solid rgba(44,35,46,.12)}.policy-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:22px;border-bottom:1px solid var(--line)}.policy-head strong{font-size:22px}.status{font-size:13px;border-radius:999px;padding:8px 13px;background:var(--lilac-wash);color:var(--lilac-deep)}.policy-row{display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid var(--line);font-size:16px}.policy-row strong{font-size:19px}.revoke{margin-top:22px;width:100%;height:48px;border:0;border-radius:999px;background:var(--ink);color:var(--white);font-weight:600}.future-tag{display:inline-block;margin-bottom:22px;border:1px solid currentColor;border-radius:4px;padding:8px 10px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.live-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:70px;align-items:center}.stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:34px}.stat{border-top:4px solid var(--lilac-deep);padding:20px 16px;background:rgba(255,255,255,.62)}.stat strong{display:block;font:300 62px/.9 Harriet}.stat span{display:block;margin-top:12px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-75)}.product-proof{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:center;height:600px}.product-proof img{width:100%;max-height:540px;object-fit:cover;object-position:top;border:7px solid var(--ink);border-radius:30px}.product-proof img:nth-child(2){transform:translateY(-24px)}
+.comparison{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:38px}.competitor{padding:26px;border:1px solid var(--line);border-radius:24px;background:var(--white)}.competitor small{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-50)}.competitor h3{margin:22px 0 12px;font-size:27px}.competitor p{margin:0;color:var(--ink-75);font-size:17px;line-height:1.4}.nuri-line{margin-top:18px;border-radius:24px;background:var(--lilac);padding:24px 28px;display:flex;justify-content:space-between;align-items:center;font-size:20px}.nuri-line strong{font-size:27px}
+.scale-layout{display:grid;grid-template-columns:1.05fr .95fr;gap:70px;align-items:center}.orbit{position:relative;aspect-ratio:1;max-height:610px;margin:auto}.ring{position:absolute;border:1px solid rgba(255,255,255,.25);border-radius:50%;inset:8%}.ring:nth-child(2){inset:22%}.ring:nth-child(3){inset:36%;background:var(--lilac);border-color:var(--lilac)}.orbit-label{position:absolute;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}.orbit-label.a{top:8%;left:44%}.orbit-label.b{right:1%;top:47%}.orbit-label.c{left:0;top:47%}.orbit-label.d{bottom:7%;left:43%}.orbit-core{position:absolute;inset:43%;display:grid;place-items:center;color:var(--ink);font-size:13px;font-weight:700;text-align:center}.scale-points{display:grid;gap:22px;margin-top:34px}.scale-point{border-left:4px solid var(--lilac);padding-left:20px}.scale-point strong{display:block;font-size:23px}.scale-point p{margin:8px 0 0;color:rgba(255,255,255,.68);font-size:17px;line-height:1.35}
+.business{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center}.revenue{display:grid;gap:14px}.revenue-row{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding:21px 0;font-size:19px}.revenue-row strong{font-size:22px}.revenue-row span{color:var(--ink-75)}
+.ask-layout{display:grid;grid-template-columns:1.05fr .95fr;gap:70px;align-items:center}.ask-number{font:300 clamp(150px,16vw,300px)/.75 Harriet;letter-spacing:-.07em}.use{display:grid;gap:12px}.use div{padding:20px 22px;border-radius:24px;background:rgba(255,255,255,.45);font-size:20px}.final-line{margin-top:34px;font-size:26px;font-weight:700;max-width:28ch}
+.controls{position:fixed;right:28px;bottom:24px;z-index:20;display:flex;align-items:center;gap:8px;padding:8px;background:rgba(44,35,46,.86);border-radius:999px;color:#fff}.controls button{width:38px;height:38px;border:0;border-radius:50%;background:transparent;color:inherit;cursor:pointer;font-size:16px}.controls button:hover,.controls button:focus-visible{background:rgba(255,255,255,.15);outline:none}.counter{min-width:54px;text-align:center;font-size:12px}.progress{position:fixed;left:0;bottom:0;height:4px;background:var(--lilac);z-index:30;width:0;transition:width .45s ease}.autoplay .controls{opacity:0;pointer-events:none}.autoplay .progress{animation:slideProgress var(--slide-seconds) linear infinite}
+@keyframes slideProgress{from{width:0}to{width:100%}}
+.note{font-size:11px;color:var(--ink-50);margin-top:12px}.dark .note,.teal .note{color:rgba(255,255,255,.5)}
+@media(max-width:900px){.slide{padding:34px 30px 28px}.split,.product-grid,.allowance,.live-grid,.scale-layout,.business,.ask-layout{grid-template-columns:1fr;gap:28px}.three,.comparison{grid-template-columns:1fr}.display,.sans-display{font-size:11vw}.phones,.product-proof,.orbit{display:none}.key-map{grid-template-columns:1fr 1fr;grid-template-rows:auto}.root-key{grid-column:1/3;grid-row:auto;max-height:220px}.signing{grid-template-columns:1fr}.plus{display:none}.rails{grid-template-columns:1fr 1fr}.cover-number{font-size:80px}.cover-claim{grid-template-columns:1fr;gap:24px}.slide{overflow:auto}}
+@media(prefers-reduced-motion:reduce){.slide,[data-animate],.progress{transition:none!important;animation:none!important}}
+@page{size:13.333333in 7.5in;margin:0}
+@media print{html,body{overflow:visible;background:#fff}.deck{height:auto}.slide{position:relative;width:13.333333in;height:7.5in;padding:.38in .5in .3in;opacity:1;visibility:visible;transform:none;break-after:page;page-break-after:always;transition:none}.slide:not(.active){display:grid}[data-animate]{opacity:1;transform:none}.controls,.progress{display:none}.display{font-size:59pt}.display.xl{font-size:78pt}.sans-display{font-size:55pt}.body-copy{font-size:15pt}.top .chapter{font-size:8pt}.bottom{font-size:7pt}.cover-logo{width:1.15in}.cover-number{font-size:82pt}.cover .content{padding:.15in 0}.key-map{margin-top:.18in}.root-key{max-height:2.5in}.root-key strong{font-size:28pt}.key-card{padding:.15in}.key-card strong{font-size:17pt;margin:.1in 0}.key-card p{font-size:9pt}.three{margin-top:.25in}.proof{padding:.18in;min-height:1.65in}.proof h3{font-size:15pt;margin:.18in 0 .05in}.proof p{font-size:10pt}.security-strip{font-size:10pt;padding:.12in}.signing{margin-top:.25in}.sign-node{min-height:1.8in;padding:.18in}.sign-node strong{font-size:24pt}.sign-node p{font-size:9pt}.phones{height:4.2in}.phone{width:1.75in;height:3.5in;border-width:4px;border-radius:20px}.phone.two{left:1.5in}.mini-item{font-size:12pt;padding:.1in 0}.rails{margin-top:.2in}.rail{min-height:1.1in;padding:.16in}.rail strong{font-size:23pt;margin:.12in 0}.rail p{font-size:9pt}.policy{padding:.2in}.policy-row{padding:.1in 0}.stats{margin-top:.2in}.stat{padding:.12in}.stat strong{font-size:35pt}.product-proof{height:4.15in}.product-proof img{max-height:3.7in;border-width:4px;border-radius:18px}.comparison{margin-top:.22in}.competitor{padding:.17in}.competitor h3{font-size:16pt;margin:.12in 0}.competitor p{font-size:10pt}.nuri-line{padding:.14in;font-size:11pt}.orbit{max-height:4.2in}.scale-points{margin-top:.2in}.scale-point strong{font-size:14pt}.scale-point p{font-size:10pt}.revenue-row{padding:.13in 0;font-size:11pt}.ask-number{font-size:135pt}.use div{padding:.13in;font-size:12pt}.final-line{font-size:16pt}}
+</style>
+</head>
+<body>
+<main class="deck" id="deck">
+<section class="slide lilac cover active" aria-label="Cover">
+  <div class="top"><img class="brand" src="./production-assets/nuri-wordmark.svg" alt="Nuri"><span class="chapter">Investor presentation · 2026</span></div>
+  <div class="content">
+    <div class="cover-lockup" data-animate><img class="cover-logo" src="./production-assets/nuri-wordmark.svg" alt=""><span class="cover-number">01</span></div>
+    <h1 class="display xl" data-animate="2">The passkey is the <span class="accent">wallet.</span></h1>
+    <div class="cover-claim" data-animate="3">
+      <p>One passkey becomes wallet, identity and approval. Open money for humans, businesses and AI agents.</p>
+      <div class="pills"><span class="pill">Bitcoin</span><span class="pill">Lightning</span><span class="pill">Stablecoins</span><span class="pill">Banking</span><span class="pill">AI</span></div>
+    </div>
+  </div>
+  <div class="bottom"><span>Seed round · €3M</span><span>01 / 12</span></div>
+</section>
+
+<section class="slide white" aria-label="New financial primitive">
+  <div class="top"><img class="brand" src="./production-assets/nuri-wordmark.svg" alt="Nuri"><span class="chapter">Nuri innovation</span></div>
+  <div class="content split">
+    <div><p class="kicker" data-animate>A new financial primitive</p><h2 class="display" data-animate="2">Most wallets start with an <span class="orange">account.</span><br>Nuri starts with <span class="accent">you.</span></h2></div>
+    <div class="contrast" data-animate="3">
+      <div class="contrast-card"><strong>Passkey login</strong><p>A passkey opens a wallet account held together by provider infrastructure.</p></div>
+      <div class="contrast-card nuri"><strong>Passkey-native wallet</strong><p>The passkey deterministically creates wallet itself. No provider vault sits between owner and money.</p></div>
+      <div class="contrast-card"><strong>Wallet on demand</strong><p>The same approved passkey returns the same financial identity when needed.</p></div>
+    </div>
+  </div>
+  <div class="bottom"><span>Passkey = wallet = identity = authority</span><span>02 / 12</span></div>
+</section>
+
+<section class="slide dark" aria-label="One root many keys">
+  <div class="top"><img class="brand" src="./production-assets/nuri-wordmark.svg" alt="Nuri"><span class="chapter">Nuri architecture</span></div>
+  <div class="content">
+    <p class="kicker" data-animate>One secure root · many isolated purposes</p>
+    <h2 class="display wide" data-animate="2">One passkey creates an entire <span class="accent">financial identity.</span></h2>
+    <div class="key-map" data-animate="3">
+      <div class="key-card"><small>Open money</small><strong>Bitcoin</strong><p>Native ownership and recovery.</p></div>
+      <div class="root-key"><img src="./production-assets/nuri-wordmark.svg" alt=""><small>WebAuthn PRF</small><strong>Passkey root</strong></div>
+      <div class="key-card"><small>Programmable money</small><strong>Ethereum</strong><p>Stablecoins and smart accounts.</p></div>
+      <div class="key-card"><small>Portable identity</small><strong>Nostr</strong><p>Encrypted recovery and identity.</p></div>
+      <div class="key-card"><small>Verified authority</small><strong>Authentication</strong><p>Independent approval material.</p></div>
+    </div>
+  </div>
+  <div class="bottom"><span>Domain separation keeps every key purpose isolated</span><span>03 / 12</span></div>
+</section>
+
+<section class="slide" aria-label="Phishing-resistant ownership">
+  <div class="top"><img class="brand" src="./production-assets/nuri-wordmark.svg" alt="Nuri"><span class="chapter">Security model</span></div>
+  <div class="content">
+    <p class="kicker" data-animate>Phishing-resistant ownership</p>
+    <h2 class="display wide" data-animate="2">Security without a seed phrase <span class="accent">or provider custody.</span></h2>
+    <div class="three" data-animate="3">
+      <article class="proof"><span class="num">01</span><h3>Origin-bound</h3><p>WebAuthn answers approved origins, not look-alike login pages.</p></article>
+      <article class="proof"><span class="num">02</span><h3>User-verified</h3><p>Biometrics or hardware confirmation authorize sensitive actions.</p></article>
+      <article class="proof"><span class="num">03</span><h3>No seed database</h3><p>Nuri cannot retrieve a reusable user seed from its servers.</p></article>
+    </div>
+    <div class="security-strip" data-animate="4"><span>Face ID for everyone · hardware-bound FIDO2 where supported</span><span>Passkey secret stays inside authenticator</span></div>
+  </div>
+  <div class="bottom"><span>Precise security · no impossible absolutes</span><span>04 / 12</span></div>
+</section>
+
+<section class="slide dark" aria-label="Bitcoin safety architecture">
+  <div class="top"><img class="brand" src="./production-assets/nuri-wordmark.svg" alt="Nuri"><span class="chapter">Live Bitcoin architecture</span></div>
+  <div class="content">
+    <p class="kicker" data-animate>Fast together · safe alone</p>
+    <h2 class="display wide" data-animate="2">No permanent server custody. <span class="accent">No single silent spender.</span></h2>
+    <div class="signing" data-animate="3">
+      <div class="sign-node"><small>Owner</small><strong>Passkey-derived user key</strong><p>Approves normal spending.</p></div>
+      <span class="plus">+</span>
+      <div class="sign-node"><small>Nuri</small><strong>MuSig2 server share</strong><p>Cannot spend user funds alone.</p></div>
+      <span class="plus">=</span>
+      <div class="sign-node"><small>Result</small><strong>Fast cooperative Bitcoin</strong><p>User retains delayed unilateral recovery.</p></div>
+    </div>
+    <div class="promise" data-animate="4"><span>Fast 2-of-2 signing</span><span>Delayed unilateral recovery</span><span>No permanent server custody</span></div>
+  </div>
+  <div class="bottom"><span>Owner has final exit</span><span>05 / 12</span></div>
+</section>
+
+<section class="slide white" aria-label="Banking comes to wallet">
+  <div class="top"><img class="brand" src="./production-assets/nuri-wordmark.svg" alt="Nuri"><span class="chapter">Integrated rails</span></div>
+  <div class="content product-grid">
+    <div class="phones" data-animate><img class="phone one" src="./production-assets/nuri-passkey-self-custody-wallet.png" alt="Nuri passkey wallet"><img class="phone two" src="./production-assets/nuri-bank-transfer-iban-sepa-ach.png" alt="Nuri bank transfer"></div>
+    <div><p class="kicker" data-animate="2">Banking comes to the wallet</p><h2 class="display" data-animate="2">The wallet is the <span class="accent">primary account.</span></h2>
+      <div class="mini-list" data-animate="3">
+        <div class="mini-item"><b>01</b><span>IBAN and SEPA connect digital euros to user-owned money.</span></div>
+        <div class="mini-item"><b>02</b><span>ACH connects local bank rails where available.</span></div>
+        <div class="mini-item"><b>03</b><span>Visa turns the same wallet balance into everyday spending.</span></div>
+      </div><p class="note">Regulated rails depend on partner and market availability.</p>
+    </div>
+  </div>
+  <div class="bottom"><span>Bitcoin-first · banking as utility</span><span>06 / 12</span></div>
+</section>
+
+<section class="slide dark" aria-label="One wallet every rail">
+  <div class="top"><img class="brand" src="./production-assets/nuri-wordmark.svg" alt="Nuri"><span class="chapter">Open money layer</span></div>
+  <div class="content">
+    <p class="kicker" data-animate>One wallet · every useful rail</p>
+    <h2 class="display wide" data-animate="2">Open global money meets <span class="accent">local utility.</span></h2>
+    <div class="rails" data-animate="3">
+      <div class="rail"><small>Native ownership</small><strong>Bitcoin</strong><p>Permissionless global money.</p></div>
+      <div class="rail"><small>Instant settlement</small><strong>Lightning</strong><p>Fast, low-cost payments.</p></div>
+      <div class="rail"><small>Programmable value</small><strong>Stablecoins</strong><p>Digital dollars and euros.</p></div>
+      <div class="rail"><small>Everyday reach</small><strong>IBAN · ACH · Visa</strong><p>Local transfers and spending.</p></div>
+    </div>
+  </div>
+  <div class="bottom"><span>One owner across every rail</span><span>07 / 12</span></div>
+</section>
+
+<section class="slide teal" aria-label="Agent debit wallets">
+  <div class="top"><img class="brand" src="./production-assets/nuri-wordmark.svg" alt="Nuri"><span class="chapter">Next scaling layer</span></div>
+  <div class="content allowance">
+    <div><span class="future-tag" data-animate>Roadmap · agent debit wallets</span><h2 class="display wide" data-animate="2">Give AI an <span class="accent">allowance.</span><br>Never ownership.</h2><p class="body-copy" data-animate="3">Each agent receives a separate funded wallet with enforceable limits. Owner wallet stays private.</p></div>
+    <div class="policy" data-animate="3">
+      <div class="policy-head"><strong>Research agent</strong><span class="status">Active</span></div>
+      <div class="policy-row"><span>Monthly budget</span><strong>€250</strong></div>
+      <div class="policy-row"><span>Maximum payment</span><strong>€20</strong></div>
+      <div class="policy-row"><span>Allowed rails</span><strong>USDC · Lightning</strong></div>
+      <div class="policy-row"><span>Expires</span><strong>31 Aug</strong></div>
+      <button class="revoke" type="button" tabindex="-1">Revoke agent</button>
+    </div>
+  </div>
+  <div class="bottom"><span>Budget · destination · currency · expiry · revoke</span><span>08 / 12</span></div>
+</section>
+
+<section class="slide" aria-label="Built today">
+  <div class="top"><img class="brand" src="./production-assets/nuri-wordmark.svg" alt="Nuri"><span class="chapter">Live today</span></div>
+  <div class="content live-grid">
+    <div><p class="kicker" data-animate>Not a concept deck</p><h2 class="display" data-animate="2">Core wallet and rail stack <span class="accent">already exists.</span></h2>
+      <div class="stats" data-animate="3"><div class="stat"><strong>12</strong><span>Simple agent tools</span></div><div class="stat"><strong>5</strong><span>Payment backends</span></div><div class="stat"><strong>4</strong><span>Derived key domains</span></div><div class="stat"><strong>1</strong><span>Unified MCP</span></div></div>
+      <p class="note">Agent Debit Wallet policies and live x402 settlement are next product layer.</p>
+    </div>
+    <div class="product-proof" data-animate="3"><img src="./production-assets/nuri-wallet-bitcoin-euro-dollar-home-screen.png" alt="Nuri wallet"><img src="./production-assets/nuri-send-receive-bitcoin-euro-stablecoins.png" alt="Nuri send screen"><img src="./production-assets/nuri-ai-chatgpt-claude-hermes-spending-analysis.png" alt="Nuri AI analysis"></div>
+  </div>
+  <div class="bottom"><span>Mobile · browser · MCP · Bitcoin · stablecoins · banking integrations</span><span>09 / 12</span></div>
+</section>
+
+<section class="slide white" aria-label="Competitive position">
+  <div class="top"><img class="brand" src="./production-assets/nuri-wordmark.svg" alt="Nuri"><span class="chapter">Competitive position</span></div>
+  <div class="content">
+    <p class="kicker" data-animate>Passkeys are not the differentiation</p>
+    <h2 class="display wide" data-animate="2">What the passkey <span class="accent">becomes</span> is.</h2>
+    <div class="comparison" data-animate="3">
+      <article class="competitor"><small>Breez</small><h3>Seedless Bitcoin UX</h3><p>Passkey replaces seed handling inside a Bitcoin and Lightning wallet.</p></article>
+      <article class="competitor"><small>Cloudflare</small><h3>Platform wallet</h3><p>Wallet starts from a Cloudflare account and internet infrastructure.</p></article>
+      <article class="competitor"><small>Privy · Turnkey</small><h3>Wallet infrastructure</h3><p>Embedded users or remote secure signing for applications.</p></article>
+    </div>
+    <div class="nuri-line" data-animate="4"><strong>Nuri starts with portable user ownership.</strong><span>Wallet + identity + recovery + banking + AI authority</span></div>
+  </div>
+  <div class="bottom"><span>Broader category · not a feature comparison</span><span>10 / 12</span></div>
+</section>
+
+<section class="slide dark" aria-label="Scale">
+  <div class="top"><img class="brand" src="./production-assets/nuri-wordmark.svg" alt="Nuri"><span class="chapter">Scale</span></div>
+  <div class="content scale-layout">
+    <div><p class="kicker" data-animate>One root · unlimited roles</p><h2 class="display wide" data-animate="2">Wallet infrastructure without a <span class="accent">wallet-secret database.</span></h2>
+      <div class="scale-points" data-animate="3"><div class="scale-point"><strong>Derive, do not warehouse</strong><p>User keys appear when approved instead of living in Nuri custody.</p></div><div class="scale-point"><strong>Separate every role</strong><p>People, teams and agents can use isolated wallets and policies.</p></div><div class="scale-point"><strong>Built on open standards</strong><p>WebAuthn, Bitcoin, Lightning, EVM, Nostr and MCP.</p></div></div>
+    </div>
+    <div class="orbit" data-animate="3"><div class="ring"></div><div class="ring"></div><div class="ring"></div><span class="orbit-label a">Human</span><span class="orbit-label b">Business</span><span class="orbit-label c">Agent</span><span class="orbit-label d">Device</span><span class="orbit-core">Passkey<br>root</span></div>
+  </div>
+  <div class="bottom"><span>Ownership scales without custody</span><span>11 / 12</span></div>
+</section>
+
+<section class="slide lilac" aria-label="Seed round">
+  <div class="top"><img class="brand" src="./production-assets/nuri-wordmark.svg" alt="Nuri"><span class="chapter">Seed round</span></div>
+  <div class="content ask-layout">
+    <div><p class="kicker" data-animate>Raising for 24 months</p><div class="ask-number" data-animate="2">€3M</div><p class="final-line" data-animate="3">Build the open, user-owned wallet standard for humans and AI.</p></div>
+    <div class="use" data-animate="3"><div>01 · Agent Debit Wallets</div><div>02 · x402 and Lightning payments</div><div>03 · Security and open-source wallet standard</div><div>04 · Banking rails and distribution</div></div>
+  </div>
+  <div class="bottom"><span>emin@nuri.com · nuri.com · agent.nuri.com</span><span>12 / 12</span></div>
+</section>
+</main>
+
+<nav class="controls" aria-label="Presentation controls"><button id="prev" aria-label="Previous slide">←</button><button id="play" aria-label="Play presentation">▶</button><span class="counter" id="counter">1 / 12</span><button id="next" aria-label="Next slide">→</button></nav>
+<div class="progress" aria-hidden="true"></div>
+<script>
+const slides=[...document.querySelectorAll('.slide')],counter=document.getElementById('counter'),play=document.getElementById('play');
+const params=new URLSearchParams(location.search);let current=Math.max(0,Math.min(slides.length-1,Number(params.get('slide')||1)-1)),timer=null;
+function showSlide(next){next=(next+slides.length)%slides.length;if(next===current&&slides[next].classList.contains('active'))return;const old=slides[current];old.classList.remove('active');old.classList.add('out');setTimeout(()=>old.classList.remove('out'),760);current=next;slides[current].classList.add('active');counter.textContent=`${current+1} / ${slides.length}`;history.replaceState(null,'',`#${current+1}`)}
+function stop(){clearInterval(timer);timer=null;document.body.classList.remove('autoplay');play.textContent='▶';play.setAttribute('aria-label','Play presentation')}
+function start(){stop();document.body.classList.add('autoplay');play.textContent='Ⅱ';play.setAttribute('aria-label','Pause presentation');timer=setInterval(()=>{if(current===slides.length-1)return stop();showSlide(current+1)},10000)}
+slides.forEach((slide,i)=>slide.classList.toggle('active',i===current));counter.textContent=`${current+1} / ${slides.length}`;
+document.getElementById('prev').onclick=()=>{stop();showSlide(current-1)};document.getElementById('next').onclick=()=>{stop();showSlide(current+1)};play.onclick=()=>timer?stop():start();
+document.addEventListener('keydown',event=>{if(['ArrowRight','ArrowDown','PageDown',' '].includes(event.key)){event.preventDefault();stop();showSlide(current+1)}else if(['ArrowLeft','ArrowUp','PageUp'].includes(event.key)){event.preventDefault();stop();showSlide(current-1)}else if(event.key==='p'){timer?stop():start()}else if(event.key==='Home'){stop();showSlide(0)}else if(event.key==='End'){stop();showSlide(slides.length-1)}});
+window.showSlide=showSlide;if(params.has('autoplay'))start();
+</script>
+</body>
+</html>

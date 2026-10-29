@@ -1,0 +1,69 @@
+/* Sheet-Wrapper styles — eine Datei, eine Verantwortlichkeit.
+   Scrim + slide-up panel. DS-Tokens für alle Farben/Spacing. */
+
+.nuri-sheet-scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--nuri-overlay, rgba(0, 0, 0, 0.5));
+  z-index: 100;
+  animation: nuri-fade-in 0.2s ease;
+}
+
+.nuri-sheet-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 101;
+  background: var(--nuri-bg-canvas);
+  border-radius: var(--nuri-radius-lg) var(--nuri-radius-lg) 0 0;
+  padding: var(--nuri-space-md) var(--nuri-space-lg) var(--nuri-space-xl);
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: nuri-slide-up 0.3s ease;
+}
+
+.nuri-sheet-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--nuri-border-strong, #ccc);
+  margin: 0 auto var(--nuri-space-md);
+}
+
+.nuri-sheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--nuri-space-md);
+}
+
+.nuri-sheet-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nuri-space-sm);
+}
+
+.nuri-list-row {
+  display: flex;
+  align-items: center;
+  gap: var(--nuri-space-md);
+  padding: var(--nuri-space-md);
+  border-radius: var(--nuri-radius-md);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.nuri-list-row:active {
+  background: var(--nuri-bg-subtle);
+}
+
+@keyframes nuri-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes nuri-slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}

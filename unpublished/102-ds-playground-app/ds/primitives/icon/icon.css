@@ -1,0 +1,67 @@
+/* ──────────────────────────────────────────────────────────────
+ * NURI · COMPONENT · ICON
+ *
+ * Visual atom · inline SVG glyph from the generated registry (the
+ * icons/*.svg folder SoT · decision 38 · N+51). One drawing per glyph,
+ * NO weights. Colour is inherited via currentColor — no tone/accent
+ * prop.
+ *
+ * Size is NOT bespoke here (N+51 · the icon-arc close): the glyph sizes
+ * through the SHARED box axis. icon.js maps the public `size` to a
+ * `size`-scale leaf and applies `nuri-box` + data-width/data-height, so
+ * box.css owns the dimensions (inline-size/block-size). NAMING OFFSET —
+ * the icon's `md` ↔ the `sm` size leaf (24px) · `sm` ↔ the `xs` leaf
+ * (18px); for the icon-avatar glyph the descriptor carries the box and
+ * the factory applies it (both targets). This file keeps ONLY the
+ * primitive setup: display · currentColor · the SVG fill · the
+ * pre-upgrade skeleton.
+ *
+ * No `@layer tokens` block — Icon owns no component-token aliasing.
+ * ────────────────────────────────────────────────────────────── */
+
+@layer tokens {
+  /* Empty by design. Icon carries no component-token aliasing — sizing
+   * rides the shared box axis (N+51), colour is currentColor. The
+   * per-component pipeline emitter detects this empty case and skips emit. */
+}
+
+@layer rules {
+  /* ── Pre-upgrade skeleton ──────────────────────────────────── */
+  /* Until icon.js (an ES module · deferred by default) upgrades the
+   * element and applies the box namespace, reserve the box so the catalog
+   * grid doesn't reflow at upgrade. Mirrors the box dispatch via the size
+   * scale (the OFFSET · md→size-sm 24 · sm→size-xs 18) so pre- and
+   * post-upgrade resolve identically. Default (no size attr) is md. */
+  nuri-icon:not(:defined) {
+    display: inline-flex;
+    flex-shrink: 0;
+    width: var(--nuri-size-sm);
+    height: var(--nuri-size-sm);
+  }
+  nuri-icon:not(:defined)[size="sm"] {
+    width: var(--nuri-size-xs);
+    height: var(--nuri-size-xs);
+  }
+
+  /* ── Base · the host carries the .nuri-icon class (added in JS) ── */
+  /* Size is the box namespace's job (icon.js adds .nuri-box + data-width/
+   * data-height · box.css resolves it). Here: layout + colour only. */
+  .nuri-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: currentColor;
+  }
+
+  /* Muted glyph (palette.muted · the factory sets data-muted) — the parity twin
+   * of nuri-typography[data-muted]. Colours the SVG currentColor text-muted. */
+  .nuri-icon[data-muted] {
+    color: var(--nuri-text-muted);
+  }
+
+  /* ── Rendered SVG fills the box ────────────────────────────── */
+  .nuri-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}

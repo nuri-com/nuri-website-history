@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)https://www.nuri.com/secure-passkey/register.html -->
+<html style="--keyboard-offset: 0px;" data-peer-injected="true"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+        <title>Nuri Bitcoin Wallet</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html,
+            body {
+                height: 100%;
+                width: 100%;
+                overflow: hidden;
+                overflow-x: hidden;
+                overscroll-behavior: none;
+            }
+
+            body {
+                position: fixed;
+                inset: 0;
+            }
+
+            body.signup-focus {
+                overflow: hidden;
+                /* To prevent any background-induced scroll/jitter on iOS */
+                background-image: none;
+                touch-action: none;
+                height: 100dvh;
+                width: 100vw;
+            }
+
+            :root { --keyboard-offset: 0px; }
+
+            body {
+                font-family:
+                    Inter,
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
+                    Roboto,
+                    sans-serif;
+                background-color: #d4d2d2;
+                background-image: url("./nuri-background-v5.webp");
+                background-position: top center;
+                background-repeat: no-repeat;
+                /* Fill the width; keep aspect ratio */
+                background-size: cover;
+                color: #2c232e;
+                /* Use dynamic viewport height to better reflect iOS UI chrome */
+                min-height: 100dvh;
+                display: flex;
+                flex-direction: column;
+                /* First screen: reduce vertical padding by 50% */
+                padding: 10px;
+                padding-top: 15px;
+            }
+
+            .version {
+                position: absolute;
+                top: 11px;
+                right: 10px;
+                font-size: 12px;
+                opacity: 0.5;
+            }
+
+            @font-face {
+                font-family: "SharpGroteskBold25";
+                src:
+                    url("./SharpGroteskBold25.woff2") format("woff2"),
+                    url("./SharpGroteskBold25.woff") format("woff");
+                font-weight: 700;
+                font-style: normal;
+            }
+
+            @font-face {
+                font-family: "HarrietDisplayThin";
+                src:
+                    url("./Harriet-v2-Display-Thin.woff2") format("woff2"),
+                    url("./Harriet-v2-Display-Thin.woff") format("woff");
+                font-weight: 200;
+                font-style: normal;
+            }
+
+            .container {
+                position: relative;
+                z-index: 1;
+                width: 100%;
+                max-width: 400px;
+                margin: 0 auto;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                gap: 20px;
+                /* First screen: reduce horizontal and top padding by 50% */
+                padding: 12px 5px 0;
+            }
+
+            .top-section {
+                margin-bottom: 28px;
+            }
+
+            .button-section {
+                margin-top: auto;
+                /* Further reduce bottom padding by 50% */
+                padding-bottom: 52px;
+            }
+
+            .input-field-wrapper {
+                width: 100%;
+                margin-bottom: 18px;
+            }
+
+            .input-field-card {
+                position: relative;
+                background: #e5e5e8;
+                border-radius: 4px 4px 0 0;
+                /* First page (not focused): halve horizontal padding */
+                padding: 6px 8px 8px;
+                min-height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
+            }
+
+            .input-field-wrapper.focused .input-field-card {
+                background: #ffffff;
+                /* When focused: restore full horizontal padding */
+                padding: 6px 16px 8px;
+            }
+
+            .input-field-wrapper.focused .input-field-input {
+                color: rgba(0, 0, 0, 0.87);
+                /* Keep left aligned with card padding */
+                padding-left: 0;
+            }
+
+            .input-field-label {
+                position: absolute;
+                top: 7px;
+                /* First screen (not focused): match reduced card padding */
+                left: 8px;
+                font-size: 12px;
+                font-weight: 500;
+                letter-spacing: 0.4px;
+                color: #6E9E96;
+                pointer-events: none;
+                transition:
+                    color 0.2s ease,
+                    opacity 0.2s ease,
+                    transform 0.2s ease;
+                opacity: 1;
+                transform: translateY(7px);
+            }
+
+            .input-field-input {
+                padding: 21px 0 6px;
+                /* No extra left padding; align via card padding */
+                padding-left: 0;
+                -webkit-padding-start: 0;
+                padding-inline-start: 0;
+                text-indent: 0;
+                font-size: 16px;
+                letter-spacing: 0.15px;
+                color: #959196;
+                border: none;
+                background: transparent;
+                width: 100%;
+                flex: 1;
+                min-width: 0;
+                outline: none;
+                font-family: inherit;
+            }
+
+            .input-field-input::placeholder {
+                color: #959196;
+            }
+
+            .input-field-check {
+                width: 24px;
+                height: 24px;
+                flex-shrink: 0;
+                display: none;
+            }
+
+            .input-field-indicator {
+                height: 1px;
+                width: 100%;
+                background: #cac9cf;
+                transition: background 0.2s ease;
+            }
+
+            .input-field-wrapper.focused .input-field-label {
+                color: #6E9E96;
+                left: 16px;
+                transform: translateY(-1px);
+            }
+
+            .input-field-wrapper.valid .input-field-label {
+                color: #6E9E96;
+                left: 16px;
+                transform: translateY(-1px);
+            }
+
+            .input-field-wrapper.valid .input-field-input {
+                color: rgba(0, 0, 0, 0.87);
+            }
+
+            .input-field-wrapper.valid .input-field-check {
+                display: block;
+            }
+
+            .input-field-wrapper.valid .input-field-indicator {
+                background: #6e9e96;
+            }
+
+            .input-field-wrapper.focused:not(.valid) .input-field-indicator {
+                background: rgba(44, 35, 46, 0.4);
+            }
+
+            .create-button span {
+                line-height: 1;
+            }
+
+            .focus-overlay {
+                position: absolute;
+                inset: 0;
+                background: rgba(212, 210, 210, 0.9);
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+                z-index: 0;
+            }
+
+            .signup-focus .focus-overlay {
+                opacity: 1;
+                pointer-events: none;
+            }
+
+            .signup-focus .top-section,
+            .signup-focus .logo-ticker,
+            .signup-focus .logo-strip {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .signup-focus .container {
+                justify-content: flex-end;
+            }
+
+            /* Pin controls above the keyboard/accessory on iOS */
+            .signup-focus .button-section {
+                position: fixed;
+                left: 50%;
+                transform: translateX(-50%);
+                /* Double horizontal gutter when highlighted */
+                width: calc(100% - 40px);
+                max-width: 400px;
+                bottom: calc(env(safe-area-inset-bottom, 0px) + var(--keyboard-offset, 0px));
+                z-index: 10;
+                pointer-events: auto;
+                overflow: visible;
+                /* Reduce internal padding on signup screen */
+                padding-bottom: 8px;
+            }
+
+            /* Full-width hand image behind content; only in focused state */
+            .hand-bg {
+                display: none;
+                position: fixed; /* align to viewport, not container */
+                right: 0; /* right-aligned */
+                bottom: 0;
+                width: 100vw; /* full viewport width */
+                height: auto; /* let aspect ratio decide height */
+                object-fit: contain;
+                pointer-events: none;
+                user-select: none;
+                z-index: 1; /* above grey overlay (0), below container (1, later in DOM) */
+            }
+            .signup-focus .hand-bg { display: block; bottom: 282px; right: -20px; }
+
+            /* Desktop adjustments: keep full width without overwhelming height */
+            @media (min-width: 768px) {
+                .hand-bg {
+                    height: 45vh; /* control vertical footprint on desktop */
+                    width: auto;  /* preserve aspect ratio while anchoring to right */
+                }
+            }
+
+            .button-row {
+                position: relative;
+            }
+
+            .signup-focus .button-row {
+                gap: 0;
+            }
+
+            .button-row .create-button {
+                max-width: 100%;
+            }
+
+            .login-button {
+                transition:
+                    opacity 0.3s ease,
+                    transform 0.3s ease,
+                    max-width 0.3s ease,
+                    padding 0.3s ease;
+            }
+
+            .register-button {
+                transition:
+                    opacity 0.3s ease,
+                    transform 0.3s ease,
+                    flex 0.3s ease,
+                    max-width 0.3s ease;
+            }
+
+            .signup-focus .button-row .login-button {
+                opacity: 0;
+                transform: translateX(-32px);
+                pointer-events: none;
+                max-width: 0;
+                padding-left: 0;
+                padding-right: 0;
+            }
+
+            .signup-focus .button-row .register-button {
+                flex: 1 1 100%;
+                transform: translateX(0);
+            }
+            /* Ready state (email valid + ToS checked): turn black with white text */
+            .button-section.ready .button-row .register-button {
+                border: none;
+                background: #2c232e;
+                color: #ffffff;
+                font-weight: 600;
+            }
+
+            .button-row {
+                display: flex;
+                flex-direction: column; /* stack Login (first) and Register (second) */
+                gap: 8px;
+                margin-top: 20px; /* doubled spacing above buttons */
+            }
+
+            .button-row .create-button {
+                flex: 1;
+                width: auto;
+            }
+
+            .button-row .register-button {
+                background: #d4d2d2;
+                color: #2c232e;
+                border: 1px solid #2c232e;
+                border-width: 1px;
+            }
+
+            /* Primary (black) base style for initial state */
+            .button-row .register-button.primary {
+                background: #2c232e;
+                color: #ffffff;
+                border: none;
+            }
+
+            /* While in signup focus and before ready, show grey */
+            body.signup-focus .button-section:not(.ready) .button-row .register-button.primary {
+                background: #d4d2d2;
+                color: #2c232e;
+                border: 1px solid #2c232e;
+            }
+
+            /* When email is valid but not ready yet, show grey */
+            .button-section:not(.ready):has(.input-field-wrapper.valid) .button-row .register-button.primary {
+                background: #d4d2d2;
+                color: #2c232e;
+                border: 1px solid #2c232e;
+            }
+
+            .button-row .register-button img { height: 27px; width: auto; }
+            .button-row .register-button .brand-icon { height: 22px; width: auto; }
+            .button-row .register-button .times { opacity: 0.8; margin: 0 6px; }
+
+            /* Shake animation when pressing disabled CTA */
+            @keyframes shake {
+                10%, 90% { transform: translateX(-2px); }
+                20%, 80% { transform: translateX(4px); }
+                30%, 50%, 70% { transform: translateX(-6px); }
+                40%, 60% { transform: translateX(6px); }
+            }
+            .button-section.shake { animation: shake 450ms ease-in-out; }
+            .tos-row.shake { animation: shake 450ms ease-in-out; }
+
+            /* Checkbox row styling */
+            /* Two-column layout to keep text from flowing under the checkbox */
+            .tos-row {
+                display: table; /* robust two-column layout */
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                margin: 8px 0 20px; /* doubled spacing below terms */
+                font-size: 14px;
+                color: rgba(44,35,46,0.72);
+            }
+            .tos-col-check { display: table-cell; vertical-align: top; width: 36px; padding-right: 8px; }
+            .tos-col-text { display: table-cell; vertical-align: top; }
+            .tos-checkbox { appearance:none; -webkit-appearance:none; width:32px; height:32px; border:2px solid #6E9E96; border-radius:8px; background:#fff; position:relative; flex-shrink:0; cursor:pointer; }
+            .tos-checkbox:checked { background:#6E9E96; border-color:#6E9E96; }
+            .tos-checkbox:checked::after { content:''; position:absolute; left:9px; top:5px; width:8px; height:16px; border: solid #2c232e; border-width:0 2px 2px 0; transform: rotate(45deg); }
+            .tos-row a { color: #2c232e; text-decoration: underline; text-underline-offset: 2px; }
+            .tos-row a:visited, .tos-row a:active, .tos-row a:hover, .tos-row a:focus { color: #2c232e; }
+            /* Marker-style highlight behind text (not a box). Adjust background-size/position for line-height */
+            .tos-row label {
+                color:#2c232e;
+                font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                font-weight: 500; /* Inter Medium */
+                line-height: 1.35;
+                align-self: start; /* align text top with checkbox */
+                margin: 0;
+            }
+            .tos-text {
+                background-image: linear-gradient(#6E9E96, #6E9E96);
+                background-size: 100% 0.62em; /* height of highlight stripe */
+                background-repeat: repeat-y;  /* repeat per line */
+                background-position: 0 0.88em; /* vertical offset within line */
+                -webkit-box-decoration-break: clone;
+                box-decoration-break: clone;
+            }
+            .tos-checkbox { margin: 0; align-self: start; }
+
+            /* Hide input and terms on first screen; reveal in signup focus */
+            .input-field-wrapper, #code-subtitle, #tos-row { display: none; }
+            .signup-focus .input-field-wrapper, .signup-focus #code-subtitle, .signup-focus #tos-row { display: block; }
+
+            .hero-headline {
+                margin-bottom: 16px;
+                padding-top: 20px;
+                /* Reduce left padding by half */
+                padding-left: 5px;
+            }
+
+            .headline-word {
+                display: block;
+                color: #ffffff;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+            }
+
+            .headline-word.bold {
+                font-family: "SharpGroteskBold25", "Inter", sans-serif;
+            }
+
+            .headline-word.thin {
+                font-family: "HarrietDisplayThin", "Times New Roman", serif;
+            }
+
+            .headline-word {
+                font-size: clamp(42px, 12.5vw, 58px);
+                line-height: 1;
+            }
+
+            .logo-ticker {
+                width: 100%;
+                overflow: hidden;
+                margin-bottom: 16px;
+                mask-image: linear-gradient(
+                    to right,
+                    transparent 0%,
+                    black 15%,
+                    black 85%,
+                    transparent 100%
+                );
+                -webkit-mask-image: linear-gradient(
+                    to right,
+                    transparent 0%,
+                    black 15%,
+                    black 85%,
+                    transparent 100%
+                );
+            }
+
+            .logo-strip {
+                display: flex;
+                gap: 40px;
+                align-items: center;
+                animation: logo-scroll 36s linear infinite;
+                will-change: transform;
+                flex-wrap: nowrap;
+                min-width: max-content;
+            }
+
+            .logo-item {
+                font-size: 18px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: rgba(255, 255, 255, 0.92);
+                padding: 0;
+                white-space: nowrap;
+                display: flex;
+                align-items: center;
+                font-family: "HarrietDisplayThin", "Times New Roman", serif;
+            }
+
+            .logo-item strong {
+                font-weight: 600;
+                letter-spacing: 0.04em;
+            }
+
+            .logo-item.apple {
+                letter-spacing: 0.08em;
+            }
+
+            .logo-item.apple::before {
+                content: "";
+                font-size: 22px;
+                margin-right: 6px;
+            }
+
+            @keyframes logo-scroll {
+                from {
+                    transform: translateX(0);
+                }
+                to {
+                    transform: translateX(-50%);
+                }
+            }
+
+            .create-button {
+                background: #2c232e;
+                color: #ffffff;
+                border: none;
+                /* Reduce left/right padding by half */
+                padding: 8px 12px;
+                font-size: 16px;
+                font-weight: 500;
+                border-radius: 100px;
+                cursor: pointer;
+                width: 100%;
+                min-height: 54px;
+                transition:
+                    transform 0.2s,
+                    flex 0.3s ease,
+                    max-width 0.3s ease;
+                margin-bottom: 12px;
+                font-family:
+                    Inter,
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    sans-serif;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .create-button:active {
+                transform: scale(0.98);
+            }
+
+            .create-button:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+            .create-button img {
+                height: 27px;
+                width: auto;
+                object-fit: contain;
+                flex-shrink: 0;
+            }
+
+            /* Loading spinner for button */
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+            .spinner {
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                border: 2px solid currentColor;
+                border-top-color: transparent;
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+                margin-right: 8px;
+            }
+
+            #status { display: none; font-size: 13px; line-height: 1.4; }
+
+            #status.success {
+                color: #0a7a28;
+            }
+
+            #status.error { color: #7a0a0a; display: block; margin-top: 8px; }
+
+            .hidden {
+                display: none !important;
+            }
+
+            /* Text-link styling for recover action */
+            .link-button {
+                background: transparent;
+                border: none;
+                color: #2c232e;
+                text-decoration: underline;
+                font-weight: 500;
+                font-size: 16px;
+                padding: 0;
+                display: inline;
+                cursor: pointer;
+            }
+
+            /* Center the recover link below the button */
+            .button-row .link-button { align-self: center; }
+
+            /* Modal styles */
+            .modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; }
+            .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.4); }
+            .modal-card { position: relative; z-index: 1; background: #fff; color:#2c232e; width: calc(100% - 32px); max-width: 420px; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 20px; }
+            .modal-title { font-weight: 600; font-size: 18px; margin-bottom: 10px; }
+            .modal-body { font-size: 15px; line-height: 1.5; }
+            .modal-body a { color: #2c232e; text-decoration: underline; }
+            .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
+            .modal-btn { appearance:none; -webkit-appearance:none; border:1px solid #2c232e; background:#fff; color:#2c232e; padding:10px 14px; border-radius: 10px; font-size: 15px; cursor: pointer; }
+            .modal-btn.primary { background:#6E9E96; color:#fff; border:none; }
+
+            .code-subtitle {
+                margin-top: 12px;
+                font-size: 14px;
+                line-height: 1.5;
+                color: rgba(44, 35, 46, 0.72);
+            }
+        </style>
+    <script type="text/javascript" data-name="TokenSigning" data-by="Web-eID extension" src="chrome-extension://ncibgoaomkmdpilpocfeponihegamlic/token-signing-page-script.js"></script></head>
+    <body>
+        <div class="focus-overlay" aria-hidden="true"></div>
+        <img src="./Nuri Bitcoin Wallet_files/upscale-hand-v2.webp" alt="Nuri hand" class="hand-bg" aria-hidden="true">
+        <div class="version">v5.21</div>
+        <div class="container">
+            <div class="top-section" aria-hidden="true">
+                <div class="hero-headline">
+                    <span class="headline-word bold">Bitcoin</span>
+                    <span class="headline-word thin">Credit</span>
+                    <span class="headline-word bold">Card</span>
+                </div>
+                <div class="logo-ticker">
+                    <div class="logo-strip">
+                        <span class="logo-item">GNOSIS PAY × NURI</span>
+                        <span class="logo-item">+ FREE VISA CARD</span>
+                        <span class="logo-item">+ FREE IBAN</span>
+                        <span class="logo-item">+ PAY</span>
+                        <span class="logo-item">+ BUY ₿ITCOIN</span>
+                        <span class="logo-item">+ S€PA INSTANT BANK ACCOUNT</span>
+                        <span class="logo-item">GNOSIS PAY × NURI</span>
+                        <span class="logo-item">+ FREE VISA CARD</span>
+                        <span class="logo-item">+ FREE IBAN</span>
+                        <span class="logo-item">+ PAY</span>
+                        <span class="logo-item">+ BUY ₿ITCOIN</span>
+                        <span class="logo-item">+ S€PA INSTANT BANK ACCOUNT</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-section">
+                <div id="status"></div>
+
+                <div class="input-field-wrapper">
+                    <div class="input-field-card">
+                        <span class="input-field-label" id="email-label">Email</span>
+                        <input type="email" class="input-field-input" id="email-input" placeholder="satoshi@gmx.com" autocomplete="email" inputmode="email" aria-label="Email address" maxlength="320">
+                        <svg class="input-field-check" id="email-check" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false" style="display: none;">
+                            <path fill="#6E9E96" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.2 14.2-3.5-3.5 1.4-1.4 2.1 2.09 4.7-4.69 1.4 1.41-6.1 6.09z"></path>
+                        </svg>
+                    </div>
+                    <div class="input-field-indicator" aria-hidden="true"></div>
+                </div>
+
+                <p id="code-subtitle" class="code-subtitle hidden" aria-live="polite" aria-hidden="true" style="display: none;"></p>
+
+                <div id="tos-row" class="tos-row hidden" aria-live="polite" aria-hidden="true" style="display: none;">
+                    <div class="tos-col-check">
+                        <input id="accept-tos" class="tos-checkbox" type="checkbox" aria-label="Accept Terms">
+                    </div>
+                    <div class="tos-col-text">
+                        <label for="accept-tos" class="text-sm leading-normal">
+                            <span class="tos-text">
+                                I read and agree to the
+                                <a href="https://help.gnosispay.com/hc/en-us/articles/39723036951444-Gnosis-Pay-WebApp-Terms-of-Service" target="_blank" rel="noopener noreferrer" class="underline">Gnosis Pay Terms</a>,
+                                <a href="https://help.gnosispay.com/hc/en-us/articles/39726634253076-Monavate-Cardholder-Terms-EEA" target="_blank" rel="noopener noreferrer" class="underline">Cardholder Terms</a>,
+                                <a href="https://forum.gnosis.io/t/gip-110-should-the-gnosis-dao-create-and-fund-a-gnosis-pay-rewards-program-with-10k-gno/8837" target="_blank" rel="noopener noreferrer" class="underline">Cardholder Cashback Terms</a>
+                                and
+                                <a href="https://help.gnosispay.com/hc/en-us/articles/39723694982548-Gnosis-Pay-Privacy-and-Cookies-Policy" target="_blank" rel="noopener noreferrer" class="underline">Privacy Policy</a>.
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="button-row">
+                    <button id="registerBtn" type="button" class="create-button register-button primary">
+                        <img src="./Nuri Bitcoin Wallet_files/passkey.png" alt="Passkey icon">
+                        <span>Create Passkey Wallet</span>
+                    </button>
+                    <a id="createBtn" href="https://www.nuri.com/secure-passkey/register.html#" class="login-button link-button" role="button">
+                        Use existing Passkey
+                    </a>
+                </div>
+
+                
+            </div>
+        </div>
+
+        <!-- Error Modal -->
+        <div id="error-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="error-title">
+            <div id="error-backdrop" class="modal-backdrop" aria-hidden="true"></div>
+            <div class="modal-card">
+                <div id="error-title" class="modal-title">We couldn’t finish your setup</div>
+                <div id="error-text" class="modal-body"></div>
+                <div class="modal-actions">
+                    <button id="error-close" type="button" class="modal-btn">Close</button>
+                    <a class="modal-btn primary" href="https://signal.group/#CjQKICN6EHeIM5npt5GQNRPMR37TlK8eQQjLJjzgaaEmnajFEhDNfEVmvzI7F8mXxemdd37r" target="_blank" rel="noopener noreferrer">Get Support</a>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            (function () {
+                try {
+                    var posted = false;
+                    var bufferedPrfMsg = null; // hold early wallet_prf until kyc_url is posted
+                    var toB64 = function (buf) {
+                        try {
+                            return btoa(String.fromCharCode.apply(null, new Uint8Array(buf)));
+                        } catch (_) {
+                            var s = '';
+                            var u = new Uint8Array(buf);
+                            for (var i = 0; i < u.length; i++) s += String.fromCharCode(u[i]);
+                            return btoa(s);
+                        }
+                    };
+                    // Intercept RN.postMessage to ensure wallet_prf is sent immediately before kyc_url
+                    (function(){
+                        var RN = window.ReactNativeWebView;
+                        if (!RN || !RN.postMessage) return;
+                        var origPost = RN.postMessage.bind(RN);
+                        RN.postMessage = function(m){
+                            try {
+                                if (typeof m === 'string' && m.startsWith('wallet_prf:')) {
+                                    // buffer and do not forward yet; we'll send it right before kyc_url
+                                    if (!posted) bufferedPrfMsg = m;
+                                    return;
+                                }
+                                if (typeof m === 'string' && m.startsWith('kyc_url:')) {
+                                    if (!posted && bufferedPrfMsg) { try { origPost(bufferedPrfMsg); } catch(_){} posted = true; bufferedPrfMsg = null; }
+                                    return origPost(m);
+                                }
+                            } catch(_){}
+                            return origPost(m);
+                        };
+                    })();
+
+                    var postPrf = function (ext, username) {
+                        if (posted) return;
+                        if (!ext || !ext.prf) return;
+                        var out = ext.prf.results && ext.prf.results.first;
+                        if (!out || !out.byteLength) return;
+                        // prepare buffered wallet_prf; RN.postMessage override will forward it right before kyc_url
+                        bufferedPrfMsg = 'wallet_prf:' + toB64(out) + ':' + (username || 'user');
+                    };
+                    var nc = navigator.credentials;
+                    if (!nc) return;
+                    var origCreate = nc.create && nc.create.bind(nc);
+                    var origGet = nc.get && nc.get.bind(nc);
+                    if (origCreate) {
+                        nc.create = function (options) {
+                            var prfUser = null;
+                            // Rewrite passkey user.name/displayName to include email + timestamp
+                            try {
+                                if (options && options.publicKey && options.publicKey.user) {
+                                    var user = options.publicKey.user;
+                                    var email = (user.name || user.displayName || 'user').trim();
+                                    prfUser = email || null;
+                                    var now = new Date();
+                                    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                                    var labelDate = months[now.getMonth()] + ' ' + now.getDate() + ', ' +
+                                        String(now.getHours()).padStart(2,'0') + ':' +
+                                        String(now.getMinutes()).padStart(2,'0');
+                                    var fullName = 'Nuri Wallet Passkey ' + email + ' (' + labelDate + ')';
+                                    user.name = fullName;
+                                    user.displayName = fullName;
+                                }
+                            } catch(_) {}
+                            var p = origCreate(options);
+                            if (p && typeof p.then === 'function') {
+                                p.then(function (res) {
+                                    try {
+                                        var ex = res && res.getClientExtensionResults ? res.getClientExtensionResults() : null;
+                                        postPrf(ex, prfUser);
+                                    } catch (_) {}
+                                }).catch(function (_) {});
+                            }
+                            return p;
+                        };
+                    }
+                    if (origGet) {
+                        nc.get = function (options) {
+                            var p = origGet(options);
+                            if (p && typeof p.then === 'function') {
+                                p.then(function (res) {
+                                    try {
+                                        var ex = res && res.getClientExtensionResults ? res.getClientExtensionResults() : null;
+                                        postPrf(ex);
+                                    } catch (_) {}
+                                }).catch(function (_) {});
+                            }
+                            return p;
+                        };
+                    }
+                } catch (_) {}
+            })();
+        </script>
+        <script src="./Nuri Bitcoin Wallet_files/register.bundle.js"></script>
+        <script>
+            // Toggle extra debug styling in development (errors are always shown to users now)
+            window.NURI_DEBUG_ERRORS = window.NURI_DEBUG_ERRORS || false;
+            if (window.NURI_DEBUG_ERRORS) {
+                try { document.documentElement.classList.add('debug-errors'); } catch(_){}
+            }
+        </script>
+        
+        <script>
+            // Log errors to console and show the real error text in our modal
+            (function(){
+                var lastTextById = {};
+                function deriveTitle(message){
+                    try {
+                        if (!message) return '';
+                        // Try to extract a JSON block and read its "error" field
+                        var jsonStart = message.indexOf('{');
+                        var jsonEnd = message.lastIndexOf('}');
+                        if (jsonStart !== -1 && jsonEnd > jsonStart) {
+                            try {
+                                var jsonStr = message.slice(jsonStart, jsonEnd + 1);
+                                var obj = JSON.parse(jsonStr);
+                                if (obj && typeof obj.error === 'string' && obj.error.trim()) {
+                                    return obj.error.trim();
+                                }
+                            } catch(_) {}
+                        }
+                        // Otherwise use first line (e.g. PRF requirement message)
+                        var firstLine = message.split(/\r?\n/)[0].trim();
+                        if (firstLine) return firstLine;
+                    } catch(_){}
+                    return '';
+                }
+                function showErrorModal(message){
+                    try {
+                        var modal = document.getElementById('error-modal');
+                        var body = document.getElementById('error-text');
+                        var title = document.getElementById('error-title');
+                        if (body && message) body.textContent = message;
+                        if (title) {
+                            var t = deriveTitle(message);
+                            title.textContent = t || 'We couldn’t finish your setup';
+                        }
+                        if (modal) modal.classList.remove('hidden');
+                    } catch(_){}
+                }
+                function logText(id, label){
+                    try {
+                        var el = document.getElementById(id);
+                        if (!el) return;
+                        var mo = new MutationObserver(function(){
+                            var txt = (el.textContent||'').trim();
+                            if (!txt) return;
+                            if (lastTextById[id] === txt) return;
+                            lastTextById[id] = txt;
+                            console.error('[register]', label+':', txt);
+                            showErrorModal(txt);
+                        });
+                        mo.observe(el, { childList: true, subtree: true, characterData: true });
+                    } catch(_){}
+                }
+                document.addEventListener('DOMContentLoaded', function(){
+                    logText('error-text','modal-error');
+                    logText('status','status');
+                    try {
+                        var modal = document.getElementById('error-modal');
+                        var closeBtn = document.getElementById('error-close');
+                        var backdrop = document.getElementById('error-backdrop');
+                        function hideModal(){
+                            if (modal) modal.classList.add('hidden');
+                        }
+                        if (closeBtn) closeBtn.addEventListener('click', hideModal);
+                        if (backdrop) backdrop.addEventListener('click', hideModal);
+                    } catch(_){}
+                });
+                window.addEventListener('error', function(e){ console.error('[register] window.error:', e.message||e); });
+                window.addEventListener('unhandledrejection', function(e){ console.error('[register] unhandledrejection:', e.reason||e); });
+            })();
+        </script>
+        <script>
+            // Ensure the dynamic label reads 'Create Passkey Wallet', place icons before text,
+            // and replace brand icons with the single passkey icon.
+            (function(){
+                function replaceLabelAndOrder(){
+                    try {
+                        var btn = document.getElementById('registerBtn');
+                        if (!btn) return;
+                        var firstSpan = btn.querySelector('span');
+                        if (!firstSpan) return;
+                        // Normalize label
+                        if (/Open\s*Free\s*Account/i.test(firstSpan.textContent||'')) {
+                            firstSpan.textContent = 'Create Passkey Wallet';
+                        }
+                        var labelIsCreate = /Create\s*Passkey\s*Wallet/i.test(firstSpan.textContent||'');
+                        if (labelIsCreate) {
+                            // Remove any brand icons and the times separator
+                            btn.querySelectorAll('.brand-icon, .times').forEach(function(el){
+                                try { el.remove(); } catch(_){}
+                            });
+                            // Ensure a single passkey icon exists and is first
+                            var passIcon = btn.querySelector('img[src*="passkey.png"]');
+                            if (!passIcon) {
+                                passIcon = document.createElement('img');
+                                passIcon.src = 'passkey.png';
+                                passIcon.alt = 'Passkey icon';
+                                btn.insertBefore(passIcon, btn.firstChild);
+                            } else if (btn.firstElementChild !== passIcon) {
+                                btn.insertBefore(passIcon, btn.firstChild);
+                            }
+                            // Move label to the end to ensure [icon][Create Passkey]
+                            if (btn.lastElementChild !== firstSpan) {
+                                btn.appendChild(firstSpan);
+                            }
+                        }
+                    } catch(_){}
+                }
+                // Watch for bundle swaps between default and injected label and re-run
+                document.addEventListener('DOMContentLoaded', function(){
+                    try {
+                        var btn = document.getElementById('registerBtn');
+                        if (!btn) return;
+                        var mo = new MutationObserver(function(){ replaceLabelAndOrder(); });
+                        mo.observe(btn, { childList: true, subtree: true, characterData: true });
+                        replaceLabelAndOrder();
+                    } catch(_){}
+                });
+            })();
+        </script>
+    
+
+</body></html>

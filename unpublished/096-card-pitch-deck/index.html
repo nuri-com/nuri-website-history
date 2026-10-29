@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; script-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nuri Card — Pitch Deck</title>
+<style>
+  :root{--text:#1a1a1a;--muted:#666;--accent:#8a6100}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:#f2f0ea;color:var(--text);font-size:17px;line-height:1.5}
+  .slide{background:#fdfdfb;max-width:920px;margin:26px auto;padding:64px 72px;min-height:560px;
+    display:flex;flex-direction:column}
+  .kicker{color:var(--muted);margin-bottom:14px;letter-spacing:.5px}
+  h1{font-size:44px;line-height:1.15;font-weight:700;letter-spacing:-.6px;margin-bottom:14px}
+  h2{font-size:44px;line-height:1.15;font-weight:700;letter-spacing:-.6px;margin-bottom:18px}
+  .sub{font-size:17px;color:var(--muted);margin:6px 0 0}
+  ul{margin:14px 0 14px 24px}
+  li{margin:8px 0}
+  p{margin:10px 0}
+  strong{font-weight:600}
+  .big{font-size:44px;font-weight:700;line-height:1.2;letter-spacing:-.6px}
+  table{border-collapse:collapse;margin:16px 0;width:100%}
+  th{text-align:left;font-weight:600;border-bottom:1px solid #999;padding:6px 12px 6px 0}
+  td{border-bottom:1px solid #eae7e0;padding:8px 12px 8px 0;vertical-align:top}
+  .foot{margin-top:auto;color:var(--muted);font-size:17px}
+  .accent{color:var(--accent)}
+  hr{border:0;border-top:1px solid #e5e2da;margin:18px 0}
+  .cols{display:flex;gap:48px;flex-wrap:wrap}
+  .cols>div{flex:1;min-width:280px}
+</style>
+</head>
+<body>
+
+<div class="slide">
+  <div class="kicker">NURI · BERLIN · 2026</div>
+  <h1>The security keycard for AI agents</h1>
+  <p class="sub">One NFC card: passkey, HSM and crypto half-wallet. Nothing signs without a tap.</p>
+  <div class="foot">github.com/nuri-com/nuri-passkey-prf-smartcard</div>
+</div>
+
+<div class="slide">
+  <div class="kicker">PROBLEM</div>
+  <h2>Your agent holds the keys to your life — in a plain file</h2>
+  <ul>
+    <li>39% of professional developers already run Claude Code at work; millions run personal agents on their own machines</li>
+    <li>The agent's wallet keys, logins and passwords sit in software on that machine</li>
+    <li>One malware infection: drained wallet, leaked logins, forged signatures</li>
+    <li>Agent payments (x402) make it worse — an agent that can pay holds keys worth stealing</li>
+    <li>Hardware security exists — but it was built for military and enterprises, sold in bulk, at $58–349. Normal people never got an affordable one</li>
+  </ul>
+  <div class="foot">Sources: JetBrains dev survey 2026 · x402 payments live on Base since 2025</div>
+</div>
+
+<div class="slide">
+  <div class="kicker">SOLUTION</div>
+  <h2>A security keycard that says yes or no</h2>
+  <p><strong>Nuri Card</strong> — an NFC security keycard with a certified secure element. The agent keeps a low-value session key; the card holds the high-value keys. Tap = approve. No tap = nothing moves.</p>
+  <ul>
+    <li><strong>Bitcoin MuSig2 multisig co-signer</strong> — key generated on-card, never leaves it</li>
+    <li><strong>Cryptocurrency hardware wallet for Ethereum</strong> — EVM keys in the secure element</li>
+    <li><strong>OATH-TOTP authenticator</strong> — one-time codes without a phone</li>
+    <li><strong>SSH hardware security key</strong> — in daily production use on our servers</li>
+    <li><strong>FIDO2 passkey with WebAuthn PRF</strong> — log into any site through the card</li>
+  </ul>
+  <div class="foot">Working firmware on real hardware — one Java Card, five functions, MIT-licensed</div>
+</div>
+
+<div class="slide">
+  <div class="kicker">HOW IT WORKS</div>
+  <h2>Half-wallet, full control</h2>
+  <div class="cols">
+    <div>
+      <ul>
+        <li>Agent gets a session key with a spending cap</li>
+        <li>Card holds the owner key; above the cap, a tap is required</li>
+        <li>Spending policy lives on the card: per-payment limit, daily limit, allowed recipients</li>
+        <li>Card lost? Agent key alone can't move the money; recover with a backup card</li>
+      </ul>
+    </div>
+    <div>
+      <ul>
+        <li><strong>Three versions</strong></li>
+        <li><strong>Basic</strong> — PIN, under $10 to build. The everyone version</li>
+        <li><strong>Medium</strong> — fingerprint inside the secure element (Feitian BioCARD platform, ~$25–45 landed)</li>
+        <li><strong>Pro</strong> — Bluetooth: card + BT sleeve/dock for the phone and agent (Feitian bR500, ACS ACR1255U-J1 ~$59 exist today). One card to stock; the passive card stays the trust anchor</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="kicker">WORKING TODAY</div>
+  <h2>Not a concept — running firmware on real hardware</h2>
+  <ul>
+    <li>All five functions run on the Feitian BioCARD fingerprint platform and NXP J3R180 JCOP4 cards (secp256k1 for Bitcoin)</li>
+    <li>Applet code public (MIT) — audit it, load it on a blank card, verify keys never leave the secure element</li>
+    <li>The SSH applet is not a demo: it secures our production servers today</li>
+    <li>Cheap blank cards ($2.55–8.90 on Alibaba) can run the same firmware — the Basic tier</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <div class="kicker">WHY NOW</div>
+  <h2>Hardware security is going mainstream — the affordable card is missing</h2>
+  <ul>
+    <li>Apple supports external security keys for Apple Account since iOS 16.3; Android supports passkeys on NFC keys since Android 9</li>
+    <li>YubiKeys entered 350 Best Buy stores Oct 2025 ($25–29 entry keys); FIDO Alliance counts ~5 billion passkeys in use (May 2026)</li>
+    <li>New NIST guidance prefers hardware-bound keys at the highest assurance level</li>
+    <li>Jul 2026 — YubiKey 5.8 ships AI-agent approvals ($58, logins only, no crypto); Ledger ships Agent Stack ($69–399 handhelds)</li>
+    <li><strong>Nobody ships passkeys + wallet + agent-pay approval as one affordable tap card</strong></li>
+  </ul>
+</div>
+
+<div class="slide">
+  <div class="kicker">COMPETITION</div>
+  <h2>The only card that does all three</h2>
+  <table>
+    <tr><th>Product</th><th>Price</th><th>Passkeys</th><th>Wallet</th><th>Agent approvals</th></tr>
+    <tr><td>YubiKey 5 NFC</td><td>$58</td><td>yes</td><td>no</td><td>logins only</td></tr>
+    <tr><td>Ledger Agent Stack</td><td>$69–399</td><td>yes</td><td>yes</td><td>handheld</td></tr>
+    <tr><td>Tangem (Amazon #1 card)</td><td>$50</td><td>no</td><td>yes</td><td>no</td></tr>
+    <tr><td>Bitkey (Block)</td><td>$150</td><td>no</td><td>Bitcoin only</td><td>no</td></tr>
+    <tr><td>Satochip (open, AGPL)</td><td>€25</td><td>no</td><td>yes</td><td>no</td></tr>
+    <tr><td>Seedkeeper PRO (open)</td><td>n/a</td><td>yes</td><td>vault</td><td>no</td></tr>
+    <tr><td>Status Keycard (open, MIT)</td><td>€25</td><td>no</td><td>yes</td><td>no</td></tr>
+    <tr><td>Foundation Prime</td><td>$349</td><td>yes</td><td>yes</td><td>handheld</td></tr>
+    <tr><td><strong>Nuri Card</strong></td><td><strong>$10–99 tiers</strong></td><td><strong>yes</strong></td><td><strong>yes</strong></td><td><strong>tap</strong></td></tr>
+  </table>
+  <p>Closest threat on the passkey tier: Seedkeeper PRO (FIDO2 + PRF) — but no wallet, no agent flow. The open peers (Satochip ~1,500 cards sold, bridge financing; Keycard, no published sales) proved the trust, not the business.</p>
+</div>
+
+<div class="slide">
+  <div class="kicker">BUSINESS</div>
+  <h2>Hardware with margin, software that compounds</h2>
+  <ul>
+    <li><strong>Card sales</strong> — Yubico sold 32M+ keys; Tangem 6M+ cards dev-first online</li>
+    <li><strong>Closed tier (SaaS)</strong> — device attestation, spending-policy engine, fleet management, recovery</li>
+    <li><strong>Open strategy</strong> — applets and protocol open source (developer trust, agent-framework adoption); attestation and fleet closed (the thing people pay for)</li>
+    <li>Unit economics: Basic &lt;$10 BOM, Medium ~$25–45 landed, Pro = Medium + BT sleeve; retail $29–99</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <div class="kicker">ROADMAP</div>
+  <h2>Ship the developers first</h2>
+  <ul>
+    <li><strong>Now</strong> — 4 applets working; J3R180 JCOP4 cards in hand (secp256k1 for Bitcoin); biometric BioCARD in testing</li>
+    <li><strong>Q1 2027</strong> — x402 tap-to-approve on card; Claude Code / OpenClaw integrations; first 1,000 cards to developers</li>
+    <li><strong>Q3 2027</strong> — fingerprint model at volume; agent-platform bundles; fleet console for teams</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <div class="kicker">TEAM</div>
+  <h2>Built by the people who run the money</h2>
+  <p><strong>Emin Mahrt, CTO, Berlin.</strong> Wrote the smartcard firmware — FIDO2-PRF, MuSig2 cosigner, OATH/SSH — and runs the production servers that are SSH'd with these cards daily.</p>
+  <p class="big accent">One card. Every key your agent will ever need.<br>Tap to say yes.</p>
+  <div class="foot">Nuri · Berlin · github.com/nuri-com/nuri-passkey-prf-smartcard</div>
+</div>
+
+</body>
+</html>

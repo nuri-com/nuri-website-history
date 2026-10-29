@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; script-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nuri — Freedom money.</title>
+<meta name="description" content="Bitcoin & Lightning, stablecoins and local currencies in one self-custodial wallet.">
+<style>
+:root{
+  --bg:#fff; --ink:#0b0b0b; --muted:#707070; --soft:#f5f5f2; --line:#e7e7e2;
+  --headline:clamp(4rem,8vw,9rem); --body:clamp(1.1rem,2vw,1.55rem);
+  --pad:clamp(28px,6vw,96px); --max:1600px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+body{overflow:hidden}
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.16em}
+p,a,span,strong,b,li,summary,button{font-size:var(--body);line-height:1.42}
+h1,h2{font:700 var(--headline)/.94 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;letter-spacing:-.055em;margin:0;max-width:11ch}
+.brand{position:fixed;z-index:80;left:max(22px,env(safe-area-inset-left));top:max(18px,env(safe-area-inset-top));font-size:1rem;font-weight:800;letter-spacing:.08em;text-decoration:none}
+.top-cta{position:fixed;z-index:80;right:max(22px,env(safe-area-inset-right));top:max(14px,env(safe-area-inset-top));background:var(--ink);color:#fff;text-decoration:none;border-radius:999px;padding:.72em 1.05em;font-size:1rem;font-weight:700}
+.deck{width:100vw;height:100dvh;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x}
+.deck::-webkit-scrollbar{display:none}
+.slide{flex:0 0 100vw;width:100vw;height:100dvh;scroll-snap-align:start;scroll-snap-stop:always;display:flex;align-items:center;padding:88px var(--pad) 72px;background:var(--bg);overflow:hidden}
+.slide.soft{background:var(--soft)}
+.slide.dark{background:var(--ink);color:#fff}
+.content{width:min(100%,var(--max));margin:auto;display:flex;flex-direction:column;justify-content:center;min-height:calc(100dvh - 160px)}
+.lead{max-width:48rem;margin:1.8rem 0 0;color:inherit}
+.muted{color:var(--muted)}
+.dark .muted{color:#bcbcbc}
+.actions{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:2rem}
+.button{display:inline-block;background:var(--ink);color:#fff;border:1px solid var(--ink);border-radius:999px;padding:.75em 1.08em;text-decoration:none;font-weight:700}
+.dark .button{background:#fff;color:var(--ink);border-color:#fff}
+.secondary{font-weight:600}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(50px,8vw,150px);align-items:center}
+.stack{max-width:640px}
+.row{display:flex;justify-content:space-between;gap:30px;padding:16px 0;border-bottom:1px solid var(--line)}
+.row:first-child{border-top:1px solid var(--line)}
+.big-word{font-size:clamp(2.6rem,5.5vw,6.2rem);line-height:.98;letter-spacing:-.045em;font-weight:700;margin:0}
+.caption{max-width:34rem;margin-top:1.25rem;color:var(--muted)}
+.partner-line{display:flex;flex-wrap:wrap;gap:20px 38px;margin-top:2rem;max-width:950px}
+.partner-line span{font-weight:700}
+.timeline{display:grid;grid-template-columns:120px 1fr;max-width:880px;margin-top:1.5rem}
+.timeline b,.timeline span{padding:10px 0;border-bottom:1px solid var(--line)}
+.read{margin-top:1.8rem;border:0;background:transparent;padding:0;text-decoration:underline;text-underline-offset:.18em;cursor:pointer;font-weight:600;color:inherit}
+.controls{position:fixed;z-index:80;right:max(22px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));display:flex;gap:8px}
+.controls button{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.96);color:var(--ink);font-size:20px;cursor:pointer}
+.progress{position:fixed;z-index:79;left:0;bottom:0;height:3px;background:var(--ink);width:10%;transition:width .16s ease}
+.counter{position:fixed;z-index:78;left:max(22px,env(safe-area-inset-left));bottom:max(20px,env(safe-area-inset-bottom));font-size:.86rem;color:var(--muted);letter-spacing:.06em}
+
+.full-table-wrap{
+  width:100%;
+  margin-top:1.35rem;
+  overflow:auto;
+  border:1px solid var(--line);
+  background:#fff;
+  max-height:56vh;
+}
+.full-table{
+  border-collapse:collapse;
+  min-width:1500px;
+  width:100%;
+  font-size:.86rem;
+}
+.full-table th,.full-table td{
+  padding:9px 11px;
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  text-align:center;
+  white-space:nowrap;
+  font-size:.86rem;
+}
+.full-table th:first-child{
+  position:sticky;
+  left:0;
+  z-index:3;
+  background:#fff;
+  text-align:left;
+  min-width:200px;
+}
+.full-table thead th{
+  position:sticky;
+  top:0;
+  z-index:2;
+  background:var(--soft);
+  font-weight:700;
+}
+.full-table thead th:first-child{z-index:4}
+.full-table .nuri-col{background:#0b0b0b;color:#fff;font-weight:800}
+.full-table td.yes{font-weight:800}
+.full-table td.no{color:#aaa}
+.full-table td.partial{color:#777}
+.table-note{font-size:.9rem;color:var(--muted);margin-top:.8rem}
+.compare-content h2{max-width:none;font-size:clamp(3rem,5.5vw,6.2rem)}
+.compare-content .lead{margin-top:.7rem}
+
+@media(max-width:860px){
+  :root{--headline:clamp(3.4rem,15vw,6.7rem);--body:clamp(1rem,4.6vw,1.23rem);--pad:24px}
+  .slide{padding-top:92px;padding-bottom:72px}
+  .content{min-height:calc(100dvh - 164px)}
+  .two{grid-template-columns:1fr;gap:34px}
+  .controls{display:none}
+}
+</style>
+</head>
+<body>
+<a class="brand" href="#s1">NURI</a>
+<a class="top-cta" href="https://app.nuri.com/">Open free wallet</a>
+
+<main class="deck" id="deck">
+<section class="slide" id="s1"><div class="content">
+  <h1>Freedom money.</h1>
+  <p class="lead"><strong>Bitcoin &amp; Lightning, stablecoins and local currencies — in one self-custodial wallet.</strong></p>
+  <p class="lead muted">One passkey. No seed phrase. Multisig protected.</p>
+  <div class="actions"><a class="button" href="https://app.nuri.com/">Open free wallet</a><a class="secondary" href="#s2">Explore →</a></div>
+</div></section>
+
+<section class="slide soft" id="s2"><div class="content two">
+  <div><p class="big-word">Internet money.</p><p class="caption">Bitcoin &amp; Lightning and stablecoins for sending, receiving and paying globally.</p></div>
+  <div><p class="big-word">Local currencies.</p><p class="caption">Bank transfers, card and local payment rails when you need them.</p></div>
+</div></section>
+
+<section class="slide" id="s3"><div class="content two">
+  <div><h2>One passkey.<br>Your wallet.</h2></div>
+  <div class="stack">
+    <div class="row"><strong>Self-custodial</strong><span>✓</span></div>
+    <div class="row"><strong>No seed phrase</strong><span>✓</span></div>
+    <div class="row"><strong>Passkey-based</strong><span>✓</span></div>
+    <div class="row"><strong>Multisig protected</strong><span>✓</span></div>
+    <div class="row"><strong>Recovery without Nuri</strong><span>✓</span></div>
+  </div>
+</div></section>
+
+<section class="slide" id="s4"><div class="content">
+  <h2>Pay. Get paid. Use it.</h2>
+  <div class="two" style="margin-top:2.2rem">
+    <div><p><strong>Pay in</strong></p><p class="muted">Bitcoin &amp; Lightning, stablecoins and supported crypto assets.</p><p><strong>Move</strong></p><p class="muted">Send, receive, request, swap and convert.</p></div>
+    <div><p><strong>Pay out</strong></p><p class="muted">Bitcoin &amp; Lightning, stablecoins, bank transfer, card and supported local rails.</p><p><strong>One wallet</strong></p><p class="muted">Internet-native when you want it. Local when you need it.</p></div>
+  </div>
+</div></section>
+
+<section class="slide dark" id="s5"><div class="content">
+  <h2>The on-chain Cash App.</h2>
+  <p class="lead"><strong>Everyday payments with ownership built in.</strong></p>
+  <p class="lead muted">Cash App utility. Bitkey-style control. One passkey.</p>
+</div></section>
+
+<section class="slide" id="s6"><div class="content two">
+  <div><h2>Wallet first.<br>Services second.</h2></div>
+  <div><p class="lead"><strong>Partners can change. Ownership should not.</strong></p><p class="muted">Use banking, card and local payment services without making them the foundation of your wallet.</p><div class="partner-line"><span>Wirex</span><span>Monerium</span><span>ClickPesa</span><span>Swap infrastructure</span></div></div>
+</div></section>
+
+<section class="slide soft" id="s7"><div class="content">
+  <h2>If we disappear,<br>your money doesn’t.</h2>
+  <p class="lead">Nuri is designed so the wallet and its recovery do not depend on Nuri, a card provider or a banking partner continuing to exist.</p>
+  <p class="lead muted"><strong>Your wallet. Your exit.</strong></p>
+</div></section>
+
+
+<section class="slide" id="s8"><div class="content compare-content">
+  <h2>How Nuri compares.</h2>
+  <p class="lead muted">Only capabilities Nuri itself supports. ✓ yes · ~ partial / different · — no equivalent.</p>
+
+  <div class="full-table-wrap">
+    <table class="full-table" aria-label="Nuri competitor comparison">
+      <thead>
+        <tr>
+          <th>Capability</th>
+          <th class="nuri-col">Nuri</th>
+          <th>Cash App</th>
+          <th>Bitkey</th>
+          <th>Blitz</th>
+          <th>Muun</th>
+          <th>Strike</th>
+          <th>Wallet of Satoshi</th>
+          <th>Bitrefill</th>
+          <th>Bitwala</th>
+          <th>AQUA</th>
+          <th>Phoenix</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>Global access</th><td class="yes nuri-col">✓</td><td class="no">—</td><td class="partial">~</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">~</td><td class="partial">~</td><td class="yes">✓</td><td class="partial">~</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><th>Self-custodial</th><td class="yes nuri-col">✓</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><th>No seed phrase</th><td class="yes nuri-col">✓</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="no">—</td><td class="partial">~</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td></tr>
+        <tr><th>Passkey-based</th><td class="yes nuri-col">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="no">—</td></tr>
+        <tr><th>Multisig protected</th><td class="yes nuri-col">✓</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="no">—</td></tr>
+        <tr><th>Recovery without vendor</th><td class="yes nuri-col">✓</td><td class="no">—</td><td class="yes">✓</td><td class="partial">~</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="partial">~</td><td class="partial">~</td><td class="yes">✓</td></tr>
+        <tr><th>Web + iOS + Android</th><td class="yes nuri-col">✓</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+        <tr><th>Bitcoin &amp; Lightning</th><td class="yes nuri-col">✓</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">~</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><th>Stablecoins</th><td class="yes nuri-col">✓</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="partial">~</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+        <tr><th>Card + bank transfers</th><td class="yes nuri-col">✓</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">~</td><td class="no">—</td></tr>
+        <tr><th>Open source · MIT</th><td class="yes nuri-col">✓</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="no">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="table-note">Yellow means partial, materially different, or needs final verification before publishing.</p>
+</div></section>
+
+
+
+<section class="slide" id="s9"><div class="content two">
+  <div><h2>Open for people.<br>Open for agents.</h2></div>
+  <div><p class="lead"><strong>100% open source · MIT licensed.</strong></p><p class="muted">Semantic HTML, Markdown, llms.txt, OpenAPI and MCP surfaces expose the same product story to humans and software.</p></div>
+</div></section>
+
+<section class="slide soft" id="s10"><div class="content two">
+  <div><h2>Berlin roots.<br>A new Nuri.</h2></div>
+  <div class="timeline">
+    <b>2014–15</b><span>Bitwala grows out of Berlin’s early Bitcoin scene.</span>
+    <b>2021</b><span>Bitwala becomes Nuri.</span>
+    <b>2022</b><span>The original Nuri shuts down.</span>
+    <b>2025</b><span>The Nuri brand moves to new ownership and operates independently.</span>
+    <b>Now</b><span>A new Nuri is built around self-custody, passkeys and payments.</span>
+  </div>
+</div></section>
+
+<section class="slide dark" id="s11"><div class="content">
+  <h2>Open your free wallet.</h2>
+  <p class="lead"><strong>Freedom money that can actually be used.</strong></p>
+  <div class="actions"><a class="button" href="https://app.nuri.com/">Open free wallet</a><a class="secondary" href="https://nuri.com/about">About Nuri →</a></div>
+</div></section>
+</main>
+
+<div class="counter" id="counter">01 / 11</div>
+<div class="progress" id="progress"></div>
+<nav class="controls"><button id="prev">←</button><button id="next">→</button></nav>
+
+<script>
+(() => {
+  const deck = document.getElementById('deck');
+  const slides = [...deck.querySelectorAll('.slide')];
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('counter');
+  let wheelLock = false;
+  const current = () => Math.round(deck.scrollLeft / deck.clientWidth);
+  const go = n => slides[Math.max(0,Math.min(slides.length-1,n))].scrollIntoView({behavior:'smooth',inline:'start'});
+  const update = () => {
+    const i=current();
+    progress.style.width=((i+1)/slides.length*100)+'%';
+    counter.textContent=String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+  };
+  prev.onclick=()=>go(current()-1);
+  next.onclick=()=>go(current()+1);
+  window.addEventListener('keydown',e=>{
+    if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(current()+1)}
+    if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(current()-1)}
+  });
+  deck.addEventListener('wheel',e=>{
+    if(e.ctrlKey) return;
+    e.preventDefault();
+    if(wheelLock) return;
+    const d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
+    if(Math.abs(d)<10) return;
+    wheelLock=true;
+    go(current()+(d>0?1:-1));
+    setTimeout(()=>wheelLock=false,500);
+  },{passive:false});
+  deck.addEventListener('scroll',()=>requestAnimationFrame(update),{passive:true});
+  update();
+})();
+</script>
+</body>
+</html>

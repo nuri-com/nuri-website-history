@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; script-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- Primary Meta Tags -->
+    <title>Nuri - Bitcoin Hardware Wallet & Credit Card with Fingerprint Authentication</title>
+    <meta name="title" content="Nuri - Bitcoin Hardware Wallet & Credit Card with Fingerprint Authentication">
+    <meta name="description" content="Secure your Bitcoin with Nuri's revolutionary 2-in-1 hardware wallet featuring fingerprint authentication and integrated Visa/Mastercard functionality. The future of crypto and traditional banking in one device.">
+    <meta name="keywords" content="Bitcoin wallet, hardware wallet, crypto wallet, credit card, fingerprint authentication, secure bitcoin storage, Visa, Mastercard, cryptocurrency, digital assets, secure storage">
+    <meta name="author" content="Nuri">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="theme-color" content="#000000">
+    
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nuri.com/">
+    <meta property="og:site_name" content="Nuri">
+    <meta property="og:title" content="Nuri - Bitcoin Hardware Wallet & Credit Card">
+    <meta property="og:description" content="The world's first 2-in-1 Bitcoin hardware wallet with integrated credit card and fingerprint authentication. Secure your digital assets with confidence.">
+    <meta property="og:image" content="https://nuri.com/satoshi-nakamoto.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Nuri Bitcoin Hardware Wallet and Credit Card">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@nuri">
+    <meta name="twitter:creator" content="@nuri">
+    <meta name="twitter:url" content="https://nuri.com/">
+    <meta name="twitter:title" content="Nuri - Bitcoin Hardware Wallet & Credit Card">
+    <meta name="twitter:description" content="The world's first 2-in-1 Bitcoin hardware wallet with integrated credit card and fingerprint authentication. Secure your digital assets with confidence.">
+    <meta name="twitter:image" content="https://nuri.com/satoshi-nakamoto.jpg">
+    <meta name="twitter:image:alt" content="Nuri Bitcoin Hardware Wallet and Credit Card">
+
+    <!-- iOS meta tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon_3288d76cdd.svg">
+    <link rel="alternate icon" type="image/png" href="favicon_367fd5f293.png">
+    <link rel="apple-touch-icon" href="favicon_367fd5f293.png">
+    <link rel="manifest" crossorigin="use-credentials" href='data:application/manifest+json,{
+        "name": "Nuri",
+        "short_name": "Nuri",
+        "description": "Bitcoin Hardware Wallet & Credit Card",
+        "start_url": "/",
+        "display": "standalone",
+        "background_color": "#000000",
+        "theme_color": "#000000"
+    }'>
+
+    <style>
+        /* CSS Reset and Base Styles */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Document level adjustments */
+        html {
+            font-size: 16px;
+            line-height: 1.15;
+            -webkit-text-size-adjust: 100%;
+            height: -webkit-fill-available;
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-color: #000; /* Fallback */
+        }
+
+        /* Main container styles */
+        .background-container {
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            display: block;
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        /* Image styles */
+        .background-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: translate3d(0, 0, 0); /* Hardware acceleration */
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            will-change: transform; /* Optimize animations */
+            touch-action: manipulation; /* Disable double-tap zoom */
+        }
+
+        /* Screen reader only elements */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Safe area inset padding for notched devices */
+        @supports (padding: max(0px)) {
+            .background-container {
+                padding-left: max(0px, env(safe-area-inset-left));
+                padding-right: max(0px, env(safe-area-inset-right));
+                padding-top: max(0px, env(safe-area-inset-top));
+                padding-bottom: max(0px, env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .background-container {
+                position: relative;
+                height: auto;
+            }
+            .background-container img {
+                position: relative;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="https://unseizable.org" class="background-container" role="img" aria-label="Nuri Bitcoin Hardware Wallet and Credit Card with Fingerprint Authentication">
+        <img src="satoshi-nakamoto.jpg" alt="Nuri Bitcoin Hardware Wallet and Credit Card with Fingerprint Authentication" loading="eager" decoding="async" fetchpriority="high">
+        <h1 class="sr-only">Nuri - Revolutionary Bitcoin Hardware Wallet with Credit Card</h1>
+        <p class="sr-only">Secure your Bitcoin with fingerprint authentication while enjoying the convenience of an integrated Visa/Mastercard solution. The ultimate combination of security and convenience for your digital assets.</p>
+    </a>
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "Nuri Bitcoin Hardware Wallet & Credit Card",
+        "description": "Revolutionary 2-in-1 Bitcoin hardware wallet with integrated credit card and fingerprint authentication",
+        "brand": {
+            "@type": "Brand",
+            "name": "Nuri",
+            "url": "https://nuri.com"
+        },
+        "category": "Hardware Wallet",
+        "features": [
+            "Bitcoin Storage",
+            "Credit Card Integration",
+            "Fingerprint Authentication",
+            "Visa/Mastercard Support",
+            "Secure Element Technology",
+            "Mobile App Integration"
+        ],
+        "offers": {
+            "@type": "Offer",
+            "availability": "https://schema.org/InStock"
+        },
+        "image": "satoshi-nakamoto.jpg"
+    }
+    </script>
+</body>
+</html>

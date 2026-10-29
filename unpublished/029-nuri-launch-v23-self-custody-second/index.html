@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; script-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nuri — Bitcoin Wallet with Banking.</title>
+<meta name="description" content="Bitcoin first. Stable dollars and euros when useful. Local cash in and out.">
+<style>
+:root{
+  --bg:#fff;
+  --ink:#090909;
+  --soft:#f4f4f1;
+  --line:#deded9;
+
+  /* Exactly two type sizes. */
+  --display:clamp(4.25rem,7.8vw,7.75rem);
+  --body:clamp(1.55rem,2.15vw,2rem);
+
+  --pad:clamp(28px,5vw,76px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:var(--body);
+  line-height:1.35;
+}
+body,a,p,span,strong,b,button,li,th,td{
+  font-family:inherit;
+  font-size:var(--body);
+  font-weight:400;
+}
+h1,h2{
+  margin:0;
+  max-width:12ch;
+  font-family:inherit;
+  font-size:var(--display);
+  font-weight:700;
+  line-height:.94;
+  letter-spacing:-.055em;
+}
+a{color:inherit;text-underline-offset:.16em}
+.brand{
+  position:fixed;
+  z-index:50;
+  top:22px;
+  left:28px;
+  text-decoration:none;
+}
+.open{
+  position:fixed;
+  z-index:50;
+  top:18px;
+  right:28px;
+  padding:.55em .85em;
+  border:1px solid var(--ink);
+  border-radius:999px;
+  background:var(--ink);
+  color:#fff;
+  text-decoration:none;
+}
+.slide{
+  width:100%;
+  min-height:100svh;
+  height:100svh;
+  display:flex;
+  align-items:center;
+  padding:88px var(--pad) 58px;
+  scroll-snap-align:start;
+  scroll-snap-stop:always;
+  overflow:hidden;
+}
+.slide.soft{background:var(--soft)}
+.slide.dark{background:var(--ink);color:#fff}
+.content{
+  width:min(100%,1420px);
+  max-height:calc(100svh - 146px);
+  margin:auto;
+  overflow:hidden;
+}
+.copy{
+  max-width:38ch;
+  margin:1.5rem 0 0;
+}
+.actions{
+  display:flex;
+  gap:22px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-top:1.75rem;
+}
+.button{
+  display:inline-block;
+  padding:.55em .85em;
+  border:1px solid currentColor;
+  border-radius:999px;
+  text-decoration:none;
+}
+.primary{
+  background:var(--ink);
+  color:#fff;
+  border-color:var(--ink);
+}
+.dark .primary{
+  background:#fff;
+  color:var(--ink);
+  border-color:#fff;
+}
+.two{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:clamp(52px,8vw,140px);
+  align-items:center;
+}
+.rows{max-width:760px}
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:32px;
+  padding:16px 0;
+  border-bottom:1px solid var(--line);
+}
+.row:first-child{border-top:1px solid var(--line)}
+.dark .row{border-color:#2f2f2f}
+.three{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:34px;
+  margin-top:2rem;
+}
+.block{
+  border-top:1px solid var(--line);
+  padding-top:18px;
+}
+.rails{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0 36px;
+  max-width:1000px;
+}
+.rails div{
+  padding:16px 0;
+  border-top:1px solid var(--line);
+}
+.rails div:nth-last-child(-n+2){border-bottom:1px solid var(--line)}
+.partners{
+  display:flex;
+  gap:34px;
+  flex-wrap:wrap;
+  margin-top:1.5rem;
+}
+.founder{
+  max-width:760px;
+  margin-top:1.5rem;
+  padding-top:18px;
+  border-top:1px solid var(--line);
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:38px;
+  margin-top:1.5rem;
+}
+.footer-grid p{margin:.4rem 0}
+dialog{
+  width:min(1200px,calc(100% - 36px));
+  max-height:88svh;
+  border:0;
+  padding:0;
+  background:#fff;
+  color:var(--ink);
+}
+dialog::backdrop{background:rgba(0,0,0,.42)}
+.modal{
+  max-height:88svh;
+  overflow:auto;
+  padding:32px;
+}
+.close{
+  padding:.5em .8em;
+  border:1px solid var(--ink);
+  border-radius:999px;
+  background:#fff;
+  cursor:pointer;
+}
+.table-wrap{
+  overflow:auto;
+  margin:1.5rem 0;
+  border:1px solid var(--line);
+}
+table{
+  width:max-content;
+  min-width:100%;
+  border-collapse:collapse;
+}
+th,td{
+  padding:14px 16px;
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  text-align:center;
+  white-space:nowrap;
+}
+th:first-child{text-align:left}
+.nuri{
+  background:var(--ink);
+  color:#fff;
+}
+.no{color:#aaa}
+.partial{color:#777}
+
+@media(max-width:900px){
+  :root{
+    --display:clamp(3.75rem,14vw,6rem);
+    --body:clamp(1.35rem,5vw,1.7rem);
+  }
+  .two,.three,.rails,.footer-grid{grid-template-columns:1fr}
+  .slide{padding-top:96px;padding-bottom:52px}
+  .content{max-height:calc(100svh - 154px)}
+}
+
+.modal .links{
+  display:flex;
+  flex-direction:column;
+  gap:.6rem;
+  margin:1.2rem 0;
+}
+
+</style>
+</head>
+<body>
+
+<a class="brand" href="#one">NURI</a>
+<a class="open" href="https://app.nuri.com/">Open free account</a>
+
+<section class="slide" id="one">
+  <div class="content">
+    <h1>Bitcoin Wallet<br>with Banking.</h1>
+    <p class="copy">Send it or spend it with a Visa Crypto Card, bank transfers or mobile money.</p>
+    <div class="actions">
+      <a class="button primary" href="https://app.nuri.com/">Open free account</a>
+      <a href="#two">Scroll ↓</a>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="two">
+  <div class="content two">
+    <h2>Simple self-custody.</h2>
+    <div>
+      <p class="copy">Bitcoin &amp; stablecoins. One passkey. No seed phrase. Multisig protected.</p>
+      <div class="actions"><button class="button" onclick="selfCustody.showModal()">Learn more</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="three">
+  <div class="content two">
+    <h2>No exchange.<br>No middleman.<br>Your wallet.</h2>
+    <div>
+      <p class="copy">Nuri does not hold your crypto or collect ID to open the self-custodial wallet.</p>
+      <div class="actions"><button class="button" onclick="privacy.showModal()">Learn more</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="four">
+  <div class="content two">
+    <h2>Bitcoin &amp;<br>stablecoins.</h2>
+    <p class="copy">Bitcoin for peer-to-peer electronic cash. Stable dollars and euros for stable value.</p>
+  </div>
+</section>
+
+<section class="slide" id="five">
+  <div class="content two">
+    <h2>Cash in.<br>Cash out.</h2>
+    <div class="rails">
+      <div>EUR · SEPA · Visa</div>
+      <div>USD · ACH · card</div>
+      <div>GBP · Faster Payments</div>
+      <div>TZS · Mobile Money · SWIFT</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" id="six">
+  <div class="content">
+    <h2>Freedom internet money.</h2>
+    <p class="copy">Hold it yourself. Send it directly to anyone. No middleman. No gatekeeper.</p>
+  </div>
+</section>
+
+<section class="slide" id="seven">
+  <div class="content two">
+    <h2>If we disappear,<br>your money doesn’t.</h2>
+    <p class="copy">The wallet is yours. Cards, banks and payment providers are services around it.</p>
+  </div>
+</section>
+
+<section class="slide soft" id="eight">
+  <div class="content two">
+    <h2>Regulated rails.<br>Independent wallet.</h2>
+    <div>
+      <p class="copy">Card, banking and local payment services can require ID. The self-custodial wallet does not.</p>
+      <div class="partners"><span>Wirex</span><span>Monerium</span><span>ClickPesa</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="nine">
+  <div class="content two">
+    <h2>One wallet for<br>all of it.</h2>
+    <div>
+      <p class="copy">Bitcoin. Stablecoins. Visa. Bank transfers. Mobile money.</p>
+      <div class="actions"><button class="button" onclick="compare.showModal()">Compare Nuri</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="ten">
+  <div class="content two">
+    <h2>The new Nuri.</h2>
+    <div>
+      <p class="copy">New ownership. New team. Self-custody first.</p>
+      <div class="founder">Emin Mahrt · Founder</div>
+      <div class="actions"><button class="button" onclick="story.showModal()">Read the story</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="eleven">
+  <div class="content two">
+    <h2>Use Nuri yourself<br>or connect software.</h2>
+    <div>
+      <p class="copy">Use the same wallet in the app, browser, or through software you authorize.</p>
+      <div class="actions"><button class="button" onclick="software.showModal()">Learn more</button></div>
+    </div>
+  </div>
+</section>
+
+
+<section class="slide soft" id="eleven-b">
+  <div class="content two">
+    <h2>Open source.</h2>
+    <div>
+      <p class="copy">Wallet and recovery tools are public. MIT licensed.</p>
+      <div class="actions"><button class="button" onclick="opensource.showModal()">Learn more</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="twelve">
+  <div class="content">
+    <h2>Help and company.</h2>
+    <div class="footer-grid">
+      <div><p>Product</p><p><a href="https://app.nuri.com/">Wallet</a></p><p><a href="https://nuri.com/card-support">Card &amp; Bank Support</a></p></div>
+      <div><p>Company</p><p><a href="https://nuri.com/about">About</a></p><p><a href="https://nuri.com/contact">Contact</a></p></div>
+      <div><p>Developers</p><p><a href="https://nuri.com/developers">Developers</a></p><p><a href="https://nuri.com/docs">Docs</a></p><p><a href="https://nuri.com/mcp">MCP</a></p></div>
+      <div><p>Legal</p><p><a href="https://nuri.com/privacy-policy/">Privacy</a></p><p><a href="https://nuri.com/terms-of-service/">Terms</a></p></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" id="thirteen">
+  <div class="content">
+    <h2>Bitcoin Wallet<br>with Banking.</h2>
+    <p class="copy">Bitcoin &amp; stablecoins. Card, bank transfers and mobile money.</p>
+    <div class="actions"><a class="button primary" href="https://app.nuri.com/">Open free wallet</a></div>
+  </div>
+</section>
+
+<dialog id="compare">
+  <div class="modal">
+    <h2 style="max-width:none">Compare Nuri.</h2>
+    <p>Nuri combines self-custody, Bitcoin, stablecoins and local payment rails in one wallet.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Capability</th><th class="nuri">Nuri</th><th>Cash App</th><th>Bitkey</th><th>Muun</th><th>Bitwala</th><th>AQUA</th></tr></thead>
+        <tbody>
+          <tr><th>Self-custodial</th><td class="nuri">✓</td><td class="no">—</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+          <tr><th>No seed phrase</th><td class="nuri">✓</td><td class="no">—</td><td>✓</td><td class="partial">~</td><td>✓</td><td class="no">—</td></tr>
+          <tr><th>Passkey-based</th><td class="nuri">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td></tr>
+          <tr><th>Bitcoin</th><td class="nuri">✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+          <tr><th>Lightning</th><td class="nuri">✓</td><td>✓</td><td class="no">—</td><td>✓</td><td class="partial">~</td><td>✓</td></tr>
+          <tr><th>Stablecoins</th><td class="nuri">✓</td><td>✓</td><td class="no">—</td><td class="no">—</td><td>✓</td><td>✓</td></tr>
+          <tr><th>Card + bank rails</th><td class="nuri">✓</td><td>✓</td><td class="no">—</td><td class="no">—</td><td>✓</td><td class="partial">~</td></tr>
+          <tr><th>Web + iOS + Android</th><td class="nuri">✓</td><td class="partial">~</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>~ means the product uses a different or partial model. Re-check competitor details before publishing this table publicly.</p>
+    <button class="close" onclick="compare.close()">Close</button>
+  </div>
+</dialog>
+
+
+<dialog id="story">
+  <div class="modal">
+    <h2>The new Nuri.</h2>
+    <p>Nuri started as a different company and product. Bitwala was founded in Berlin in 2014, became Nuri in 2021, and the former Nuri company shut down in 2022.</p>
+    <p>Bitwala returned separately. In January 2025, Bitwala announced that the Nuri brand and nuri.com were moving to new ownership and would operate independently.</p>
+    <p>The current Nuri is a new company with a different model: the wallet comes first and card, banking and payment providers sit around it.</p>
+    <p>The people behind the current product come from Berlin's long Bitcoin and crypto builder scene. Emin Mahrt is the public founder profile. Cim Topal, Emil Wagner and Lennard Evertz are part of the longer builder story across mining, exchanges, wallets, smart contracts, protocols and payments.</p>
+    <p>An AI reviewing that history once called the group “the patient pioneers.” The name stuck.</p>
+    <p>The goal after more than a decade of building: make self-custody simple enough for normal people to use every day.</p>
+    <div class="links">
+      <a href="https://bitwala.com/blog/goodbye-nuri">Bitwala's 2025 Nuri announcement →</a>
+      <a href="https://nuri.com/about">About the current Nuri →</a>
+      <a href="https://github.com/eminogrande">Emin on GitHub →</a>
+      <a href="https://www.linkedin.com/in/eminmahrt">Emin on LinkedIn →</a>
+    </div>
+    <button class="close" onclick="story.close()">Close</button>
+  </div>
+</dialog>
+
+<dialog id="software">
+  <div class="modal">
+    <h2>App, browser and software.</h2>
+    <p>You can use Nuri directly on web, iOS and Android.</p>
+    <p>Software and AI can also connect to Nuri through APIs and MCP. They do not automatically get control of the wallet. Access is limited to the permissions you authorize.</p>
+    <p>This can be used to read information, prepare payments and automate approved financial tasks.</p>
+    <div class="links">
+      <a href="https://nuri.com/developers">Developers →</a>
+      <a href="https://nuri.com/docs">Documentation →</a>
+      <a href="https://nuri.com/mcp">MCP →</a>
+    </div>
+    <button class="close" onclick="software.close()">Close</button>
+  </div>
+</dialog>
+
+<dialog id="opensource">
+  <div class="modal">
+    <h2>Open source.</h2>
+    <p>Nuri publishes wallet and recovery tooling so the security model can be inspected instead of taken on trust.</p>
+    <p>The recovery design is specifically intended to let the user recover the wallet without depending on nuri.com or Nuri servers, subject to the required passkey and recovery material.</p>
+    <div class="links">
+      <a href="https://github.com/eminogrande">GitHub →</a>
+      <a href="https://www.nuri.com/blog/how-nuri-wallets-survive-without-nuri">Recovery design →</a>
+    </div>
+    <button class="close" onclick="opensource.close()">Close</button>
+  </div>
+</dialog>
+
+
+<dialog id="selfCustody">
+  <div class="modal">
+    <h2>Self-custody.</h2>
+    <p>Your Bitcoin and stablecoins stay in a wallet you control.</p>
+    <p>One passkey replaces the usual password and seed-phrase onboarding. Multisig and recovery stay underneath the simple experience.</p>
+    <p>Nuri does not have custody of your crypto.</p>
+    <div class="links">
+      <a href="https://nuri.com/about">How the wallet works →</a>
+      <a href="https://nuri.com/blog/how-nuri-wallets-survive-without-nuri">Recovery without Nuri →</a>
+    </div>
+    <button class="close" onclick="selfCustody.close()">Close</button>
+  </div>
+</dialog>
+
+<dialog id="privacy">
+  <div class="modal">
+    <h2>Your wallet does not need your ID.</h2>
+    <p>Nuri does not require identity verification to open the self-custodial wallet and does not hold your crypto.</p>
+    <p>If you choose a regulated Visa, banking or cash-out service, that provider may require identity verification for the service it provides.</p>
+    <p>The provider relationship is separate from the self-custodial wallet.</p>
+    <button class="close" onclick="privacy.close()">Close</button>
+  </div>
+</dialog>
+
+</body>
+</html>

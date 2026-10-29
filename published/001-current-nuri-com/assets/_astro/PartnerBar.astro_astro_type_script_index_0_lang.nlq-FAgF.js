@@ -1,0 +1,1 @@
+for(const t of document.querySelectorAll("[data-marquee-track]")){if(t.hasAttribute("data-ready"))continue;const r=t.querySelector(".marquee__group");if(!r)continue;const e=r.cloneNode(!0);e.setAttribute("aria-hidden","true");for(const a of e.querySelectorAll("a"))a.setAttribute("tabindex","-1");t.append(e),t.setAttribute("data-ready","true")}

@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; script-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nuri — Bitcoin Wallet with Card & Banking.</title>
+<meta name="description" content="Simple self-custody for Bitcoin and stablecoins with card, bank transfer and mobile money.">
+<style>
+:root{
+  --bg:#fff;
+  --ink:#090909;
+  --soft:#f5f5f2;
+  --line:#deded9;
+  --big:clamp(4.1rem,7.8vw,8rem);
+  --small:clamp(1.5rem,2vw,1.9rem);
+  --pad:clamp(26px,5vw,76px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:var(--small);
+  line-height:1.4;
+}
+body,a,p,span,button,li{font:400 var(--small)/1.4 Arial,Helvetica,sans-serif}
+h1,h2{
+  margin:0;
+  max-width:12ch;
+  font:700 var(--big)/.94 Arial,Helvetica,sans-serif;
+  letter-spacing:-.055em;
+}
+a{color:inherit;text-underline-offset:.18em}
+.brand{
+  position:fixed;
+  z-index:60;
+  top:20px;
+  left:26px;
+  text-decoration:none;
+}
+.open{
+  position:fixed;
+  z-index:60;
+  top:15px;
+  right:26px;
+  padding:.56em .86em;
+  border-radius:999px;
+  background:var(--ink);
+  color:#fff;
+  text-decoration:none;
+}
+.slide{
+  width:100%;
+  height:100svh;
+  min-height:100svh;
+  display:flex;
+  align-items:center;
+  padding:84px var(--pad) 54px;
+  scroll-snap-align:start;
+  scroll-snap-stop:always;
+  overflow:hidden;
+}
+.slide.soft{background:var(--soft)}
+.slide.dark{background:var(--ink);color:#fff}
+.content{
+  width:min(100%,1420px);
+  max-height:calc(100svh - 138px);
+  margin:auto;
+  overflow:hidden;
+}
+.copy{
+  max-width:36ch;
+  margin:1.45rem 0 0;
+}
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:20px;
+  align-items:center;
+  margin-top:1.7rem;
+}
+.button{
+  display:inline-block;
+  padding:.56em .86em;
+  border:1px solid currentColor;
+  border-radius:999px;
+  text-decoration:none;
+  background:transparent;
+  cursor:pointer;
+}
+.primary{
+  background:var(--ink);
+  color:#fff;
+  border-color:var(--ink);
+}
+.dark .primary{
+  background:#fff;
+  color:var(--ink);
+  border-color:#fff;
+}
+.two{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:clamp(50px,8vw,140px);
+  align-items:center;
+}
+.list{
+  max-width:760px;
+}
+.list div{
+  padding:15px 0;
+  border-bottom:1px solid var(--line);
+}
+.list div:first-child{border-top:1px solid var(--line)}
+.dark .list div{border-color:#2f2f2f}
+.links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:20px 34px;
+  margin-top:1.4rem;
+}
+dialog{
+  width:min(900px,calc(100% - 32px));
+  border:0;
+  padding:0;
+  background:#fff;
+  color:var(--ink);
+}
+dialog::backdrop{background:rgba(0,0,0,.42)}
+.modal{
+  max-height:86svh;
+  overflow:auto;
+  padding:30px;
+}
+.modal h2{font-size:clamp(3rem,6vw,5.5rem)}
+.close{
+  padding:.5em .8em;
+  border:1px solid var(--ink);
+  border-radius:999px;
+  background:#fff;
+  cursor:pointer;
+}
+.footer{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:36px;
+  margin-top:1.4rem;
+}
+.footer p{margin:.42rem 0}
+
+@media(max-width:900px){
+  .two,.footer{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+  :root{
+    --big:clamp(3.5rem,15vw,6rem);
+    --small:clamp(1.22rem,5vw,1.5rem);
+    --pad:22px;
+  }
+  .slide{padding-top:86px;padding-bottom:48px}
+  .content{max-height:calc(100svh - 134px)}
+}
+</style>
+</head>
+<body>
+
+<a class="brand" href="#one">NURI</a>
+<a class="open" href="https://app.nuri.com/">Open free wallet</a>
+
+<section class="slide" id="one">
+  <div class="content">
+    <h1>Bitcoin Wallet<br>with Card &amp; Banking.</h1>
+    <p class="copy">Simple self-custody for Bitcoin and stablecoins.</p>
+    <div class="actions">
+      <a class="button primary" href="https://app.nuri.com/">Open free wallet</a>
+      <a href="#two">Scroll ↓</a>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="two">
+  <div class="content two">
+    <h2>Your money.<br>Your wallet.</h2>
+    <div>
+      <p class="copy">One passkey. No password. No seed phrase.</p>
+      <div class="actions"><button class="button" onclick="selfCustody.showModal()">Learn more</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="three">
+  <div class="content two">
+    <h2>Bitcoin, dollars<br>&amp; euros.</h2>
+    <p class="copy">Hold them. Send them. Swap between them.</p>
+  </div>
+</section>
+
+<section class="slide soft" id="four">
+  <div class="content two">
+    <h2>Pay and<br>get paid.</h2>
+    <p class="copy">Bitcoin. Stablecoins. Bank transfer. Mobile money.</p>
+  </div>
+</section>
+
+<section class="slide" id="five">
+  <div class="content two">
+    <h2>Spend it<br>like cash.</h2>
+    <p class="copy">Visa. Apple Pay. Google Pay. ATM.</p>
+  </div>
+</section>
+
+<section class="slide soft" id="six">
+  <div class="content two">
+    <h2>Cash in.<br>Cash out.</h2>
+    <div class="list">
+      <div>EUR · SEPA</div>
+      <div>USD · ACH</div>
+      <div>GBP · Faster Payments</div>
+      <div>TZS · Mobile Money</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="seven">
+  <div class="content two">
+    <h2>No exchange.<br>Your wallet.</h2>
+    <div>
+      <p class="copy">Your Bitcoin and stablecoins stay self-custodial.</p>
+      <div class="actions"><button class="button" onclick="walletFirst.showModal()">Learn more</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" id="eight">
+  <div class="content two">
+    <h2>Freedom money.</h2>
+    <div>
+      <p class="copy">Own money. Send it directly. No middleman. No gatekeeper.</p>
+      <div class="actions"><button class="button" onclick="mission.showModal()">Learn more</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="nine">
+  <div class="content two">
+    <h2>Regulated rails.<br>Independent wallet.</h2>
+    <div>
+      <p class="copy">Wirex. Monerium. ClickPesa. Your wallet stays separate.</p>
+      <div class="actions"><button class="button" onclick="partners.showModal()">Learn more</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="ten">
+  <div class="content two">
+    <h2>Why Nuri.</h2>
+    <div>
+      <div class="list">
+        <div>Passkey self-custody</div>
+        <div>Bitcoin + stablecoins</div>
+        <div>Card + bank transfers</div>
+        <div>Web + iOS + Android</div>
+        <div>Open source</div>
+      </div>
+      <div class="actions"><button class="button" onclick="comparison.showModal()">Compare</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="eleven">
+  <div class="content two">
+    <h2>Built in Berlin.</h2>
+    <div>
+      <p class="copy">Bitcoin builders since the early days. Today: simple self-custody for everyone.</p>
+      <div class="actions"><button class="button" onclick="story.showModal()">Learn more</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="twelve">
+  <div class="content two">
+    <h2>Help from<br>real people.</h2>
+    <div>
+      <p class="copy">Private support in the app. WhatsApp and Signal.</p>
+      <div class="actions"><a class="button" href="https://nuri.com/contact">Contact Nuri</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="thirteen">
+  <div class="content">
+    <h2>Support &amp; company.</h2>
+    <div class="footer">
+      <div><p>Product</p><p><a href="https://app.nuri.com/">Wallet</a></p><p><a href="https://nuri.com/card-support">Card &amp; Bank Support</a></p></div>
+      <div><p>Company</p><p><a href="https://nuri.com/about">About</a></p><p><a href="https://nuri.com/contact">Contact</a></p></div>
+      <div><p>Developers</p><p><a href="https://nuri.com/developers">Developers</a></p><p><a href="https://nuri.com/docs">Docs</a></p><p><a href="https://nuri.com/mcp">MCP</a></p></div>
+      <div><p>Legal</p><p><a href="https://nuri.com/privacy-policy/">Privacy</a></p><p><a href="https://nuri.com/terms-of-service/">Terms</a></p></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" id="fourteen">
+  <div class="content">
+    <h2>Bitcoin Wallet<br>with Card &amp; Banking.</h2>
+    <div class="actions"><a class="button primary" href="https://app.nuri.com/">Open free wallet</a></div>
+  </div>
+</section>
+
+<dialog id="selfCustody">
+  <div class="modal">
+    <h2>Your wallet.</h2>
+    <p>Self-custody means Nuri does not hold your Bitcoin or stablecoins for you.</p>
+    <p>Passkeys make access simple. Multisig and recovery keep the deeper security underneath.</p>
+    <div class="links"><a href="https://nuri.com/about">Read about self-custody →</a></div>
+    <div class="actions"><button class="close" onclick="selfCustody.close()">Close</button></div>
+  </div>
+</dialog>
+
+<dialog id="walletFirst">
+  <div class="modal">
+    <h2>Wallet first.</h2>
+    <p>Cards, banks and local payment providers are services around the wallet.</p>
+    <p>If Nuri or a connected provider disappears, your self-custodial wallet is designed to remain yours.</p>
+    <div class="links"><a href="https://nuri.com/blog/how-nuri-wallets-survive-without-nuri">Read about recovery →</a></div>
+    <div class="actions"><button class="close" onclick="walletFirst.close()">Close</button></div>
+  </div>
+</dialog>
+
+<dialog id="mission">
+  <div class="modal">
+    <h2>Freedom money.</h2>
+    <p>We believe anyone should be free to hold money and send it directly to anyone else.</p>
+    <p>Bitcoin made peer-to-peer electronic cash possible. Nuri makes self-custody simple enough for everyday use.</p>
+    <div class="actions"><button class="close" onclick="mission.close()">Close</button></div>
+  </div>
+</dialog>
+
+<dialog id="partners">
+  <div class="modal">
+    <h2>Regulated rails.</h2>
+    <p>Wirex provides card and banking infrastructure. Monerium provides regulated euro infrastructure. ClickPesa connects local payment and mobile-money rails.</p>
+    <p>These services have their own licences, eligibility and terms. They do not become the custody layer for the wallet.</p>
+    <div class="actions"><button class="close" onclick="partners.close()">Close</button></div>
+  </div>
+</dialog>
+
+<dialog id="comparison">
+  <div class="modal">
+    <h2>Why Nuri.</h2>
+    <p>Most products solve one part: Bitcoin custody, stablecoins, cards, banking or remittance.</p>
+    <p>Nuri combines self-custody, Bitcoin, stablecoins and local payment rails in one wallet.</p>
+    <p>Comparison set: Cash App, Bitkey, Muun, Blitz, Strike, Wallet of Satoshi, Bitrefill, Bitwala, AQUA and Phoenix.</p>
+    <div class="actions"><button class="close" onclick="comparison.close()">Close</button></div>
+  </div>
+</dialog>
+
+<dialog id="story">
+  <div class="modal">
+    <h2>The patient pioneers.</h2>
+    <p>Berlin. 2012 → today. Mining. Exchanges. Wallets. Smart contracts. Protocols. Payments.</p>
+    <p>Emin Mahrt · Founder.</p>
+    <p>The goal after all those years: self-custody simple enough for everyone.</p>
+    <div class="links">
+      <a href="https://github.com/eminogrande">GitHub →</a>
+      <a href="https://www.linkedin.com/in/eminmahrt">LinkedIn →</a>
+    </div>
+    <div class="actions"><button class="close" onclick="story.close()">Close</button></div>
+  </div>
+</dialog>
+
+</body>
+</html>

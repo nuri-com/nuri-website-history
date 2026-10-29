@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; script-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#F0F0F0" />
+  <link rel="manifest" href="manifest.json" />
+
+  <title>Nuri</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- DS Styles — generated tokens + shell + typography -->
+  <link rel="stylesheet" href="ds/generated/styles/tokens-primitive.css" />
+  <link rel="stylesheet" href="ds/generated/styles/tokens-semantic.css" />
+  <link rel="stylesheet" href="ds/generated/styles/shell.css" />
+  <link rel="stylesheet" href="ds/generated/styles/typography.css" />
+
+  <!-- Namespace styles -->
+  <link rel="stylesheet" href="ds/namespaces/box.css" />
+  <link rel="stylesheet" href="ds/namespaces/effect.css" />
+  <link rel="stylesheet" href="ds/namespaces/interactive.css" />
+  <link rel="stylesheet" href="ds/namespaces/palette.css" />
+  <link rel="stylesheet" href="ds/namespaces/stack.css" />
+  <link rel="stylesheet" href="ds/namespaces/typography.css" />
+
+  <!-- Factory reset -->
+  <link rel="stylesheet" href="ds/factory/reset.css" />
+
+  <!-- Primitive CSS -->
+  <link rel="stylesheet" href="ds/primitives/dock/dock.css" />
+  <link rel="stylesheet" href="ds/primitives/icon/icon.css" />
+  <link rel="stylesheet" href="ds/primitives/input/input.css" />
+  <link rel="stylesheet" href="ds/primitives/pressable/pressable.css" />
+  <link rel="stylesheet" href="ds/primitives/view/view.css" />
+  <link rel="stylesheet" href="ds/primitives/screen/screen.css" />
+  <link rel="stylesheet" href="ds/primitives/scroll/scroll.css" />
+  <link rel="stylesheet" href="ds/primitives/separator/separator.css" />
+  <link rel="stylesheet" href="ds/primitives/list-separator/list-separator.css" />
+  <link rel="stylesheet" href="ds/primitives/spacer/spacer.css" />
+
+  <!-- Recipe CSS -->
+  <link rel="stylesheet" href="ds/recipes/bottom-sheet/bottom-sheet.css" />
+
+  <!-- App styles -->
+  <link rel="stylesheet" href="screens/shared/sheet-styles.css" />
+  <link rel="stylesheet" href="screens/bitcoin/button-fix.css" />
+
+  <!-- Theme vor first paint setzen -->
+  <script>
+    document.documentElement.dataset.theme = localStorage.getItem('nuri:theme') || 'light';
+    document.documentElement.dataset.neutral = 'cream';
+    document.documentElement.dataset.accent = localStorage.getItem('nuri:accent') || 'neutral';
+  </script>
+
+  <style>
+    html, body { margin: 0; padding: 0; min-height: 100vh; }
+    #app { min-height: 100vh; }
+    #app:empty::before {
+      content: "Loading…";
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: #999;
+      font-family: system-ui, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

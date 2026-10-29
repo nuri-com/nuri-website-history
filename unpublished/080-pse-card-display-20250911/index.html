@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; script-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Gnosis Pay Card</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "@gnosispay/pse-sdk": "https://unpkg.com/@gnosispay/pse-sdk@1.2.2/dist/gp-sdk.es.js"
+        }
+      }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            background-color: #F0F0F0 !important;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #F0F0F0 !important;
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Grey card container matching app background */
+        #secure-frame-container {
+            /* Full size */
+            width: 100%;
+            height: 100%;
+            position: relative;
+            
+            /* Grey background matching app */
+            background-color: #F0F0F0 !important;
+            
+            /* Card shape */
+            border-radius: 16px;
+            
+            /* Black border matching text */
+            border: 1px solid #2C232E;
+            
+            overflow: hidden;
+            
+            padding: 15px 20px 0px 15px; /* Custom padding - top right bottom left */
+            box-sizing: border-box;
+        }
+        
+        /* Style the PSE iframe */
+        #secure-frame-container iframe {
+            width: 100% !important;
+            max-width: 100% !important;
+            height: 100% !important; /* Full height of container */
+            border: none !important;
+            background-color: #F0F0F0 !important;
+            position: relative !important;
+            z-index: 1;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transform: scale(0.9); /* Slightly smaller */
+            transform-origin: top center;
+        }
+        
+        /* Try to hide horizontal lines in iframe content */
+        #secure-frame-container iframe hr,
+        #secure-frame-container iframe .divider,
+        #secure-frame-container iframe [class*="border-bottom"],
+        #secure-frame-container iframe [class*="border-top"] {
+            display: none !important;
+            border: none !important;
+        }
+        
+        .loading {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            color: rgba(44, 35, 46, 0.7);
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 3;
+            text-align: left;
+        }
+        
+        .error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(244, 67, 54, 0.95);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            z-index: 3;
+        }
+    </style>
+</head>
+<body>
+    <div id="secure-frame-container">
+        <div class="loading">Loading card...</div>
+    </div>
+
+    <script type="module">
+        import GPSDK, { ElementType } from "@gnosispay/pse-sdk";
+        
+        function log(msg) {
+            console.log(`[PSE] ${msg}`);
+            
+            if (window.ReactNativeWebView) {
+                window.ReactNativeWebView.postMessage(JSON.stringify({
+                    type: 'console',
+                    level: 'log',
+                    message: msg
+                }));
+            }
+        }
+
+        async function loadEphemeralToken(jwt) {
+            try {
+                const response = await fetch("/api/token", {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${jwt}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch ephemeral token: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const ephemeralToken = data.responseObject?.data?.ephemeralToken || data.data?.ephemeralToken;
+                
+                if (!ephemeralToken) {
+                    throw new Error('No ephemeral token in response');
+                }
+                
+                return ephemeralToken;
+            } catch (error) {
+                log(`Failed to load ephemeral token: ${error.message}`);
+                throw error;
+            }
+        }
+        
+        async function initializeCard() {
+            const params = new URLSearchParams(window.location.search);
+            const appId = params.get('appId') || 'gp_625617509d0d65de658e71b0e8c2cb0a';
+            const jwt = params.get('jwt');
+            const cardToken = params.get('cardToken');
+            
+            // Set background immediately
+            document.body.style.backgroundColor = '#F0F0F0';
+            document.documentElement.style.backgroundColor = '#F0F0F0';
+            
+            if (!jwt || !cardToken) {
+                document.querySelector('.loading').classList.add('error');
+                document.querySelector('.loading').classList.remove('loading');
+                document.querySelector('.error').innerHTML = 'Missing parameters';
+                
+                if (window.ReactNativeWebView) {
+                    window.ReactNativeWebView.postMessage(JSON.stringify({
+                        type: 'error',
+                        message: 'Missing required parameters'
+                    }));
+                }
+                return;
+            }
+            
+            try {
+                const ephemeralToken = await loadEphemeralToken(jwt);
+                
+                const gp = new GPSDK({
+                    appId,
+                    ephemeralToken,
+                    gnosisPayApiAuthToken: jwt
+                });
+                
+                // Ensure container has grey background
+                const container = document.getElementById('secure-frame-container');
+                if (container) {
+                    container.style.backgroundColor = '#F0F0F0';
+                }
+                
+                // Hide loading
+                const loadingEl = document.querySelector('.loading');
+                if (loadingEl) {
+                    loadingEl.style.display = 'none';
+                }
+                
+                // Initialize card display
+                const cardDisplay = gp.init(
+                    ElementType.CardData,
+                    "#secure-frame-container",
+                    { cardToken }
+                );
+                
+                // Style any created iframes
+                setTimeout(() => {
+                    const iframes = document.querySelectorAll('iframe');
+                    iframes.forEach(iframe => {
+                        iframe.style.backgroundColor = '#F0F0F0';
+                        iframe.style.border = 'none';
+                        iframe.style.height = '160px';
+                        iframe.style.position = 'absolute';
+                        iframe.style.width = '100%';
+                        iframe.style.maxWidth = '100%';
+                        iframe.style.height = '100%';
+                        iframe.style.position = 'relative';
+                        iframe.style.boxSizing = 'border-box';
+                        iframe.style.transform = 'scale(0.9)';
+                        iframe.style.transformOrigin = 'top center';
+                        
+                        // Try to inject styles into iframe if possible
+                        try {
+                            if (iframe.contentDocument) {
+                                iframe.contentDocument.body.style.backgroundColor = '#F0F0F0';
+                                iframe.contentDocument.body.style.padding = '0';
+                                iframe.contentDocument.body.style.margin = '0';
+                                
+                                // Try to hide horizontal lines
+                                const style = iframe.contentDocument.createElement('style');
+                                style.textContent = `
+                                    hr, .divider, [class*=\"border-bottom\"], [class*=\"border-top\"] {
+                                        display: none !important;
+                                        border: none !important;
+                                    }
+                                    .card-field-separator {
+                                        display: none !important;
+                                    }
+                                `;
+                                iframe.contentDocument.head.appendChild(style);
+                            }
+                        } catch (e) {
+                            // Cross-origin, can't access
+                            console.log('Cannot modify iframe styles - cross-origin');
+                        }
+                    });
+                }, 1000);
+                
+                // Notify React Native
+                if (window.ReactNativeWebView) {
+                    window.ReactNativeWebView.postMessage(JSON.stringify({
+                        type: 'pse_initialized',
+                        success: true
+                    }));
+                }
+                
+            } catch (error) {
+                document.querySelector('.loading').innerHTML = 
+                    `<div class=\"error\">${error.message}</div>`;
+                    
+                if (window.ReactNativeWebView) {
+                    window.ReactNativeWebView.postMessage(JSON.stringify({
+                        type: 'error',
+                        message: error.message
+                    }));
+                }
+            }
+        }
+        
+        // Listen for PSE messages
+        window.addEventListener('message', (event) => {
+            if (event.origin === 'https://api-pse-public.gnosispay.com') {
+                if (window.ReactNativeWebView) {
+                    window.ReactNativeWebView.postMessage(JSON.stringify({
+                        type: 'pse_message',
+                        data: event.data
+                    }));
+                }
+            }
+        });
+        
+        // Start
+        initializeCard();
+    </script>
+</body>
+</html>

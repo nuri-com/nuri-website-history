@@ -1,0 +1,1 @@
+.marquee__group{display:flex;align-items:center;min-width:100vw;justify-content:space-around}.marquee__track:not([data-ready]){animation:none}.marquee__track[data-ready]{animation-duration:calc(220s / 3)}

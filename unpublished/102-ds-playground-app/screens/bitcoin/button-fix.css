@@ -1,0 +1,10 @@
+/* App-Button-Override — Button fill="even" fix.
+   DS-Button hat display:contents auf allen Wrappern.
+   Nur der innerste native <button> hat eine Box.
+   Wir stylen den direkt. */
+
+nuri-button[fill="even"] button {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  width: 100% !important;
+}

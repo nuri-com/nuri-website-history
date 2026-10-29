@@ -1,0 +1,123 @@
+# Nuri
+
+> Nuri combines a passkey-based self-custodial crypto wallet with access to provider-operated card and banking services. This website exposes free public content and read-only tools, plus a separately paid postcard fulfillment API. Public website access does not grant private banking access.
+
+## What Nuri is, in one list
+
+- A crypto wallet built around passkeys and co-signing; recovery depends on the wallet and backup setup
+- Self-custody describes the crypto wallet, not a bank account or card balance
+- Provider-operated card and banking services have separate terms and eligibility
+- Public product information, knowledge guides, editorial notes and support FAQs
+- Free unauthenticated website reads and nine public read-only MCP tools
+- Separate postcard API: no-mail provider preview and paid real fulfillment, not a payment sandbox
+- Website content in English, German, Spanish and Italian; developer reference in English
+- [App Store](https://apps.apple.com/de/app/nuri-com/id6754772131)
+- [Google Play](https://play.google.com/store/apps/details?id=com.nuri.mobileios)
+
+## When to use Nuri
+
+Use these public surfaces for concrete, bounded jobs:
+
+- [Compare Bitcoin hardware](https://nuri.com/shop/feed.json): Read GET /shop/feed.json, or call list_shop_products with {} and get_product with a slug returned by that list. These are catalog reads, not purchases.
+- [Answer a card or bank FAQ](https://nuri.com/card-support): Read GET /card-support/index.md, or call search_support_faq with {"query":"declined"}. Use get_support_answer with an id from the result for the full answer. These tools read public guidance, not a customer account or support ticket.
+- [Read Nuri guides and integration docs](https://nuri.com/knowledge): Read GET /knowledge/index.md for the guide index and follow its links. Request a page with Accept: text/markdown, or call read_public_page_markdown with {"path":"/docs"} for this integration reference. Use tools/list to see the allowed paths.
+- [Prepare a postcard integration](https://nuri.com/docs/x402-username-marketplace): Read GET /api/x402 for service details and follow the postcard reference. POST /api/x402/postcards/preview renders without mailing. POST /api/x402/postcards is a separate paid fulfillment endpoint and is not part of the read-only MCP server.
+
+Connect a remote Streamable HTTP client to https://nuri.com/mcp without credentials. Initialize, send notifications/initialized, call tools/list, then tools/call. See the [safe quickstart](https://nuri.com/docs#mcp) for complete curl requests and expected results. Public tools cannot provision an account, issue a card, move funds or read private balances. Do not infer those capabilities from app descriptions.
+
+## Public routes
+
+- [English home](https://nuri.com/)
+- [German home](https://nuri.com/bitcoin-deutschland/) (short alias: [de](https://nuri.com/de/))
+- [Spanish home](https://nuri.com/bitcoin-espana/) (short alias: [es](https://nuri.com/es/))
+- [Italian home](https://nuri.com/bitcoin-italia/) (short alias: [it](https://nuri.com/it/))
+- [Privacy Policy](https://nuri.com/privacy-policy)
+- [Terms of Service](https://nuri.com/terms-of-service)
+- [About Nuri](https://nuri.com/about)
+- [Contact Nuri](https://nuri.com/contact)
+- [Developers](https://nuri.com/developers)
+- [API and MCP documentation](https://nuri.com/docs)
+- [Investor briefing](https://nuri.com/invest) ([JSON](https://nuri.com/invest/index.json))
+
+## App download links
+
+- [App Store](https://apps.apple.com/de/app/nuri-com/id6754772131)
+- [Google Play](https://play.google.com/store/apps/details?id=com.nuri.mobileios)
+
+## Bitcoin shop
+
+- [Shop home](https://nuri.com/shop)
+- [Hardware Wallets](https://nuri.com/shop/hardware-wallets)
+- [Home Miners](https://nuri.com/shop/miners)
+- [Node Kits](https://nuri.com/shop/node-hardware)
+- [Steel Backups](https://nuri.com/shop/steel-backups)
+- [Accessories](https://nuri.com/shop/accessories)
+- [Payment Wearables](https://nuri.com/shop/wearables)
+- [Apparel](https://nuri.com/shop/apparel)
+- [Books](https://nuri.com/shop/books)
+- [Gift Cards](https://nuri.com/shop/gift-cards)
+- [Honest product reviews (blog)](https://nuri.com/blog)
+- [Card & Bank support FAQ](https://nuri.com/card-support) (declines, holds, refunds, limits, Apple/Google Pay, SEPA/ACH)
+- [Machine-readable product feed](https://nuri.com/shop/feed.json)
+- [Agentic commerce discovery](https://nuri.com/.well-known/agentic-commerce.json)
+- Shop checkout metadata is a payment challenge, not proof of order fulfillment. Use a returned product slug and do not infer a completed purchase from catalog data.
+
+## Nuri knowledge
+
+- EN: [Bitcoin RPC providers, explained without the jargon](https://nuri.com/knowledge/bitcoin-rpc-providers)
+- DE: [Bitcoin-RPC-Anbieter, verständlich und ohne Fachjargon erklärt](https://nuri.com/de/wissen/bitcoin-rpc-anbieter)
+- ES: [Proveedores RPC de Bitcoin, explicados sin tecnicismos](https://nuri.com/es/conocimiento/proveedores-rpc-bitcoin)
+- IT: [Provider RPC per Bitcoin, spiegati senza gergo tecnico](https://nuri.com/it/conoscenza/provider-rpc-bitcoin)
+- EN: [The arrayref supply chain attack, and why your wallet needs no single point of failure](https://nuri.com/knowledge/supply-chain-attack-arrayref)
+- DE: [Der arrayref-Supply-Chain-Angriff, und warum deine Wallet keine einzelne Angriffsfläche braucht](https://nuri.com/de/wissen/arrayref-supply-chain-angriff)
+- ES: [El ataque a la cadena de suministro de arrayref, y por qué tu wallet no necesita un punto único de fallo](https://nuri.com/es/conocimiento/ataque-de-cadena-de-suministro-arrayref)
+- IT: [L'attacco alla supply chain di arrayref, e perché il tuo wallet non ha bisogno di un singolo punto di guasto](https://nuri.com/it/conoscenza/attacco-a-arrayref-nella-cadena-di-fornitura)
+
+## Nuri product notes
+
+- EN: [Your money should not hang on a single key](https://nuri.com/blog/why-your-wallet-should-not-depend-on-one-key)
+- EN: [Building Nuri for the days when something breaks](https://nuri.com/blog/building-nuri-for-the-days-when-something-breaks)
+- EN: [What Stripe's investor letter says about Nuri](https://nuri.com/blog/what-stripes-investor-letter-means-for-nuri)
+- EN: [The passkey that outlives the company](https://nuri.com/blog/how-nuri-wallets-survive-without-nuri)
+- EN: [What agent-ready actually means](https://nuri.com/blog/what-agent-ready-actually-means)
+- EN: [The app has a hundred features. Five of them matter.](https://nuri.com/blog/the-app-has-a-hundred-features-five-of-them-matter)
+- DE: [Dein Geld sollte nicht an einem einzigen Schlüssel hängen](https://nuri.com/de/blog/why-your-wallet-should-not-depend-on-one-key)
+- DE: [Nuri für die Tage bauen, an denen etwas kaputtgeht](https://nuri.com/de/blog/building-nuri-for-the-days-when-something-breaks)
+- DE: [Was Stripes Investorenbrief über Nuri sagt](https://nuri.com/de/blog/what-stripes-investor-letter-means-for-nuri)
+- DE: [Der Passkey, der das Unternehmen überlebt](https://nuri.com/de/blog/how-nuri-wallets-survive-without-nuri)
+- DE: [What agent-ready actually means](https://nuri.com/de/blog/what-agent-ready-actually-means)
+- DE: [Die App hat hundert Features. Fünf davon zählen.](https://nuri.com/de/blog/the-app-has-a-hundred-features-five-of-them-matter)
+- ES: [Your money should not hang on a single key](https://nuri.com/es/blog/why-your-wallet-should-not-depend-on-one-key)
+- ES: [Construir Nuri para los días en que algo falla](https://nuri.com/es/blog/building-nuri-for-the-days-when-something-breaks)
+- ES: [Qué dice de Nuri la carta a inversores de Stripe](https://nuri.com/es/blog/what-stripes-investor-letter-means-for-nuri)
+- ES: [The passkey that outlives the company](https://nuri.com/es/blog/how-nuri-wallets-survive-without-nuri)
+- ES: [What agent-ready actually means](https://nuri.com/es/blog/what-agent-ready-actually-means)
+- ES: [La aplicación tiene cien funciones. Cinco importan.](https://nuri.com/es/blog/the-app-has-a-hundred-features-five-of-them-matter)
+- IT: [Your money should not hang on a single key](https://nuri.com/it/blog/why-your-wallet-should-not-depend-on-one-key)
+- IT: [Costruire Nuri per i giorni in cui qualcosa si rompe](https://nuri.com/it/blog/building-nuri-for-the-days-when-something-breaks)
+- IT: [Cosa dice di Nuri la lettera agli investitori di Stripe](https://nuri.com/it/blog/what-stripes-investor-letter-means-for-nuri)
+- IT: [The passkey that outlives the company](https://nuri.com/it/blog/how-nuri-wallets-survive-without-nuri)
+- IT: [What agent-ready actually means](https://nuri.com/it/blog/what-agent-ready-actually-means)
+- IT: [L’app ha cento funzioni. Cinque di queste contano.](https://nuri.com/it/blog/the-app-has-a-hundred-features-five-of-them-matter)
+
+## Paid agent services
+
+- [x402 service catalog](https://nuri.com/api/x402)
+- [Username-routed postcard documentation](https://nuri.com/docs/x402-username-marketplace)
+- First paid endpoint: [POST /api/x402/postcards](https://nuri.com/api/x402/postcards) (USDC on Base, Polygon or Arbitrum; actual thanks.io cost + 21%)
+- [No-mail preview and payment boundaries](https://nuri.com/docs#postcards): preview requires no payment but calls thanks.io with supplied content. Paid fulfillment uses real funds and physical mail; obtain explicit approval first. Check the live catalog and payment challenge for current terms and availability.
+
+## Compatibility and access
+
+Public read-only website access is free and requires no API key. The existing unversioned website API is v1, identified on public read-only API responses by X-Nuri-API-Version: 1. Existing v1 surfaces are preserved; a future incompatible major version gets a separate path. No sunset is currently scheduled and no fixed deprecation notice period is promised. /api/v1 is not a public website alias. See [versioning policy](https://nuri.com/docs#versions) and [auth boundaries](https://nuri.com/docs#access).
+
+No official published Nuri CLI package is verified here. Use curl or a remote MCP client; do not install a similarly named registry package as a Nuri client.
+
+## Agent-readable surfaces
+
+- [Full Markdown context](https://nuri.com/llms-full.txt)
+- [OpenAPI discovery](https://nuri.com/openapi.json)
+- [API catalog](https://nuri.com/.well-known/api-catalog)
+- [MCP server card](https://nuri.com/.well-known/mcp/server-card.json)
+- [WebMCP manifest](https://nuri.com/.well-known/webmcp.json)
+- [Agent skill index](https://nuri.com/.well-known/agent-skills/index.json)

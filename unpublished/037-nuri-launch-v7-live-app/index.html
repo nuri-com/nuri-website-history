@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; script-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nuri — Freedom money.</title>
+<meta name="description" content="Bitcoin & Lightning, stablecoins and local currencies in one self-custodial wallet.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://nuri.com/">
+<style>
+:root{
+  --bg:#ffffff;
+  --ink:#0b0b0b;
+  --muted:#747474;
+  --soft:#f4f4f1;
+  --line:#e4e4df;
+  --headline:clamp(3.8rem,7.6vw,8.4rem);
+  --body:clamp(1.06rem,1.9vw,1.4rem);
+  --pad:clamp(28px,5vw,78px);
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;width:100%;height:100%;
+  background:var(--bg);color:var(--ink);
+  font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+body{overflow:hidden}
+a{color:inherit;text-underline-offset:.18em}
+p,a,span,strong,b,li,summary,button{font-size:var(--body);line-height:1.42}
+h1,h2{
+  font:700 var(--headline)/.94 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  letter-spacing:-.055em;margin:0;max-width:11ch;
+}
+.brand{
+  position:fixed;z-index:100;left:max(22px,env(safe-area-inset-left));top:max(18px,env(safe-area-inset-top));
+  font-size:1rem;font-weight:800;letter-spacing:.08em;text-decoration:none
+}
+.topnav{
+  position:fixed;z-index:100;left:50%;transform:translateX(-50%);top:max(17px,env(safe-area-inset-top));
+  display:flex;gap:22px;align-items:center
+}
+.topnav a{font-size:.95rem;text-decoration:none;color:#555}
+.top-cta{
+  position:fixed;z-index:100;right:max(22px,env(safe-area-inset-right));top:max(13px,env(safe-area-inset-top));
+  background:var(--ink);color:#fff;text-decoration:none;border-radius:999px;padding:.74em 1.05em;font-size:.95rem;font-weight:700
+}
+.deck{
+  width:100vw;height:100dvh;display:flex;overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x
+}
+.deck::-webkit-scrollbar{display:none}
+.slide{
+  flex:0 0 100vw;width:100vw;height:100dvh;scroll-snap-align:start;scroll-snap-stop:always;
+  display:flex;align-items:center;padding:82px var(--pad) 64px;background:#fff;overflow:auto
+}
+.slide.soft{background:var(--soft)}
+.slide.dark{background:var(--ink);color:#fff}
+.content{width:min(100%,1500px);margin:auto}
+.hero-grid{
+  display:grid;grid-template-columns:minmax(0,.9fr) minmax(420px,1.1fr);gap:clamp(34px,5vw,78px);align-items:center
+}
+.lead{max-width:50rem;margin:1.6rem 0 0}
+.muted{color:var(--muted)}
+.dark .muted{color:#b7b7b7}
+.actions{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:1.8rem}
+.button{
+  display:inline-block;background:var(--ink);color:#fff;border:1px solid var(--ink);
+  border-radius:999px;padding:.76em 1.08em;text-decoration:none;font-weight:700
+}
+.dark .button{background:#fff;color:var(--ink);border-color:#fff}
+.secondary{font-weight:600}
+.app-shell{
+  min-height:68vh;border:1px solid var(--line);border-radius:28px;background:#fafafa;overflow:hidden;
+  box-shadow:0 20px 70px rgba(0,0,0,.08);position:relative
+}
+.app-head{
+  height:46px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;background:#fff;font-size:.85rem;color:#777
+}
+.app-head span,.app-head a{font-size:.85rem}
+.app-frame{width:100%;height:calc(68vh - 46px);border:0;background:#fff;display:block}
+.app-fallback{
+  position:absolute;right:12px;bottom:12px;background:rgba(255,255,255,.94);border:1px solid var(--line);
+  border-radius:999px;padding:.55em .8em;text-decoration:none;font-weight:700;font-size:.85rem
+}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(50px,8vw,140px);align-items:center}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:2rem}
+.feature{
+  border-top:1px solid var(--line);padding-top:18px
+}
+.feature strong{display:block;margin-bottom:.45rem}
+.row{display:flex;justify-content:space-between;gap:30px;padding:15px 0;border-bottom:1px solid var(--line)}
+.row:first-child{border-top:1px solid var(--line)}
+.dark .row{border-color:#303030}
+.big-word{font-size:clamp(2.8rem,5.4vw,6rem);line-height:.96;letter-spacing:-.045em;font-weight:700;margin:0}
+.caption{max-width:34rem;margin-top:1rem;color:var(--muted)}
+.partner-list{display:grid;grid-template-columns:1fr 1fr;gap:0 28px;margin-top:1.5rem}
+.partner-list div{border-top:1px solid var(--line);padding:15px 0}
+.partner-list div:nth-last-child(-n+2){border-bottom:1px solid var(--line)}
+.partner-list span{display:block;color:var(--muted);margin-top:.25rem}
+.read{margin-top:1.4rem;border:0;background:transparent;padding:0;text-decoration:underline;text-underline-offset:.18em;cursor:pointer;font-weight:600;color:inherit}
+.full-table-wrap{width:100%;margin-top:1.2rem;overflow:auto;border:1px solid var(--line);background:#fff;max-height:58vh}
+.full-table{border-collapse:collapse;min-width:1500px;width:100%}
+.full-table th,.full-table td{padding:9px 11px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;white-space:nowrap;font-size:.82rem}
+.full-table th:first-child{position:sticky;left:0;z-index:3;background:#fff;text-align:left;min-width:205px}
+.full-table thead th{position:sticky;top:0;z-index:2;background:var(--soft);font-weight:700}
+.full-table thead th:first-child{z-index:4}
+.full-table .nuri-col{background:var(--ink);color:#fff;font-weight:800}
+.full-table td.yes{font-weight:800}
+.full-table td.no{color:#aaa}
+.full-table td.partial{color:#777}
+.table-note{font-size:.9rem;color:var(--muted);margin-top:.7rem}
+.timeline{display:grid;grid-template-columns:120px 1fr;max-width:900px;margin-top:1.4rem}
+.timeline b,.timeline span{padding:10px 0;border-bottom:1px solid var(--line)}
+.footer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:40px;margin-top:2rem}
+.footer-grid p{margin:.45rem 0}
+.footer-grid a{font-size:1rem;color:#555}
+.legal{font-size:.93rem;color:var(--muted);max-width:900px;margin-top:2.5rem}
+dialog{width:min(760px,calc(100% - 32px));border:0;border-radius:18px;padding:0;background:#fff;color:var(--ink);box-shadow:0 24px 90px rgba(0,0,0,.22)}
+dialog::backdrop{background:rgba(0,0,0,.3);backdrop-filter:blur(4px)}
+.modal{padding:30px}
+.modal h3{font-size:clamp(2rem,4vw,3.5rem);line-height:1;letter-spacing:-.04em;margin:0 0 1rem}
+.modal p,.modal li,.modal a{font-size:1.05rem;line-height:1.55}
+.close{border:0;background:var(--soft);border-radius:999px;padding:.65em .9em;cursor:pointer;font-weight:700}
+.controls{position:fixed;z-index:100;right:max(22px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));display:flex;gap:8px}
+.controls button{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.96);color:var(--ink);font-size:20px;cursor:pointer}
+.progress{position:fixed;z-index:99;left:0;bottom:0;height:3px;background:var(--ink);width:8.33%;transition:width .16s ease}
+.counter{position:fixed;z-index:98;left:max(22px,env(safe-area-inset-left));bottom:max(20px,env(safe-area-inset-bottom));font-size:.84rem;color:var(--muted);letter-spacing:.06em}
+@media(max-width:980px){
+  .topnav{display:none}
+  .hero-grid,.two{grid-template-columns:1fr;gap:26px}
+  .hero-grid h1{font-size:clamp(3.4rem,14vw,6rem)}
+  .app-shell{min-height:44vh}
+  .app-frame{height:calc(44vh - 46px)}
+  .three{grid-template-columns:1fr}
+  .partner-list,.footer-grid{grid-template-columns:1fr}
+  .partner-list div:nth-last-child(-n+2){border-bottom:0}
+  .partner-list div:last-child{border-bottom:1px solid var(--line)}
+}
+@media(max-width:720px){
+  :root{--headline:clamp(3.2rem,15vw,6.4rem);--body:clamp(1rem,4.4vw,1.2rem);--pad:22px}
+  .slide{padding-top:86px;padding-bottom:70px}
+  .brand{top:16px}
+  .top-cta{top:12px}
+  .app-shell{border-radius:20px}
+  .controls{display:none}
+  .full-table-wrap{max-height:48vh}
+}
+</style>
+</head>
+<body>
+<a class="brand" href="#s1">NURI</a>
+<nav class="topnav" aria-label="Primary">
+  <a href="#s3">Product</a>
+  <a href="#s4">Security</a>
+  <a href="#s7">Compare</a>
+  <a href="#s9">Story</a>
+  <a href="#s11">Support</a>
+</nav>
+<a class="top-cta" href="https://app.nuri.com/">Open free wallet</a>
+
+<main class="deck" id="deck">
+
+<section class="slide" id="s1">
+  <div class="content hero-grid">
+    <div>
+      <h1>Freedom money.</h1>
+      <p class="lead"><strong>Bitcoin &amp; Lightning, stablecoins and local currencies — in one self-custodial wallet.</strong></p>
+      <p class="lead muted">One passkey. No seed phrase. Multisig protected.</p>
+      <div class="actions">
+        <a class="button" href="https://app.nuri.com/">Open free wallet</a>
+        <a class="secondary" href="#s2">Explore →</a>
+      </div>
+    </div>
+
+    <div class="app-shell" aria-label="Live Nuri app">
+      <div class="app-head"><span>Live app.nuri.com</span><a href="https://app.nuri.com/" target="_blank" rel="noopener">Open separately ↗</a></div>
+      <iframe
+        class="app-frame"
+        src="https://app.nuri.com/"
+        title="Nuri wallet app"
+        loading="eager"
+        allow="publickey-credentials-get *; publickey-credentials-create *; clipboard-read; clipboard-write"
+        referrerpolicy="strict-origin-when-cross-origin">
+      </iframe>
+      <a class="app-fallback" href="https://app.nuri.com/" target="_blank" rel="noopener">If the app does not load, open it →</a>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="s2">
+  <div class="content two">
+    <div><p class="big-word">Internet money.</p><p class="caption">Bitcoin &amp; Lightning and stablecoins for sending, receiving and paying globally.</p></div>
+    <div><p class="big-word">Local currencies.</p><p class="caption">Bank transfers, cards and local payment rails when you need them.</p></div>
+  </div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <h2>Pay. Get paid. Use it.</h2>
+    <div class="three">
+      <div class="feature"><strong>Pay in</strong><p class="muted">Bitcoin &amp; Lightning, stablecoins and supported crypto assets.</p></div>
+      <div class="feature"><strong>Move</strong><p class="muted">Send, receive, request, swap and convert.</p></div>
+      <div class="feature"><strong>Pay out</strong><p class="muted">SEPA, USD ACH, card and local payment rails where available.</p></div>
+    </div>
+    <button class="read" onclick="payments.showModal()">See current payment rails →</button>
+  </div>
+</section>
+
+<section class="slide" id="s4">
+  <div class="content two">
+    <div><h2>One passkey.<br>Your wallet.</h2></div>
+    <div>
+      <div class="row"><strong>Self-custodial</strong><span>✓</span></div>
+      <div class="row"><strong>No seed phrase</strong><span>✓</span></div>
+      <div class="row"><strong>Passkey-based</strong><span>✓</span></div>
+      <div class="row"><strong>Multisig protected</strong><span>✓</span></div>
+      <div class="row"><strong>Recovery without Nuri</strong><span>✓</span></div>
+      <button class="read" onclick="security.showModal()">Read the security model →</button>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" id="s5">
+  <div class="content">
+    <h2>If we disappear,<br>your money doesn’t.</h2>
+    <p class="lead"><strong>The self-custodial wallet is designed to remain yours even if Nuri or a financial-service partner stops operating.</strong></p>
+    <p class="lead muted">Wallet first. Services second.</p>
+    <button class="read" onclick="resilience.showModal()">Read the architecture principle →</button>
+  </div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content two">
+    <div><h2>Regulated rails.<br>Independent wallet.</h2></div>
+    <div>
+      <p class="lead"><strong>Nuri Card is issued on Wirex BaaS.</strong></p>
+      <p class="muted">Banking and card availability depends on country, verification and the regulated provider.</p>
+      <div class="partner-list">
+        <div><strong>Wirex</strong><span>Card, SEPA and ACH infrastructure</span></div>
+        <div><strong>Monerium</strong><span>Additional regulated euro rails</span></div>
+        <div><strong>ClickPesa</strong><span>Mobile-money remittance infrastructure</span></div>
+        <div><strong>Nuri wallet</strong><span>Self-custodial layer remains separate</span></div>
+      </div>
+      <button class="read" onclick="regulated.showModal()">Regulation & availability →</button>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="s7">
+  <div class="content">
+    <h2 style="max-width:none;font-size:clamp(3rem,5.4vw,6.1rem)">How Nuri compares.</h2>
+    <p class="muted">✓ yes · ~ partial / different · — no equivalent. Yellow/partial cells should be re-verified immediately before publication.</p>
+    <div class="full-table-wrap">
+      <table class="full-table">
+        <thead><tr>
+          <th>Capability</th><th class="nuri-col">Nuri</th><th>Cash App</th><th>Bitkey</th><th>Blitz</th><th>Muun</th><th>Strike</th><th>Wallet of Satoshi</th><th>Bitrefill</th><th>Bitwala</th><th>AQUA</th><th>Phoenix</th>
+        </tr></thead>
+        <tbody>
+          <tr><th>Global access</th><td class="yes nuri-col">✓</td><td class="no">—</td><td class="partial">~</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">~</td><td class="partial">~</td><td class="yes">✓</td><td class="partial">~</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Self-custodial</th><td class="yes nuri-col">✓</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>No seed phrase</th><td class="yes nuri-col">✓</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="no">—</td><td class="partial">~</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td></tr>
+          <tr><th>Passkey-based</th><td class="yes nuri-col">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="no">—</td></tr>
+          <tr><th>Multisig protected</th><td class="yes nuri-col">✓</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="no">—</td></tr>
+          <tr><th>Recovery without vendor</th><td class="yes nuri-col">✓</td><td class="no">—</td><td class="yes">✓</td><td class="partial">~</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="partial">~</td><td class="partial">~</td><td class="yes">✓</td></tr>
+          <tr><th>Web + iOS + Android</th><td class="yes nuri-col">✓</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+          <tr><th>Bitcoin &amp; Lightning</th><td class="yes nuri-col">✓</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">~</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><th>Stablecoins</th><td class="yes nuri-col">✓</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="partial">~</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+          <tr><th>Card + bank transfers</th><td class="yes nuri-col">✓</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">~</td><td class="no">—</td></tr>
+          <tr><th>Open source · MIT</th><td class="yes nuri-col">✓</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="no">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content two">
+    <div><h2>Open for people.<br>Open for agents.</h2></div>
+    <div>
+      <p class="lead"><strong>Public Nuri content is already exposed through Markdown, OpenAPI and a read-only MCP server.</strong></p>
+      <p class="muted">The website can stay simple for people while remaining explicit and machine-readable for AI agents.</p>
+      <div class="actions">
+        <a class="secondary" href="https://nuri.com/developers">Developers →</a>
+        <a class="secondary" href="https://nuri.com/docs">Docs →</a>
+        <a class="secondary" href="https://nuri.com/mcp">MCP →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="s9">
+  <div class="content two">
+    <div><h2>Berlin roots.<br>A new Nuri.</h2></div>
+    <div class="timeline">
+      <b>2014–15</b><span>Bitwala grows out of Berlin’s early Bitcoin scene.</span>
+      <b>2021</b><span>Bitwala becomes Nuri.</span>
+      <b>2022</b><span>The original Nuri shuts down.</span>
+      <b>2025</b><span>The Nuri brand moves to new ownership and operates independently.</span>
+      <b>Now</b><span>A new Nuri is built around self-custody, passkeys and payments.</span>
+    </div>
+    <button class="read" onclick="historyModal.showModal()">Read the history →</button>
+  </div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content two">
+    <div><h2>Built by people you can find.</h2></div>
+    <div>
+      <p class="lead"><strong>Emin Mahrt · Founder</strong></p>
+      <p class="muted">Berlin Bitcoin background, wallet and protocol work, and previous product leadership at Börse Stuttgart Digital Exchange.</p>
+      <div class="actions">
+        <a class="secondary" href="https://nuri.com/about">About Nuri →</a>
+        <a class="secondary" href="https://github.com/eminogrande">GitHub →</a>
+        <a class="secondary" href="https://www.linkedin.com/in/eminmahrt">LinkedIn →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <h2 style="max-width:none">Support, company & legal.</h2>
+    <div class="footer-grid">
+      <div>
+        <p><strong>Product</strong></p>
+        <p><a href="https://app.nuri.com/">Open wallet</a></p>
+        <p><a href="https://nuri.com/card-support">Card &amp; Bank Support</a></p>
+        <p><a href="https://nuri.com/blog">Blog</a></p>
+      </div>
+      <div>
+        <p><strong>Company</strong></p>
+        <p><a href="https://nuri.com/about">About</a></p>
+        <p><a href="https://nuri.com/contact">Contact</a></p>
+      </div>
+      <div>
+        <p><strong>Developers</strong></p>
+        <p><a href="https://nuri.com/developers">Developers</a></p>
+        <p><a href="https://nuri.com/docs">Documentation</a></p>
+        <p><a href="https://nuri.com/mcp">MCP</a></p>
+      </div>
+      <div>
+        <p><strong>Legal</strong></p>
+        <p><a href="https://nuri.com/privacy-policy/">Privacy</a></p>
+        <p><a href="https://nuri.com/terms-of-service/">Terms</a></p>
+      </div>
+    </div>
+    <p class="legal">Nuri is operated by Nurisoft Development OÜ, Tallinn, Estonia. Self-custody describes the crypto wallet, not card or bank balances. Card and banking services are provided by regulated third-party providers and are subject to separate eligibility, verification and terms.</p>
+  </div>
+</section>
+
+<section class="slide dark" id="s12">
+  <div class="content">
+    <h2>Open your free wallet.</h2>
+    <p class="lead"><strong>Freedom money that can actually be used.</strong></p>
+    <div class="actions"><a class="button" href="https://app.nuri.com/">Open free wallet</a><a class="secondary" href="https://nuri.com/about">About Nuri →</a></div>
+  </div>
+</section>
+
+</main>
+
+<div class="counter" id="counter">01 / 12</div>
+<div class="progress" id="progress"></div>
+<nav class="controls" aria-label="Slide navigation"><button id="prev">←</button><button id="next">→</button></nav>
+
+<dialog id="payments"><div class="modal">
+  <h3>Current payment rails.</h3>
+  <p>Nuri’s public site currently describes SEPA and USD ACH transfers, Visa card access, Apple Pay / Google Pay, and M-PESA / other mobile-money routes where available.</p>
+  <p><a href="https://nuri.com/card-support">Card &amp; Bank Support →</a></p>
+  <button class="close" onclick="payments.close()">Close</button>
+</div></dialog>
+
+<dialog id="security"><div class="modal">
+  <h3>Simple outside. Deeper underneath.</h3>
+  <p>The current public About page describes a passkey-based self-custodial wallet with co-signing. The deeper product architecture can expose multisig, independent recovery, hardware security keys and open recovery tooling without making those concepts part of the first-run experience.</p>
+  <p><a href="https://nuri.com/about">Current About page →</a></p>
+  <button class="close" onclick="security.close()">Close</button>
+</div></dialog>
+
+<dialog id="resilience"><div class="modal">
+  <h3>Wallet first. Services second.</h3>
+  <p>The core trust boundary is explicit: the self-custodial wallet is separate from optional card and banking balances. Connected financial providers can have their own availability, compliance and counterparty risks; they do not become the custody layer for the user’s self-custodial wallet.</p>
+  <button class="close" onclick="resilience.close()">Close</button>
+</div></dialog>
+
+<dialog id="regulated"><div class="modal">
+  <h3>Wirex and regulated services.</h3>
+  <p>Nuri’s Card &amp; Bank Support page states that Nuri Card is issued on Wirex BaaS.</p>
+  <ul>
+    <li>UK: Wirex Limited is authorised and regulated by the FCA as an electronic money institution.</li>
+    <li>EEA card services use regulated programme entities including Transact Payments Malta Limited.</li>
+    <li>SEPA and ACH availability depends on country and account eligibility.</li>
+  </ul>
+  <p><a href="https://nuri.com/card-support">Card &amp; Bank Support →</a></p>
+  <p><a href="https://nuri.com/terms-of-service/">Terms of Service →</a></p>
+  <button class="close" onclick="regulated.close()">Close</button>
+</div></dialog>
+
+<dialog id="historyModal"><div class="modal">
+  <h3>The old Nuri and the new Nuri.</h3>
+  <p>The history is intentionally not hidden. The current product is a new company and architecture. The public story should explain the Berlin / Bitwala roots, the former Nuri shutdown, and the later independent Nuri ownership clearly.</p>
+  <p><a href="https://bitwala.com/blog/goodbye-nuri">Read Bitwala’s announcement →</a></p>
+  <button class="close" onclick="historyModal.close()">Close</button>
+</div></dialog>
+
+<script>
+(() => {
+  const deck=document.getElementById('deck');
+  const slides=[...deck.querySelectorAll('.slide')];
+  const prev=document.getElementById('prev'),next=document.getElementById('next');
+  const progress=document.getElementById('progress'),counter=document.getElementById('counter');
+  let wheelLock=false;
+  const current=()=>Math.round(deck.scrollLeft/deck.clientWidth);
+  const go=n=>slides[Math.max(0,Math.min(slides.length-1,n))].scrollIntoView({behavior:'smooth',inline:'start'});
+  const update=()=>{
+    const i=current();
+    progress.style.width=((i+1)/slides.length*100)+'%';
+    counter.textContent=String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+  };
+  prev.onclick=()=>go(current()-1);
+  next.onclick=()=>go(current()+1);
+  window.addEventListener('keydown',e=>{
+    if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(current()+1)}
+    if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(current()-1)}
+  });
+  deck.addEventListener('wheel',e=>{
+    if(e.ctrlKey) return;
+    e.preventDefault();
+    if(wheelLock) return;
+    const d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
+    if(Math.abs(d)<10) return;
+    wheelLock=true;go(current()+(d>0?1:-1));setTimeout(()=>wheelLock=false,500);
+  },{passive:false});
+  deck.addEventListener('scroll',()=>requestAnimationFrame(update),{passive:true});
+  update();
+})();
+</script>
+</body>
+</html>

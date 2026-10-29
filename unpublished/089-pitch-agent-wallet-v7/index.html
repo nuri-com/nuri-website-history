@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; script-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nuri — Open money for humans and AI agents</title>
+<style>
+@font-face{font-family:Sharp;src:url('../nuri-expo/assets/SharpGroteskBold25.ttf') format('truetype');font-weight:700}
+@font-face{font-family:Harriet;src:url('../nuri-expo/assets/Harriet-v2-Display-Thin.ttf') format('truetype');font-weight:300}
+:root{--ink:#2c232e;--paper:#f0f0f0;--white:#fff;--lilac:#beaaff;--green:#6e9e96;--orange:#f7931a;--muted:#766f77;--line:#cac8cb;--serif:Harriet,Georgia,serif;--sans:Sharp,Arial,sans-serif;--body:Inter,Arial,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;background:#d9d9d9;color:var(--ink);font-family:var(--body)}main{height:100vh;overflow:auto;scroll-snap-type:y mandatory}.slide{width:100vw;height:100vh;min-height:700px;padding:5.8vh 5.5vw;display:grid;grid-template-rows:auto 1fr auto;gap:2.4vh;background:var(--paper);scroll-snap-align:start;position:relative;overflow:hidden}.slide:nth-child(even){background:var(--white)}.dark{background:var(--ink)!important;color:var(--paper)}.lilac{background:var(--lilac)!important}.green{background:var(--green)!important;color:var(--white)}
+.header,.footer{display:flex;align-items:center;justify-content:space-between;font:700 1.45vh/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;position:relative;z-index:3}.header span:first-child{color:var(--green)}.dark .header span:first-child,.green .header span:first-child{color:var(--lilac)}.footer{font:500 1.2vh/1 var(--body);letter-spacing:.06em;color:var(--muted)}.dark .footer,.green .footer{color:rgba(255,255,255,.66)}
+.body{display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2}.eyebrow{font:700 1.5vh/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:2.4vh}.dark .eyebrow,.green .eyebrow{color:var(--lilac)}h1,h2,p{margin:0}.hero{font:300 clamp(64px,8.1vw,150px)/.88 var(--serif);letter-spacing:-.055em;max-width:10ch}.title{font:300 clamp(48px,6vw,108px)/.94 var(--serif);letter-spacing:-.045em;max-width:14ch}.title.wide{max-width:17ch}.accent{color:var(--green)}.dark .accent{color:var(--lilac)}.orange{color:var(--orange)}.sub{font:500 clamp(19px,1.8vw,34px)/1.3 var(--body);max-width:37ch;margin-top:3.2vh;color:var(--muted)}.dark .sub,.green .sub{color:rgba(255,255,255,.78)}.bigline{font:300 clamp(35px,4.3vw,78px)/1.02 var(--serif);letter-spacing:-.035em;max-width:22ch}.bigline strong{font-family:var(--sans);font-weight:700}.rule{height:1px;background:var(--line);margin:3vh 0}
+.grid2{display:grid;grid-template-columns:1.05fr .95fr;gap:5vw;align-items:center}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4vw;margin-top:4vh}.card{border:1px solid var(--line);border-radius:22px;padding:2.5vh 1.8vw;background:rgba(255,255,255,.56)}.dark .card{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06)}.card .num{font:300 clamp(42px,5vw,86px)/.9 var(--serif);color:var(--green)}.dark .card .num{color:var(--lilac)}.card h3{font:700 clamp(18px,1.8vw,30px)/1.05 var(--sans);margin:1.4vh 0 .8vh}.card p{font:500 clamp(14px,1.15vw,21px)/1.35 var(--body);color:var(--muted)}.dark .card p{color:rgba(255,255,255,.68)}
+.list{display:grid;gap:1.45vh;margin-top:3.5vh;max-width:60ch}.item{display:grid;grid-template-columns:2.4rem 1fr;gap:1rem;align-items:start;font:500 clamp(17px,1.55vw,29px)/1.27 var(--body)}.item b{font:700 1.4vh/2.2 var(--sans);color:var(--green)}.dark .item b,.green .item b{color:var(--lilac)}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:1.2vw;align-items:stretch;margin-top:4vh}.node{border-radius:24px;padding:2.5vh 1.6vw;background:var(--white);border:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between;min-height:21vh}.dark .node{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.18)}.node small{font:700 1.3vh/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--green)}.node h3{font:300 clamp(27px,3vw,54px)/.95 var(--serif);margin:2vh 0}.node p{font:500 clamp(14px,1.1vw,20px)/1.35 var(--body);color:var(--muted)}.dark .node p{color:rgba(255,255,255,.7)}.arrow{font:300 4vw/1 var(--serif);display:flex;align-items:center;color:var(--green)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2vw;margin-top:4vh}.stat{padding:2.5vh 1.4vw;border-top:4px solid var(--green);background:rgba(255,255,255,.55)}.stat strong{display:block;font:300 clamp(42px,5vw,88px)/.9 var(--serif)}.stat span{display:block;font:700 1.35vh/1.2 var(--sans);text-transform:uppercase;letter-spacing:.06em;margin-top:1.4vh;color:var(--muted)}
+.matrix{display:grid;grid-template-columns:1.05fr repeat(3,1fr);border:1px solid var(--line);border-radius:24px;overflow:hidden;margin-top:3vh}.matrix>div{padding:1.4vh 1.15vw;border-right:1px solid var(--line);border-bottom:1px solid var(--line);font:500 clamp(13px,1vw,18px)/1.25 var(--body)}.matrix>div:nth-child(4n){border-right:0}.matrix>div:nth-last-child(-n+4){border-bottom:0}.matrix .head{font:700 clamp(15px,1.3vw,23px)/1 var(--sans);background:var(--ink);color:var(--white)}.matrix .ours{background:rgba(190,170,255,.35)}.matrix .label{font-weight:700;color:var(--muted)}
+.road{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3vw;margin-top:3.5vh}.phase{padding:2.6vh 1.6vw;border-radius:24px;background:var(--ink);color:var(--white);min-height:30vh}.phase:nth-child(2){background:var(--lilac);color:var(--ink)}.phase:nth-child(3){background:var(--green)}.phase small{font:700 1.3vh/1 var(--sans);letter-spacing:.08em;text-transform:uppercase}.phase h3{font:300 clamp(30px,3.3vw,58px)/.95 var(--serif);margin:2vh 0}.phase p{font:500 clamp(15px,1.15vw,21px)/1.38 var(--body)}
+.quote{font:300 clamp(44px,5.8vw,105px)/.95 var(--serif);letter-spacing:-.045em;max-width:15ch}.quote-mark{position:absolute;right:3vw;bottom:-9vh;font:300 40vw/.7 var(--serif);color:rgba(190,170,255,.22);z-index:0}.source{font:500 1.15vh/1.25 var(--body);color:var(--muted);margin-top:2vh}.dark .source{color:rgba(255,255,255,.5)}
+.team{display:grid;grid-template-columns:repeat(5,1fr);gap:1vw;margin-top:4vh}.person{border-top:3px solid var(--green);padding-top:1.5vh}.person strong{display:block;font:700 clamp(16px,1.45vw,26px)/1.05 var(--sans)}.person span{font:500 1.2vh/1.2 var(--body);color:var(--muted);display:block;margin-top:.8vh}.ask{font:300 clamp(90px,13vw,240px)/.78 var(--serif);letter-spacing:-.07em}.chips{display:flex;gap:1vw;flex-wrap:wrap;margin-top:3vh}.chip{padding:1.2vh 1.2vw;border-radius:999px;border:1px solid currentColor;font:700 1.25vh/1 var(--sans);letter-spacing:.04em;text-transform:uppercase}
+.cover-logo{font:700 clamp(80px,17vw,300px)/.72 var(--sans);letter-spacing:-.08em}.cover-dot{color:var(--green)}.cover-bottom{display:grid;grid-template-columns:1fr auto;gap:3vw;align-items:end;margin-top:5vh}.cover-bottom .sub{margin:0;max-width:32ch;color:var(--ink)}.meta{text-align:right;font:700 1.4vh/1.45 var(--sans);text-transform:uppercase;letter-spacing:.06em}
+@media(max-width:850px){.slide{padding:5vh 5vw;min-height:620px}.grid2{grid-template-columns:1fr;gap:2vh}.grid3,.stats,.road{grid-template-columns:1fr 1fr}.flow{grid-template-columns:1fr}.arrow{display:none}.matrix{font-size:11px}.team{grid-template-columns:repeat(3,1fr)}.hero{font-size:13vw}.title{font-size:9vw}}
+@page{size:13.333in 7.5in;margin:0}@media print{html,body{background:#fff}main{height:auto;overflow:visible}.slide{width:13.333in;height:7.5in;min-height:0;break-after:page;padding:.44in .62in;gap:.12in}.grid2{grid-template-columns:1.05fr .95fr}.grid3{grid-template-columns:repeat(3,1fr)}.stats{grid-template-columns:repeat(4,1fr)}.road{grid-template-columns:repeat(3,1fr)}.flow{grid-template-columns:1fr auto 1fr auto 1fr}.arrow{display:flex}.team{grid-template-columns:repeat(5,1fr)}.header{font-size:8pt}.footer{font-size:6.5pt}.eyebrow{font-size:8pt;margin-bottom:.18in}.hero{font-size:75pt}.title{font-size:54pt}.sub{font-size:16pt;margin-top:.22in}.bigline{font-size:36pt}.grid3{margin-top:.25in}.card{padding:.17in}.card .num{font-size:40pt}.card h3{font-size:15pt;margin:.1in 0 .05in}.card p{font-size:10pt}.list{margin-top:.25in;gap:.09in}.item{font-size:14pt}.item b{font-size:8pt}.flow{margin-top:.25in}.node{padding:.17in;min-height:1.65in}.node small{font-size:7pt}.node h3{font-size:25pt;margin:.12in 0}.node p{font-size:9pt}.stats{margin-top:.25in}.stat{padding:.18in}.stat strong{font-size:43pt}.stat span{font-size:7.5pt}.matrix{margin-top:.2in}.matrix>div{padding:.095in;font-size:7.5pt}.matrix .head{font-size:9pt}.road{margin-top:.2in}.phase{padding:.2in;min-height:2.55in}.phase small{font-size:7pt}.phase h3{font-size:28pt;margin:.15in 0}.phase p{font-size:10pt}.quote{font-size:50pt}.source{font-size:6.3pt;margin-top:.1in}.team{margin-top:.25in}.person strong{font-size:11pt}.person span{font-size:7pt}.ask{font-size:105pt}.chip{font-size:7pt;padding:.08in}.cover-logo{font-size:135pt}.cover-bottom{margin-top:.35in}.meta{font-size:8pt}}
+</style>
+</head>
+<body>
+<main id="deck">
+<section class="slide lilac">
+  <div class="header"><span>Seed round</span><span>August 2026</span></div>
+  <div class="body">
+    <div class="cover-logo">Nuri<span class="cover-dot">.</span></div>
+    <div class="cover-bottom">
+      <p class="sub"><strong>Open money for humans and AI agents.</strong><br>One passkey. User-owned. Any rail.</p>
+      <div class="meta">€3M seed<br>24 months<br>nuri.com</div>
+    </div>
+  </div>
+  <div class="footer"><span>Confidential</span><span>01 / 13</span></div>
+</section>
+
+<section class="slide dark">
+  <div class="header"><span>The shift</span><span>Agents become buyers</span></div>
+  <div class="body">
+    <div class="eyebrow">The next user of the internet is software</div>
+    <h1 class="hero">Every request becomes a <span class="accent">transaction.</span></h1>
+    <p class="sub">Agents do not want signup forms, seats or monthly plans. They discover a resource, pay for it and move on.</p>
+    <p class="source">Market signal: Natural agentic payments; Cloudflare Wallets, Monetization Gateway, x402 and Pay Per Crawl.</p>
+  </div>
+  <div class="footer"><span>Nuri</span><span>02 / 13</span></div>
+</section>
+
+<section class="slide">
+  <div class="header"><span>The problem</span><span>Money still assumes a human session</span></div>
+  <div class="body">
+    <div class="eyebrow">Agents lack native money</div>
+    <h1 class="title wide">A useful agent needs <span class="accent">money, identity, authority and limits.</span></h1>
+    <div class="grid3">
+      <div class="card"><div class="num">01</div><h3>No account ceremony.</h3><p>Pay without a seller login, API key or prior relationship.</p></div>
+      <div class="card"><div class="num">02</div><h3>No custody handover.</h3><p>Owner keeps keys and funds. Agent receives bounded authority.</p></div>
+      <div class="card"><div class="num">03</div><h3>No blank cheque.</h3><p>Budget, expiry, maximum payment and destination rules.</p></div>
+    </div>
+  </div>
+  <div class="footer"><span>Nuri</span><span>03 / 13</span></div>
+</section>
+
+<section class="slide lilac">
+  <div class="header"><span>The product</span><span>Open Agent Wallet</span></div>
+  <div class="body">
+    <div class="eyebrow">One owner. Many controlled spenders.</div>
+    <h1 class="title wide">A wallet a human owns — and an agent can use <span class="accent">without owning it.</span></h1>
+    <div class="flow">
+      <div class="node"><small>Owner</small><h3>Passkey Wallet</h3><p>Face ID creates and controls the user-owned root wallet.</p></div>
+      <div class="arrow">›</div>
+      <div class="node"><small>Delegation</small><h3>Agent Debit Wallet</h3><p>Separate balance. Budget, expiry, max transaction and revoke.</p></div>
+      <div class="arrow">›</div>
+      <div class="node"><small>Spend</small><h3>Any open rail</h3><p>x402, Lightning, Bitcoin, stablecoins — card and IBAN where needed.</p></div>
+    </div>
+  </div>
+  <div class="footer"><span>Agent Debit Wallet is next product layer</span><span>04 / 13</span></div>
+</section>
+
+<section class="slide dark">
+  <div class="header"><span>Ownership architecture</span><span>Passkey, not provider login</span></div>
+  <div class="body grid2">
+    <div>
+      <div class="eyebrow">Private keys stay client-side</div>
+      <h1 class="title">Face ID becomes a <span class="accent">money key.</span></h1>
+      <p class="sub">WebAuthn PRF derives deterministic Bitcoin and EVM identities. No password. No seed phrase. No private key reaches the agent facade.</p>
+    </div>
+    <div class="list">
+      <div class="item"><b>01</b><span><strong>User-owned core.</strong> Passkey-derived keys remain on device.</span></div>
+      <div class="item"><b>02</b><span><strong>Two-party Bitcoin.</strong> MuSig2 cooperative path plus user recovery after timelock.</span></div>
+      <div class="item"><b>03</b><span><strong>Typed approvals.</strong> Connect verifies exact signed payloads.</span></div>
+      <div class="item"><b>04</b><span><strong>Durable only where needed.</strong> Payment workflows persist; agent facade stays stateless.</span></div>
+    </div>
+  </div>
+  <div class="footer"><span>Nuri</span><span>05 / 13</span></div>
+</section>
+
+<section class="slide">
+  <div class="header"><span>Built already</span><span>Not a concept</span></div>
+  <div class="body">
+    <div class="eyebrow">One live agent surface over the full stack</div>
+    <h1 class="title wide">Nuri already connects <span class="accent">open money and everyday rails.</span></h1>
+    <div class="stats">
+      <div class="stat"><strong>12</strong><span>Simple agent tools</span></div>
+      <div class="stat"><strong>5</strong><span>Payment backends</span></div>
+      <div class="stat"><strong>132</strong><span>Raw upstream tools</span></div>
+      <div class="stat"><strong>13</strong><span>Swap providers</span></div>
+    </div>
+    <p class="sub">Bitcoin · Lightning · Base · stablecoins · swaps · Visa · IBAN · SEPA · mobile money.</p>
+    <p class="source">Live surface: agent.nuri.com/mcp. Card/IBAN mainnet integration remains in debug/testing before customer launch.</p>
+  </div>
+  <div class="footer"><span>Nuri</span><span>06 / 13</span></div>
+</section>
+
+<section class="slide green">
+  <div class="header"><span>One wallet, two users</span><span>Human simplicity + agent growth</span></div>
+  <div class="body">
+    <div class="eyebrow">Built for agents. Simple enough for everyone.</div>
+    <h1 class="quote">The agent acts.<br>The human <span class="accent">owns.</span></h1>
+    <div class="grid3">
+      <div class="card"><h3>Human</h3><p>Face ID, mobile app, card, IBAN and clear approvals.</p></div>
+      <div class="card"><h3>Agent</h3><p>MCP, HTTP-native payments, automatic routing and bounded budgets.</p></div>
+      <div class="card"><h3>Same wallet</h3><p>One source of ownership across manual and automated money.</p></div>
+    </div>
+  </div>
+  <div class="footer"><span>Nuri</span><span>07 / 13</span></div>
+</section>
+
+<section class="slide">
+  <div class="header"><span>Competitive position</span><span>Ownership is the wedge</span></div>
+  <div class="body">
+    <div class="eyebrow">Three different answers to agent money</div>
+    <h1 class="title wide">Nuri is the <span class="accent">open, user-owned alternative.</span></h1>
+    <div class="matrix">
+      <div class="head"></div><div class="head">Natural</div><div class="head">Cloudflare</div><div class="head ours">Nuri</div>
+      <div class="label">Starts with</div><div>Financial account</div><div>Cloudflare account</div><div class="ours">Passkey wallet</div>
+      <div class="label">Core model</div><div>Agent banking API</div><div>Internet wallet + gateway</div><div class="ours">User-owned money layer</div>
+      <div class="label">Native rails</div><div>Bank, card, processing</div><div>Stablecoins + x402</div><div class="ours">Bitcoin, Lightning, stablecoins, card, IBAN</div>
+      <div class="label">Nuri edge</div><div>Ownership</div><div>Openness across platforms</div><div class="ours">Human + agent, one wallet</div>
+    </div>
+    <p class="source">Natural and Cloudflare validate category and timing. Nuri does not compete on their infrastructure scale; it competes on ownership and rail neutrality.</p>
+  </div>
+  <div class="footer"><span>Nuri</span><span>08 / 13</span></div>
+</section>
+
+<section class="slide dark">
+  <div class="header"><span>Why now</span><span>Window is open</span></div>
+  <div class="body">
+    <div class="eyebrow">The market has arrived before the open winner</div>
+    <h1 class="title wide">Platforms are building agent wallets. <span class="accent">Nobody owns the open wallet category yet.</span></h1>
+    <div class="list">
+      <div class="item"><b>01</b><span>Natural proves demand for agent-native banking and cards.</span></div>
+      <div class="item"><b>02</b><span>Cloudflare is turning HTTP requests into paid transactions.</span></div>
+      <div class="item"><b>03</b><span>x402 gives software a standard way to discover and pay.</span></div>
+      <div class="item"><b>04</b><span>Nuri already owns the hard wallet, signing and multi-rail foundation.</span></div>
+    </div>
+  </div>
+  <div class="footer"><span>Nuri</span><span>09 / 13</span></div>
+</section>
+
+<section class="slide">
+  <div class="header"><span>Roadmap</span><span>From approval wallet to delegated wallet</span></div>
+  <div class="body">
+    <div class="eyebrow">Ship one real rail first</div>
+    <h1 class="title wide">Base + USDC + x402. Then <span class="accent">Lightning.</span></h1>
+    <div class="road">
+      <div class="phase"><small>Now · live</small><h3>Passkey Wallet</h3><p>Human-approved money actions across Bitcoin, stablecoins, swaps, card and IBAN integrations.</p></div>
+      <div class="phase"><small>Next · 90 days</small><h3>Agent Debit Wallet</h3><p>USDC budget, expiry, max payment, revoke and automatic x402 pay.</p></div>
+      <div class="phase"><small>Then · 180 days</small><h3>Open Network</h3><p>Lightning delegation, open policy spec and third-party wallet integrations.</p></div>
+    </div>
+  </div>
+  <div class="footer"><span>Nuri</span><span>10 / 13</span></div>
+</section>
+
+<section class="slide lilac">
+  <div class="header"><span>Business model</span><span>Money moves, Nuri earns</span></div>
+  <div class="body grid2">
+    <div>
+      <div class="eyebrow">Capital-light transaction layer</div>
+      <h1 class="title">Four revenue surfaces. <span class="accent">No custody balance sheet.</span></h1>
+    </div>
+    <div class="list">
+      <div class="item"><b>01</b><span><strong>Routing.</strong> Swap, on-ramp, off-ramp and rail fees.</span></div>
+      <div class="item"><b>02</b><span><strong>Agent payments.</strong> x402 and Lightning transaction fees.</span></div>
+      <div class="item"><b>03</b><span><strong>Hosted policy.</strong> Teams, budgets, audit and compliance.</span></div>
+      <div class="item"><b>04</b><span><strong>Regulated rails.</strong> Card, IBAN and payment partner revenue share.</span></div>
+    </div>
+  </div>
+  <div class="footer"><span>Open source drives distribution; hosted rails drive revenue</span><span>11 / 13</span></div>
+</section>
+
+<section class="slide dark">
+  <div class="header"><span>Moat</span><span>Years of hard infrastructure already built</span></div>
+  <div class="body">
+    <div class="eyebrow">Not another wallet UI</div>
+    <h1 class="title wide">Nuri combines what usually lives in <span class="accent">five companies.</span></h1>
+    <div class="grid3">
+      <div class="card"><h3>Ownership</h3><p>Passkey PRF, deterministic recovery and client-side signing.</p></div>
+      <div class="card"><h3>Bitcoin depth</h3><p>Lightning, Arkade, MuSig2 and unilateral recovery path.</p></div>
+      <div class="card"><h3>Rail breadth</h3><p>Stablecoins, swaps, IBAN, card and mobile money behind one MCP.</p></div>
+    </div>
+    <p class="sub">The moat is the verified composition: wallet + policy + routing + regulated rails + human UX.</p>
+  </div>
+  <div class="footer"><span>Nuri</span><span>12 / 13</span></div>
+</section>
+
+<section class="slide">
+  <div class="header"><span>Seed round</span><span>Build the open agent wallet</span></div>
+  <div class="body">
+    <div class="grid2">
+      <div><div class="eyebrow">Raising for 24 months</div><div class="ask">€3M</div><div class="chips"><span class="chip">x402 payer</span><span class="chip">Agent policy wallets</span><span class="chip">Security</span><span class="chip">Open source</span><span class="chip">Distribution</span></div></div>
+      <div><h2 class="bigline">Own your money.<br>Use it yourself.<br><span class="accent">Let your agent use only what you allow.</span></h2></div>
+    </div>
+    <div class="team">
+      <div class="person"><strong>Cim Topal</strong><span>Team</span></div>
+      <div class="person"><strong>Emin Mahrt</strong><span>Product & Engineering</span></div>
+      <div class="person"><strong>Emil Wagner</strong><span>Team</span></div>
+      <div class="person"><strong>Lennard Evertz</strong><span>Team</span></div>
+      <div class="person"><strong>Frithjof Weinert</strong><span>Team</span></div>
+    </div>
+  </div>
+  <div class="footer"><span>emin@nuri.com · nuri.com · agent.nuri.com</span><span>13 / 13</span></div>
+</section>
+</main>
+<script>
+const deck=document.getElementById('deck');const slides=[...document.querySelectorAll('.slide')];
+document.addEventListener('keydown',e=>{const i=Math.round(deck.scrollTop/innerHeight);let n=i;if(['ArrowDown','PageDown',' '].includes(e.key))n=Math.min(slides.length-1,i+1);else if(['ArrowUp','PageUp'].includes(e.key))n=Math.max(0,i-1);else return;e.preventDefault();slides[n].scrollIntoView({behavior:'smooth'})});
+</script>
+</body>
+</html>

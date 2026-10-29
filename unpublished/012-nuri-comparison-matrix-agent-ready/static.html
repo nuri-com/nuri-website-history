@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nuri — On-chain Cash App / Comparison Matrix</title>
+<meta name="description" content="Nuri retail capability and competitor comparison: self-custody, passkeys, multisig, Bitcoin & Lightning, stablecoins, banking and open source.">
+<style>
+:root {
+  --bg:#fff; --fg:#0a0a0a; --muted:#666; --line:#d8d8d8;
+  --green:#dff7e7; --greenText:#075a2a;
+  --red:#fde7e7; --redText:#8a1111;
+  --yellow:#fff4c7; --yellowText:#705800;
+  --max:1500px;
+  --headline:clamp(2.8rem,7vw,6rem);
+  --body:clamp(1rem,1.65vw,1.25rem);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+  font-size:var(--body);line-height:1.55
+}
+main{width:min(calc(100% - 36px),var(--max));margin:auto}
+section{padding:10vh 0;border-top:1px solid var(--line)}
+section:first-child{border-top:0;min-height:80vh;display:flex;flex-direction:column;justify-content:center}
+h1,h2{font-size:var(--headline);line-height:.98;letter-spacing:-.06em;margin:0 0 .45em;max-width:14ch}
+p,li,td,th,summary,a{font-size:var(--body)}
+p{max-width:58rem;margin:0 0 1.1em}
+strong{font-weight:800}
+a{color:inherit;text-underline-offset:.2em}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin:2rem 0}
+.legend span{padding:.25em .5em;border:1px solid var(--line)}
+.table-wrap{overflow-x:auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+table{border-collapse:collapse;width:max-content;min-width:100%;background:white}
+th,td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:14px 16px;text-align:center;vertical-align:middle;white-space:nowrap}
+thead th{position:sticky;top:0;background:#fff;z-index:2}
+th:first-child{position:sticky;left:0;background:#fff;text-align:left;z-index:3;min-width:270px}
+td.green{background:var(--green);color:var(--greenText);font-weight:900}
+td.red{background:var(--red);color:var(--redText);font-weight:900}
+td.yellow{background:var(--yellow);color:var(--yellowText);font-weight:900}
+.nuri{font-weight:900}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+ul{padding-left:1.2em;max-width:58rem}
+li{margin:.45em 0}
+details{border-top:1px solid var(--line);padding:16px 0;max-width:70rem}
+summary{cursor:pointer;font-weight:800}
+footer{padding:8vh 0 12vh;border-top:1px solid var(--line)}
+@media(max-width:760px){
+  .grid{grid-template-columns:1fr}
+  section{padding:8vh 0}
+  th,td{padding:12px}
+}
+</style>
+</head>
+<body>
+<main>
+<section>
+  <h1>The on-chain Cash App.</h1>
+  <p><strong>Cash App utility + Bitkey-style ownership — behind one passkey.</strong></p>
+  <p>Bitcoin &amp; Lightning, stablecoins and local currencies in a self-custodial wallet that works on web, iOS and Android.</p>
+  <p><strong>Seedless · Passkey-based · Multisig · Open source · MIT licensed</strong></p>
+</section>
+
+<section>
+  <h2>How Nuri compares.</h2>
+  <p>This public-style matrix deliberately uses criteria that Nuri itself supports. Green means a clear match. Red means the competitor does not offer the equivalent capability. Yellow means partial, a materially different model, or final verification is still needed.</p>
+
+  <div class="legend">
+    <span style="background:var(--green)">✓ yes</span>
+    <span style="background:var(--yellow)">~ partial / different</span>
+    <span style="background:var(--red)">— no equivalent</span>
+  </div>
+
+  <div class="table-wrap">
+    <table aria-label="Nuri competitor comparison">
+      <thead><tr><th>Capability</th><th>Nuri</th><th>Cash App</th><th>Bitkey</th><th>Blitz</th><th>Muun</th><th>Strike</th><th>Wallet of Satoshi</th><th>Bitrefill</th><th>Bitwala</th><th>AQUA</th><th>Phoenix</th></tr></thead>
+      <tbody><tr><th scope='row'>Global wallet access</th><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="green" title="Yes / strong match">✓</td><td class="green" title="Yes / strong match">✓</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="green" title="Yes / strong match">✓</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="green" title="Yes / strong match">✓</td><td class="green" title="Yes / strong match">✓</td></tr><tr><th scope='row'>Self-custodial</th><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="green" title="Yes / strong match">✓</td><td class="green" title="Yes / strong match">✓</td><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="green" title="Yes / strong match">✓</td><td class="green" title="Yes / strong match">✓</td><td class="green" title="Yes / strong match">✓</td></tr><tr><th scope='row'>No seed phrase</th><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="red" title="No / not equivalent">—</td><td class="red" title="No / not equivalent">—</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="red" title="No / not equivalent">—</td></tr><tr><th scope='row'>Passkey-based</th><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="red" title="No / not equivalent">—</td><td class="red" title="No / not equivalent">—</td><td class="red" title="No / not equivalent">—</td><td class="red" title="No / not equivalent">—</td><td class="red" title="No / not equivalent">—</td><td class="red" title="No / not equivalent">—</td><td class="red" title="No / not equivalent">—</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="red" title="No / not equivalent">—</td></tr><tr><th scope='row'>Multisig protected</th><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="red" title="No / not equivalent">—</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="red" title="No / not equivalent">—</td></tr><tr><th scope='row'>Recovery without vendor</th><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="green" title="Yes / strong match">✓</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="green" title="Yes / strong match">✓</td></tr><tr><th scope='row'>Web + iOS + Android</th><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="red" title="No / not equivalent">—</td><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="red" title="No / not equivalent">—</td><td class="red" title="No / not equivalent">—</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="red" title="No / not equivalent">—</td><td class="red" title="No / not equivalent">—</td><td class="red" title="No / not equivalent">—</td></tr><tr><th scope='row'>Bitcoin &amp; Lightning</th><td class="green" title="Yes / strong match">✓</td><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="green" title="Yes / strong match">✓</td><td class="green" title="Yes / strong match">✓</td><td class="green" title="Yes / strong match">✓</td><td class="green" title="Yes / strong match">✓</td><td class="green" title="Yes / strong match">✓</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="green" title="Yes / strong match">✓</td><td class="green" title="Yes / strong match">✓</td></tr><tr><th scope='row'>Stablecoins</th><td class="green" title="Yes / strong match">✓</td><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="green" title="Yes / strong match">✓</td><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td></tr><tr><th scope='row'>Card + bank transfers</th><td class="green" title="Yes / strong match">✓</td><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="red" title="No / not equivalent">—</td><td class="red" title="No / not equivalent">—</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="red" title="No / not equivalent">—</td><td class="green" title="Yes / strong match">✓</td><td class="green" title="Yes / strong match">✓</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="red" title="No / not equivalent">—</td></tr><tr><th scope='row'>100% open source · MIT</th><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="red" title="No / not equivalent">—</td><td class="green" title="Yes / strong match">✓</td><td class="red" title="No / not equivalent">—</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="red" title="No / not equivalent">—</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="yellow" title="Partial, different model, or needs final verification">~</td><td class="red" title="No / not equivalent">—</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Why these rows.</h2>
+  <div class="grid">
+    <div>
+      <p><strong>Mainstream first</strong></p>
+      <ul>
+        <li>Global wallet access</li>
+        <li>Bitcoin &amp; Lightning</li>
+        <li>Stablecoins</li>
+        <li>Card + bank transfers</li>
+        <li>Web + iOS + Android</li>
+      </ul>
+    </div>
+    <div>
+      <p><strong>Then the real differentiation</strong></p>
+      <ul>
+        <li>Self-custodial</li>
+        <li>No seed phrase</li>
+        <li>Passkey-based</li>
+        <li>Multisig protected</li>
+        <li>Recovery without Nuri</li>
+        <li>100% open source · MIT</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Payments become social.</h2>
+  <p>Nuri can go beyond addresses and invoices: contacts, person-to-person payments and private end-to-end encrypted messaging can make paying someone feel closer to a normal messaging or Cash App flow.</p>
+  <p><strong>Contact → message → request → pay.</strong></p>
+  <p>This belongs in the product story, but I would keep it out of the main comparison table until the exact live implementation and scope are confirmed.</p>
+</section>
+
+<section>
+  <h2>For people first. Nerds can go deeper.</h2>
+  <p>The retail page should stay simple. The deeper layer can expose the technical reasons the product is different.</p>
+  <ul>
+    <li>On-chain multisig smart account</li>
+    <li>Hardware security keys / YubiKey / physical passkeys</li>
+    <li>Hardware wallet as cosigner</li>
+    <li>Open-source NFC biometric hardware wallet</li>
+    <li>Programmable permissions for AI agents</li>
+    <li>Independent recovery and unilateral exit paths</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Research notes.</h2>
+  <p>Competitor architecture changes quickly. Yellow cells are intentional: they are the places to re-check before publishing a public claim.</p>
+  <details><summary>Cash App</summary><p>Bitcoin balances are custodial; Lightning is supported. Cash App also added stablecoin support in 2026. <a href='https://cash.app/us/en/legal/tos'>Source ↗</a></p></details><details><summary>Bitkey</summary><p>Seedless 2-of-3 multisig with independent emergency exit; Bitcoin-focused hardware + app model. <a href='https://bitkey.world/learning-hub/how-bitkey-works'>Source ↗</a></p></details><details><summary>Blitz</summary><p>Self-custodial Bitcoin &amp; Lightning on iOS, Android and web; uses a 12-word seed. Blitz is open source under Apache 2.0, not MIT. <a href='https://blitzwalletapp.com/pages/faq/'>Source ↗</a></p></details><details><summary>Muun</summary><p>Self-custodial Bitcoin wallet using multisig; native apps are published under the MIT license. <a href='https://blog.muun.com/muuns-new-open-source-model/'>Source ↗</a></p></details><details><summary>Strike</summary><p>Bitcoin balances are custodial; Bitcoin and Lightning transfers are supported. <a href='https://strike.me/legal/gw-individual-ts/'>Source ↗</a></p></details><details><summary>Wallet of Satoshi</summary><p>Now offers a self-custody mode, but it uses a 12-word recovery phrase. <a href='https://support.walletofsatoshi.com/en/support/solutions/36000198621'>Source ↗</a></p></details><details><summary>Bitrefill</summary><p>Strong living-on-crypto benchmark with Visa card and SEPA withdrawal; users can connect external wallets rather than Bitrefill being a like-for-like self-custody wallet. <a href='https://www.bitrefill.com/card/features'>Source ↗</a></p></details><details><summary>Bitwala</summary><p>Current positioning includes seedless self-custody plus Visa and bank transfers; older vault documentation reflects a different legacy architecture, so some cells remain yellow. <a href='https://bitwala.com/'>Source ↗</a></p></details>
+</section>
+
+<footer>
+  <p><strong>Nuri comparison prototype — 30 September 2026.</strong></p>
+  <p>Nuri cells reflect the product capabilities discussed by the Nuri team and should receive a final developer/product verification before publication.</p>
+</footer>
+</main>
+</body>
+</html>

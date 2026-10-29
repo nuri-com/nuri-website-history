@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nuri — Your money, freed.</title>
+<meta name="description" content="A self-custodial passkey wallet for Bitcoin & Lightning, stablecoins and local currencies.">
+<style>
+:root{
+  --bg:#f5f4ef;
+  --fg:#111111;
+  --muted:#55554f;
+  --line:#d8d6cf;
+  --panel:#ffffff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:20px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:4px}
+.wrap{width:min(1080px,calc(100% - 34px));margin:0 auto}
+nav{
+  min-height:76px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  border-bottom:1px solid var(--line);
+  font-size:20px;
+}
+nav .links{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+nav a{text-decoration:none}
+.button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:52px;
+  padding:0 22px;
+  border:1px solid var(--fg);
+  border-radius:999px;
+  text-decoration:none;
+}
+.button.dark{background:var(--fg);color:white}
+.hero{padding:100px 0 92px;max-width:920px}
+h1,h2{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(54px,7vw,88px);
+  line-height:.98;
+  letter-spacing:-.045em;
+  font-weight:400;
+  margin:0 0 30px;
+}
+p{margin:0 0 24px}
+.lead{max-width:880px}
+.actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px}
+section{padding:82px 0;border-top:1px solid var(--line)}
+.two{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:56px;
+}
+.block{
+  border-top:1px solid var(--fg);
+  padding-top:24px;
+}
+.block p:last-child{margin-bottom:0}
+.line{
+  padding:20px 0;
+  border-bottom:1px solid var(--line);
+}
+.line:first-child{border-top:1px solid var(--line)}
+.strong{font-weight:700}
+details{
+  border-top:1px solid var(--line);
+  padding:22px 0 0;
+  margin-top:28px;
+}
+summary{
+  cursor:pointer;
+  font-weight:700;
+  margin-bottom:22px;
+}
+details p{max-width:880px}
+.timeline .item{
+  display:grid;
+  grid-template-columns:120px 1fr;
+  gap:28px;
+  padding:24px 0;
+  border-bottom:1px solid var(--line);
+}
+.timeline .item:first-child{border-top:1px solid var(--line)}
+.timeline .fork{
+  background:var(--fg);
+  color:white;
+  margin:0 -18px;
+  padding:24px 18px;
+  border-bottom:0;
+}
+.team{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0 50px;
+}
+.team .person{
+  padding:22px 0;
+  border-bottom:1px solid var(--line);
+}
+.quote{
+  max-width:940px;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(54px,7vw,88px);
+  line-height:1;
+  letter-spacing:-.045em;
+}
+footer{
+  border-top:1px solid var(--line);
+  padding:34px 0 54px;
+}
+footer .wrap{
+  display:flex;
+  justify-content:space-between;
+  gap:24px;
+  flex-wrap:wrap;
+}
+@media(max-width:800px){
+  body,nav{font-size:20px}
+  nav .links a:not(.button){display:none}
+  .hero{padding:72px 0 64px}
+  section{padding:62px 0}
+  .two,.team{grid-template-columns:1fr}
+  .timeline .item{grid-template-columns:1fr;gap:4px}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <div class="strong">NURI</div>
+    <div class="links">
+      <a href="#money">Money</a>
+      <a href="#trust">Trust</a>
+      <a href="#history">History</a>
+      <a href="#team">Team</a>
+      <a class="button dark" href="https://app.nuri.com">Open wallet</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <h1>Your money, freed.</h1>
+    <p class="lead">A self-custodial passkey wallet for Bitcoin & Lightning, stablecoins and local currencies.</p>
+    <p>No seed phrase in normal use. No exchange custody. No KYC for the self-custodial track. Card and banking services only when you choose them.</p>
+    <p>Your wallet is designed to keep working even if Nuri does not.</p>
+    <div class="actions">
+      <a class="button dark" href="https://app.nuri.com">Create wallet</a>
+      <a class="button" href="#money">See what it does</a>
+    </div>
+  </div>
+</div>
+
+<section id="money">
+  <div class="wrap">
+    <h2>Global internet money. Local currencies.</h2>
+    <p class="lead">Bitcoin & Lightning first. Stablecoins for fast global payments. Local currencies when you want to spend, cash out or use existing payment systems.</p>
+
+    <div class="two">
+      <div class="block">
+        <p class="strong">Global internet money</p>
+        <p>Bitcoin & Lightning, stable USD and stable EUR.</p>
+        <p>Send money. Receive money. Get paid. Pay online. Move value person to person. Let software or AI prepare payments you approve.</p>
+      </div>
+      <div class="block">
+        <p class="strong">Local currencies</p>
+        <p>Euro, Dollar and other local currencies through the rails available in your country.</p>
+        <p>Bank transfer. Visa. ACH. IBAN. Mobile Money. Cash out locally when you need to.</p>
+      </div>
+    </div>
+
+    <div class="line strong">Global Internet Money ↔ Local Currencies</div>
+    <div class="line">Bitcoin & Lightning ↔ Stablecoins ↔ Bank · Card · Mobile Money</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Pay or get paid.</h2>
+    <p class="lead">Nuri is a payments wallet, not a trading terminal.</p>
+
+    <div class="line">Send Bitcoin & Lightning.</div>
+    <div class="line">Receive Bitcoin & Lightning.</div>
+    <div class="line">Send and receive stablecoins.</div>
+    <div class="line">Swap between Bitcoin & Lightning, stablecoins and supported currencies.</div>
+    <div class="line">Pay online.</div>
+    <div class="line">Cash out locally.</div>
+    <div class="line">Send a bank transfer.</div>
+    <div class="line">Pay by card or Mobile Money where available.</div>
+  </div>
+</section>
+
+<section id="trust">
+  <div class="wrap">
+    <h2>Your wallet should work without us.</h2>
+    <p class="lead">Self-custody only matters if the company behind the wallet is not required for you to keep owning your money.</p>
+
+    <div class="line"><span class="strong">Self-custodial.</span> Nuri does not take custody of your Bitcoin or stablecoins.</div>
+    <div class="line"><span class="strong">Passkey secured.</span> Your passkey is used to derive and protect wallet access.</div>
+    <div class="line"><span class="strong">No seed phrase in normal use.</span> No twelve words to write down before you can start.</div>
+    <div class="line"><span class="strong">Multisig and co-signing.</span> Security is designed around more than one path instead of one company-held key.</div>
+    <div class="line"><span class="strong">KYC-free self-custody.</span> Identity verification belongs to regulated card and banking services, not to the right to hold your own money.</div>
+    <div class="line"><span class="strong">Open source.</span> Wallet and recovery tooling can be inspected and independently used.</div>
+
+    <details>
+      <summary>Read more about how recovery works</summary>
+      <p>Nuri's current recovery design uses a passkey PRF, co-signing paths and time-based recovery so the user key remains the durable key. The published recovery design is intended to work offline without nuri.com or Nuri servers, provided the user still has the required passkey and recovery material.</p>
+      <p><a href="https://www.nuri.com/blog/how-nuri-wallets-survive-without-nuri">Read the technical explanation on nuri.com</a></p>
+    </details>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Wallet first. Services second.</h2>
+    <p class="lead">The wallet is the durable product. Card, banking and local payment providers are replaceable ways to use it.</p>
+
+    <div class="two">
+      <div class="block">
+        <p class="strong">The part that should not depend on a bank</p>
+        <p>Bitcoin & Lightning. Stablecoins. Keys. Passkeys. Self-custody. Swaps. Global peer-to-peer payments.</p>
+      </div>
+      <div class="block">
+        <p class="strong">The part that depends on where you live</p>
+        <p>Visa. IBAN. ACH. Mobile Money. Local currency access. KYC and provider eligibility where regulation requires it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="history">
+  <div class="wrap">
+    <h2>One name. Two stories. A clear fork.</h2>
+    <p class="lead">Nuri has history. We think trust starts by explaining it clearly instead of hiding it.</p>
+
+    <div class="timeline">
+      <div class="item">
+        <div class="strong">2014</div>
+        <div>Bitwala starts in Berlin with the idea of making Bitcoin useful in everyday life.</div>
+      </div>
+      <div class="item">
+        <div class="strong">2021</div>
+        <div>Bitwala is rebranded as Nuri and grows into a broader crypto-finance product.</div>
+      </div>
+      <div class="item">
+        <div class="strong">2022</div>
+        <div>The former Nuri company files for insolvency. Bitwala's own history says the Celsius insolvency intensified the company's financial problems.</div>
+      </div>
+      <div class="item">
+        <div class="strong">2023</div>
+        <div>The original founders relaunch their business under the Bitwala name.</div>
+      </div>
+      <div class="item fork">
+        <div class="strong">2025 — THE FORK</div>
+        <div>Bitwala publicly announces that the Nuri brand and nuri.com are moving to new ownership. From this point forward, Bitwala and the new Nuri are independent products, companies and teams.</div>
+      </div>
+      <div class="item">
+        <div class="strong">2025 →</div>
+        <div>The new Nuri is built around a different principle: self-custody first, with replaceable card, banking and local payment rails around the wallet.</div>
+      </div>
+      <div class="item">
+        <div class="strong">Today</div>
+        <div>Nuri is operated by Nurisoft Development OÜ in Tallinn and is run by Emin Mahrt and the Nuri team. Bitwala continues separately under its own brand and team.</div>
+      </div>
+    </div>
+
+    <details>
+      <summary>Read the source history</summary>
+      <p><a href="https://bitwala.com/blog/goodbye-nuri">Bitwala: “Nuri.com is no longer part of Bitwala” — January 15, 2025</a></p>
+      <p><a href="https://bitwala.com/blog/the-story-of-bitwala">Bitwala's history of Bitwala and Nuri</a></p>
+      <p><a href="https://www.nuri.com/about">Current Nuri company and product information</a></p>
+    </details>
+  </div>
+</section>
+
+<section id="team">
+  <div class="wrap">
+    <h2>Today's Nuri. A new team.</h2>
+    <p class="lead">A senior five-person team across product, engineering, business, operations and finance.</p>
+
+    <div class="team">
+      <div class="person"><span class="strong">Emin Mahrt</span> — Founder · Product</div>
+      <div class="person"><span class="strong">Cim Topal</span> — CEO</div>
+      <div class="person"><span class="strong">Emil Wagner</span> — Engineering</div>
+      <div class="person"><span class="strong">Lennard Evertz</span> — Team</div>
+      <div class="person"><span class="strong">Frithjof Weinert</span> — CFO</div>
+    </div>
+
+    <details>
+      <summary>Read more about the company</summary>
+      <p>Nuri is operated by Nurisoft Development OÜ, Tallinn, Estonia. The current product combines a passkey-based self-custodial wallet with provider-operated card and banking services. Self-custody applies to the wallet; regulated services have their own terms and eligibility.</p>
+      <p><a href="https://www.nuri.com/about">Read the current Nuri About page</a></p>
+    </details>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>For people. For AI.</h2>
+    <p class="lead">The same wallet can be used by you directly or through software you authorize. AI can prepare and operate within permissions; the user remains in control of the wallet and approvals.</p>
+
+    <details>
+      <summary>Read more about agent access</summary>
+      <p>Nuri exposes wallet and payment capabilities through machine-readable interfaces and agent tooling. The goal is not to give an agent unrestricted custody, but to let software work inside explicit permissions.</p>
+      <p><a href="https://agent.nuri.com/">See the live Nuri agent interface</a></p>
+    </details>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="quote">Bitcoin & Lightning first. Freedom to transact. Local rails when useful.</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Your money, freed.</h2>
+    <p class="lead">Own Bitcoin & Lightning. Use stablecoins. Connect local currencies when you need them. Keep the wallet yours.</p>
+    <div class="actions">
+      <a class="button dark" href="https://app.nuri.com">Create wallet</a>
+      <a class="button" href="https://www.nuri.com/about">About Nuri</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>NURI</div>
+    <div>Bitcoin & Lightning · Stablecoins · Local currencies</div>
+  </div>
+</footer>
+
+</body>
+</html>

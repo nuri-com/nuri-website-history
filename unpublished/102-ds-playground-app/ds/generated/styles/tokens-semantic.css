@@ -1,0 +1,393 @@
+/* ──────────────────────────────────────────────────────────────
+ * NURI · TOKENS · SEMANTIC
+ * Role-based tokens. This is where mode (light/dark) and accent
+ * (neutral/lilac) are composed by referencing the theme-agnostic
+ * primitives in tokens-primitive.css. Components consume these
+ * tokens, not the primitives.
+ *
+ * ── GENERATED · the accent×theme cascade (N+32 C2 · decision 70 / 72) ──
+ * The cascade BLOCKS below (the marked region · #1 … #6b) are GENERATED
+ * from the TS SoT (packages/spec/tokens/colours.ts · the chrome + accent matrix) by
+ * Slice 0 of scripts/tokens-parser.js (parsers/semantic-css.js · dec-2
+ * reversed for the colour SEMANTIC layer — colour is now fully flipped).
+ * Edit the SoT, not the marked region — `npm run build` regenerates it in
+ * place. The SPACING / SIZING / RADIUS blocks (below the marked region)
+ * are likewise generated, from the dimension SoT (packages/spec/tokens/dimensions.ts ·
+ * decision 71). This header + the prose below are hand-maintained
+ * documentation of the generated structure.
+ *
+ * ── Composition model ─────────────────────────────────────────
+ *   Two attributes drive everything:
+ *     data-theme   = "light" | "dark"      (default: light)
+ *     data-accent  = "neutral" | "lilac"   (default: lilac, the brand)
+ *
+ *   Chrome tokens (bg-*, text-*, border-*, focus-ring) depend
+ *   only on data-theme. They define the page's neutral surface.
+ *
+ *   Accent tokens (accent-*) depend on data-accent AND data-theme.
+ *   The interaction is declared explicitly per accent — that's
+ *   how the asymmetry between SATURATED scales (neutral) and
+ *   BRIGHT scales (lilac) becomes visible in the file:
+ *
+ *     accent=neutral · solid SWAPS:  black in light, white in dark
+ *     accent=lilac   · solid FROZEN: #beaaff in both themes (brand)
+ *
+ *   Read the lilac blocks to see what changes in dark and what stays.
+ *   Read the neutral blocks to see full mode-swap symmetry.
+ *
+ * ── Scoping: attributes, not :root ────────────────────────────
+ * Selectors use attribute-only forms ([data-theme="dark"], etc.)
+ * rather than :root[...] so that nested scopes work. A demo block
+ * inside a page can mark itself <div data-accent="lilac" data-theme="dark">
+ * and the semantic tokens within that subtree resolve correctly —
+ * useful for the Colour Architecture demo and any side-by-side
+ * theme/accent comparison in the docs.
+ *
+ * ── Cascade ordering ──────────────────────────────────────────
+ * Selectors are deliberately ordered (later overrides earlier at
+ * equal specificity):
+ *   1.  :root, [data-theme="light"]                 — defaults (chrome light + neutral accent light; light re-asserts at any wrapper)
+ *   2.  [data-theme="dark"]                          — chrome dark + neutral accent dark (anywhere)
+ *   3.  [data-accent="neutral"]                      — neutral accent light (anywhere; explicit override)
+ *   4.  [data-accent="neutral"][data-theme="dark"]  — neutral accent dark · SAME element carries both (specificity 0,2,0)
+ *   4b. [data-theme="dark"] [data-accent="neutral"] — neutral accent dark · accent SELF-SCOPED under a dark ancestor (0,2,0)
+ *   5.  [data-accent="lilac"]                        — lilac accent light (anywhere)
+ *   6.  [data-accent="lilac"][data-theme="dark"]    — lilac accent dark overrides only · SAME element (0,2,0)
+ *   6b. [data-theme="dark"] [data-accent="lilac"]   — lilac accent dark adapters · accent SELF-SCOPED under a dark ancestor (0,2,0)
+ *
+ * Don't reorder these blocks. The single-attr selectors (#1's
+ * [data-theme="light"], #2, #3, #5) share specificity (0,1,0); source
+ * order is what makes the cascade land on the right values (#1 is first,
+ * so dark/#2 and the accent overrides win over it). The combined-attr
+ * selectors (#4, #6) and the descendant-combinator selectors (#4b, #6b)
+ * all win on specificity (0,2,0); #4b/#6b sit right after their #4/#6
+ * twin so an equal-specificity tie (an element matching both — only when
+ * a scope is nested inside a same-theme outer scope) resolves to the same
+ * value either way.
+ *
+ * ── Why #4b / #6b exist · the self-scoped-accent clobber ──────
+ * Tier 2 (Button / IconButton / IconAvatar `accent=` self-scope) sets
+ * data-accent on the ELEMENT but NOT data-theme (the element can't know
+ * its ancestor's theme). Inside a dark scope, block 2 sets the dark
+ * neutral-accent values at the ancestor (inherited down), but block 3
+ * (or 5) then RE-DECLARES the light values AT THE ELEMENT — clobbering
+ * the inherited dark — while #4 (#6) never matches (no data-theme on the
+ * element). The swap IconButton went dark-on-dark (invisible). #4b/#6b
+ * re-assert the dark accent values for an accent element that merely has
+ * a dark ANCESTOR, beating #3/#5 on specificity. (decision 63 · N+15)
+ *
+ * KNOWN LIMITATION (revisit-trigger · decision 63): a descendant
+ * combinator matches ANY dark ancestor, not the NEAREST theme. So a
+ * self-scoped accent inside a LIGHT scope nested inside a DARK scope
+ * resolves DARK (wrong — nearest is light). CSS can't express "nearest
+ * scope" without a per-element theme. No current consumer nests opposite
+ * themes around a self-scoped accent (the playground scopes ONE theme per
+ * device frame), so this is accepted per P11; if a nested-opposite-theme
+ * consumer lands, revisit (the per-element-theme · RN single-context
+ * model · decision 27/62 — is the clean answer there).
+ *
+ * Some values are intentionally duplicated across blocks. The accent-*
+ * duplication (blocks 1/3, 2/4) and the [data-theme="light"] on block 1
+ * exist for the same reason: a bare :root only matches the root element,
+ * so a nested <nuri-scope> needs an explicit attribute selector to
+ * re-declare chrome (light) and neutral-accent tokens for its subtree —
+ * otherwise a scoped theme/neutral change is a no-op in light. The
+ * duplication is the price of supporting nested scopes.
+ *
+ * ── Why focus-ring is brand even on accent=neutral ────────────
+ * Focus is a user-attention signal. Across most DS conventions
+ * (Material, Spectrum, Radix), the focus ring stays brand-coloured
+ * regardless of the surrounding accent — it's the only way to
+ * guarantee it pops against any background.
+ *
+ * ── The resolution matrix · Format B → the SoT (decision 33 · 70) ────
+ * Format B (decision 33) put each context-dependent token's full
+ * resolution matrix in an inline comment at its CANONICAL block. With the
+ * C2 flip that matrix moved to its SOURCE — packages/spec/tokens/colours.ts (the
+ * chrome + accent objects · each cell a { ref } · the INVERSE / FROZEN-P4
+ * patterns documented there). The generated blocks below carry only a
+ * terse per-block role comment; the matrix is one indirection away, in the
+ * SoT, where it is now authored. Decision 33's intent (the matrix is
+ * documented) stands; its LOCATION follows the source of truth.
+ * ────────────────────────────────────────────────────────────── */
+
+
+/* ════════════════════════════════════════════════════════════════════
+ * GENERATED · the accent×theme cascade · from packages/spec/tokens/colours.ts (chrome +
+ * accent) via scripts/parsers/semantic-css.js · decision 70 / 72.
+ * DO NOT EDIT — `npm run build` regenerates this region IN PLACE (Slice 0,
+ * the colour-semantic flip). The resolution matrix IS the SoT (colours.ts);
+ * the cascade ORDERING + the #4b/#6b self-scope rationale (decision 63) are
+ * documented in the file header above.
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* 1 · defaults · chrome light + neutral accent light (light re-asserts at any wrapper) */
+:root,
+[data-theme="light"] {
+  --nuri-bg-canvas:                var(--nuri-color-neutral-1-light);
+  --nuri-bg-subtle:                var(--nuri-color-neutral-2-light);
+  --nuri-bg-strong:                var(--nuri-color-neutral-3-light);
+  --nuri-bg-pressed:               var(--nuri-color-neutral-4-light);
+  --nuri-bg-inverse:               var(--nuri-color-neutral-1-dark);
+  --nuri-bg-inverse-muted:         var(--nuri-color-neutral-11-light);
+  --nuri-text-primary:             var(--nuri-color-neutral-12-light);
+  --nuri-text-muted:               var(--nuri-color-neutral-11-light);
+  --nuri-text-on-inverse:          var(--nuri-color-neutral-12-dark);
+  --nuri-border-subtle:            var(--nuri-color-neutral-6-light);
+  --nuri-border-default:           var(--nuri-color-neutral-7-light);
+  --nuri-border-strong:            var(--nuri-color-neutral-8-light);
+  --nuri-focus-ring:               var(--nuri-color-lilac-8-light);
+  --nuri-accent-fg:                var(--nuri-color-neutral-12-light);
+  --nuri-accent-solid:             var(--nuri-color-neutral-1-dark);
+  --nuri-accent-solid-pressed:     var(--nuri-color-neutral-3-dark);
+  --nuri-accent-on-solid:          var(--nuri-color-neutral-12-dark);
+  --nuri-accent-bg-subtle:         var(--nuri-color-neutral-3-light);
+  --nuri-accent-bg-subtle-pressed: var(--nuri-color-neutral-4-light);
+}
+
+
+/* 2 · chrome dark + neutral accent dark (anywhere) */
+[data-theme="dark"] {
+  --nuri-bg-canvas:                var(--nuri-color-neutral-1-dark);
+  --nuri-bg-subtle:                var(--nuri-color-neutral-2-dark);
+  --nuri-bg-strong:                var(--nuri-color-neutral-3-dark);
+  --nuri-bg-pressed:               var(--nuri-color-neutral-4-dark);
+  --nuri-bg-inverse:               var(--nuri-color-neutral-1-light);
+  --nuri-bg-inverse-muted:         var(--nuri-color-neutral-11-dark);
+  --nuri-text-primary:             var(--nuri-color-neutral-12-dark);
+  --nuri-text-muted:               var(--nuri-color-neutral-11-dark);
+  --nuri-text-on-inverse:          var(--nuri-color-neutral-12-light);
+  --nuri-border-subtle:            var(--nuri-color-neutral-6-dark);
+  --nuri-border-default:           var(--nuri-color-neutral-7-dark);
+  --nuri-border-strong:            var(--nuri-color-neutral-8-dark);
+  --nuri-focus-ring:               var(--nuri-color-lilac-8-dark);
+  --nuri-accent-fg:                var(--nuri-color-neutral-12-dark);
+  --nuri-accent-solid:             var(--nuri-color-neutral-1-light);
+  --nuri-accent-solid-pressed:     var(--nuri-color-neutral-3-light);
+  --nuri-accent-on-solid:          var(--nuri-color-neutral-12-light);
+  --nuri-accent-bg-subtle:         var(--nuri-color-neutral-3-dark);
+  --nuri-accent-bg-subtle-pressed: var(--nuri-color-neutral-4-dark);
+}
+
+
+/* 3 · explicit neutral accent · light (anywhere · nested override) */
+[data-accent="neutral"] {
+  --nuri-accent-fg:                var(--nuri-color-neutral-12-light);
+  --nuri-accent-solid:             var(--nuri-color-neutral-1-dark);
+  --nuri-accent-solid-pressed:     var(--nuri-color-neutral-3-dark);
+  --nuri-accent-on-solid:          var(--nuri-color-neutral-12-dark);
+  --nuri-accent-bg-subtle:         var(--nuri-color-neutral-3-light);
+  --nuri-accent-bg-subtle-pressed: var(--nuri-color-neutral-4-light);
+}
+
+
+/* 4 · neutral accent dark · SAME element carries both attrs (specificity 0,2,0) */
+[data-accent="neutral"][data-theme="dark"] {
+  --nuri-accent-fg:                var(--nuri-color-neutral-12-dark);
+  --nuri-accent-solid:             var(--nuri-color-neutral-1-light);
+  --nuri-accent-solid-pressed:     var(--nuri-color-neutral-3-light);
+  --nuri-accent-on-solid:          var(--nuri-color-neutral-12-light);
+  --nuri-accent-bg-subtle:         var(--nuri-color-neutral-3-dark);
+  --nuri-accent-bg-subtle-pressed: var(--nuri-color-neutral-4-dark);
+}
+
+
+/* 4b · neutral accent dark · SELF-SCOPED under a dark ancestor (decision 63 · 0,2,0) */
+[data-theme="dark"] [data-accent="neutral"] {
+  --nuri-accent-fg:                var(--nuri-color-neutral-12-dark);
+  --nuri-accent-solid:             var(--nuri-color-neutral-1-light);
+  --nuri-accent-solid-pressed:     var(--nuri-color-neutral-3-light);
+  --nuri-accent-on-solid:          var(--nuri-color-neutral-12-light);
+  --nuri-accent-bg-subtle:         var(--nuri-color-neutral-3-dark);
+  --nuri-accent-bg-subtle-pressed: var(--nuri-color-neutral-4-dark);
+}
+
+
+/* 5 · lilac accent · light (anywhere) */
+[data-accent="lilac"] {
+  --nuri-accent-fg:                var(--nuri-color-lilac-12-light);
+  --nuri-accent-solid:             var(--nuri-color-lilac-9-light);
+  --nuri-accent-solid-pressed:     var(--nuri-color-lilac-10-light);
+  --nuri-accent-on-solid:          var(--nuri-color-lilac-12-light);
+  --nuri-accent-bg-subtle:         var(--nuri-color-lilac-3-light);
+  --nuri-accent-bg-subtle-pressed: var(--nuri-color-lilac-4-light);
+}
+
+
+/* 6 · lilac accent dark · PARTIAL per P4 (frozen brand omitted · SAME element · 0,2,0) */
+[data-accent="lilac"][data-theme="dark"] {
+  --nuri-accent-fg:                var(--nuri-color-lilac-12-dark);
+  --nuri-accent-bg-subtle:         var(--nuri-color-lilac-3-dark);
+  --nuri-accent-bg-subtle-pressed: var(--nuri-color-lilac-4-dark);
+}
+
+
+/* 6b · lilac accent dark · SELF-SCOPED under a dark ancestor (decision 63 · partial per P4) */
+[data-theme="dark"] [data-accent="lilac"] {
+  --nuri-accent-fg:                var(--nuri-color-lilac-12-dark);
+  --nuri-accent-bg-subtle:         var(--nuri-color-lilac-3-dark);
+  --nuri-accent-bg-subtle-pressed: var(--nuri-color-lilac-4-dark);
+}
+
+
+/* 7 · orange accent · light (anywhere) */
+[data-accent="orange"] {
+  --nuri-accent-fg:                var(--nuri-color-orange-12-light);
+  --nuri-accent-solid:             var(--nuri-color-orange-9-light);
+  --nuri-accent-solid-pressed:     var(--nuri-color-orange-10-light);
+  --nuri-accent-on-solid:          var(--nuri-color-orange-12-light);
+  --nuri-accent-bg-subtle:         var(--nuri-color-orange-3-light);
+  --nuri-accent-bg-subtle-pressed: var(--nuri-color-orange-4-light);
+}
+
+
+/* 8 · orange accent dark · PARTIAL per P4 (frozen brand omitted · SAME element · 0,2,0) */
+[data-accent="orange"][data-theme="dark"] {
+  --nuri-accent-fg:                var(--nuri-color-orange-12-dark);
+  --nuri-accent-bg-subtle:         var(--nuri-color-orange-3-dark);
+  --nuri-accent-bg-subtle-pressed: var(--nuri-color-orange-4-dark);
+}
+
+
+/* 8b · orange accent dark · SELF-SCOPED under a dark ancestor (decision 63 · partial per P4) */
+[data-theme="dark"] [data-accent="orange"] {
+  --nuri-accent-fg:                var(--nuri-color-orange-12-dark);
+  --nuri-accent-bg-subtle:         var(--nuri-color-orange-3-dark);
+  --nuri-accent-bg-subtle-pressed: var(--nuri-color-orange-4-dark);
+}
+
+/* ════════════════ END GENERATED · the accent×theme cascade ════════════════ */
+
+
+/* ══════════════════════════════════════════════════════════════
+ * 7 · SPACING · semantic vocabulary · between elements
+ *
+ * Role · the T-shirt scale layout consumers reach for when
+ * declaring gap / margin / padding between siblings. Leaves own
+ * direct values in the dimension SoT. Cascade-invariant today.
+ * ══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* N+31 · GENERATED from the TS SoT (packages/spec/tokens/dimensions.ts · decision 70 ·
+   * dec-2 reversed for the dimension layer). Edit the SoT, not these values —
+   * `npm run build` regenerates them in place (Slice 0). */
+  /* space.none · the zero leaf · a flush hairline (Separator y-space="none"),
+   * a collapsed gutter · literal 0 (decision 32 retired --nuri-px-0; 0 needs no
+   * primitive). Added N+8.1 alongside the Separator y-space prop. */
+  --nuri-space-none: 0;
+  /* space.2xs · finest granularity · hairline gap between adjacent micro-elements */
+  --nuri-space-2xs: 2px;
+  /* space.xs  · tight gap · icon-to-label inside a control, label-to-glyph */
+  --nuri-space-xs:  4px;
+  /* space.sm  · compact gap · stacked rows in a dense list */
+  --nuri-space-sm:  6px;
+  /* space.md  · default gap · siblings inside a card, row-gap in a grid */
+  --nuri-space-md:  12px;
+  /* space.lg  · roomy gap · button padding-x, comfortable interior */
+  --nuri-space-lg:  18px;
+  /* space.xl  · section gap · vertical rhythm between content groups */
+  --nuri-space-xl:  24px;
+  /* space.2xl · major gap · separator between distinct page regions */
+  --nuri-space-2xl: 36px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+ * 8 · SIZING · semantic vocabulary · element dimensions
+ *
+ * Role · the T-shirt scale layout consumers reach for when
+ * declaring min-height / width of an element itself. Leaves own
+ * direct values in the dimension SoT. Cascade-invariant today.
+ * Asymmetric vs spacing by design —
+ * sizing anchors larger (touch targets, control heights), spacing
+ * anchors smaller (between-element values). Decision 36 · N+6.1.
+ * ══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* N+31 · GENERATED from the TS SoT (packages/spec/tokens/dimensions.ts · decision 70 ·
+   * dec-2 reversed for the dimension layer). Edit the SoT, not these values —
+   * `npm run build` regenerates them in place (Slice 0). */
+  /* size.xs  · smallest element · inline tag / chip height */
+  --nuri-size-xs:  18px;
+  /* size.sm  · compact element · dense list-item height, indicator dot */
+  --nuri-size-sm:  24px;
+  /* size.md  · medium element · default icon-button, input field height */
+  --nuri-size-md:  36px;
+  /* size.lg  · standard touch target · iOS minimum + comfortable headroom */
+  --nuri-size-lg:  48px;
+  /* size.xl  · roomy touch target · primary action button height */
+  --nuri-size-xl:  54px;
+  /* size.2xl · large element · prominent CTA, screen-header height */
+  --nuri-size-2xl: 72px;
+  /* size.3xl · hero element · feature card height, large display tile */
+  --nuri-size-3xl: 90px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+ * 9 · RADIUS · semantic vocabulary · corner softness
+ *
+ * Role · the T-shirt scale border-radius consumers reach for when
+ * declaring corner softness. sm / md / lg are direct values;
+ * full is a literal
+ * 9999px sentinel value — border-radius clamps it to
+ * min(width/2, height/2), producing a pill for any rectangular box
+ * and a circle when width = height. The 9999 sentinel sits outside
+ * the ordinary scale by design; using 100%
+ * instead would distort non-square boxes into ellipses (see N+6.1.1
+ * post-close polish). Cascade-invariant today; 1-line role
+ * descriptions per the dependency-driven trigger in decision 33.
+ * Amendment 36.1 · N+6.1.1.
+ * ══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* N+31 · sm/md/lg GENERATED from the TS SoT (packages/spec/tokens/dimensions.ts ·
+   * decision 70 · dec-2 reversed for the dimension layer · `full` is the 9999px
+   * literal sentinel). Edit the SoT, not these values — `npm run build`
+   * regenerates them in place (Slice 0). */
+  /* radius.sm   · tight softening · dense controls, inline chips */
+  --nuri-radius-sm:   6px;
+  /* radius.md   · default softening · cards, inputs, mid-scale controls */
+  --nuri-radius-md:   9px;
+  /* radius.lg   · roomy softening · primary action buttons, hero surfaces */
+  --nuri-radius-lg:   18px;
+  /* radius.full · literal 9999px sentinel · pills (rectangular) + circles (square w=h); browser clamps to min(width/2, height/2) */
+  --nuri-radius-full: 9999px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+ * 10 · RATIO · semantic vocabulary · aspect-ratio (width : height)
+ *
+ * Role · the box `aspectRatio` field reaches for these to declare a
+ * surface's width:height. UNLIKE space/size/radius these are UNITLESS
+ * — a bare number, NOT a --nuri-px-N alias (an aspect-ratio carries no
+ * length unit · CSS `aspect-ratio: 1.586`, RN `aspectRatio: 1.586` ·
+ * the value is identical on both targets, no unit divergence). They sit
+ * OUTSIDE the px scale by design (the named-risk surface · no `px`).
+ * square = 1:1; card = 1.586:1 (ISO/IEC 7810 ID-1 · the credit-card /
+ * payment-card surface). Box-aspect-ratio slice.
+ * ══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* GENERATED from the TS SoT (packages/spec/tokens/dimensions.ts · decision 70 · dec-2
+   * reversed for the dimension layer · UNITLESS · the bare-number ratio). Edit the
+   * SoT, not these values — `npm run build` regenerates them in place (Slice 0). */
+  /* ratio.square · 1:1 · a square surface (avatar tile, icon plate) */
+  --nuri-ratio-square: 1;
+  /* ratio.card   · 1.586:1 · the credit-card / payment-card surface (ISO 7810 ID-1) */
+  --nuri-ratio-card:   1.586;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+ * 11 · BORDER · semantic vocabulary · hairline widths
+ *
+ * Role · the shared hairline width consumed by palette outlines and
+ * Separator. Only real DS consumers ship leaves.
+ * ══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* GENERATED from the TS SoT (packages/spec/tokens/dimensions.ts). */
+  --nuri-border-1: 1px;
+}

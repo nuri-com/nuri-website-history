@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; script-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nuri — The money account for global cash and local spending.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:        #140823;
+    --bg-2:      #1C0E33;
+    --bg-3:      #241443;
+    --line:      #3A2560;
+    --line-soft: #2A1B48;
+    --ink:       #F5ECD7;
+    --ink-dim:   #A79BC3;
+    --ink-mute:  #6E6189;
+    --accent:    #FF8652;
+    --btc:       #F7931A;
+    --serif:     "Fraunces", serif;
+    --sans:      "Instrument Sans", system-ui, sans-serif;
+    --mono:      "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  body { overflow-x: hidden; }
+
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background-image: radial-gradient(rgba(255,134,82,0.04) 1px, transparent 1px);
+    background-size: 3px 3px;
+    pointer-events: none; z-index: 1;
+    mix-blend-mode: overlay;
+  }
+
+  .progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; background: var(--line); z-index: 100; }
+  .progress__bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
+
+  .brand-mark {
+    position: fixed; right: 1.5rem; top: 50%; transform: translateY(-50%) rotate(180deg);
+    writing-mode: vertical-rl; text-orientation: mixed;
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.6em;
+    color: var(--ink-mute); z-index: 50; user-select: none;
+  }
+
+  .counter {
+    position: fixed; top: 1.25rem; right: 1.5rem;
+    font-family: var(--mono); font-size: 0.72rem; color: var(--ink-mute);
+    z-index: 50; letter-spacing: 0.1em;
+  }
+
+  .hint {
+    position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%);
+    font-family: var(--mono); font-size: 0.65rem; color: var(--ink-mute);
+    z-index: 50; letter-spacing: 0.15em; text-transform: uppercase;
+    opacity: 0.5;
+  }
+
+  main {
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll; height: 100vh;
+  }
+
+  section.slide {
+    min-height: 100vh;
+    scroll-snap-align: start;
+    padding: 6rem 5rem;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    z-index: 2;
+  }
+
+  @media (max-width: 700px) {
+    section.slide { padding: 4rem 1.5rem; }
+    .brand-mark { display: none; }
+  }
+
+  .slide__head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--mono); font-size: 0.72rem; color: var(--ink-mute);
+    letter-spacing: 0.2em; text-transform: uppercase;
+  }
+  .slide__head .section-label { color: var(--accent); }
+
+  .slide__foot {
+    font-family: var(--mono); font-size: 0.65rem; color: var(--ink-mute);
+    letter-spacing: 0.15em;
+    display: flex; justify-content: space-between;
+  }
+
+  .slide__body {
+    display: flex; flex-direction: column; justify-content: center;
+    gap: 3rem;
+    max-width: 64rem;
+  }
+
+  h1, h2, h3, h4 { font-family: var(--serif); font-weight: 300; line-height: 1.02; letter-spacing: -0.025em; }
+
+  .title {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(3rem, 7vw, 6.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+    max-width: 22ch;
+  }
+  .title em { font-style: italic; color: var(--accent); font-variation-settings: "opsz" 144, "SOFT" 100; }
+
+  .sub {
+    font-family: var(--sans);
+    font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+    line-height: 1.55;
+    color: var(--ink-dim);
+    max-width: 44ch;
+    font-weight: 400;
+  }
+
+  .kicker {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  ul.short { list-style: none; display: flex; flex-direction: column; gap: 0.9rem; max-width: 54ch; }
+  ul.short li {
+    font-family: var(--sans);
+    font-size: 1.15rem;
+    line-height: 1.45;
+    color: var(--ink);
+    padding-left: 2rem;
+    position: relative;
+  }
+  ul.short li::before {
+    content: "";
+    position: absolute; left: 0; top: 0.75rem;
+    width: 1rem; height: 1px; background: var(--accent);
+  }
+  ul.short li .muted { color: var(--ink-mute); }
+  ul.short li strong { font-weight: 600; color: var(--ink); }
+
+  .mono { font-family: var(--mono); }
+  .dim { color: var(--ink-dim); }
+  .mute { color: var(--ink-mute); }
+  .accent { color: var(--accent); }
+  .btc { color: var(--btc); }
+
+  /* COVER */
+  .cover .slide__body { justify-content: space-between; gap: 2rem; max-width: none; }
+  .wordmark {
+    font-family: var(--serif);
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+    font-size: clamp(8rem, 26vw, 26rem);
+    line-height: 0.82;
+    letter-spacing: -0.06em;
+    color: var(--ink);
+    font-weight: 300;
+  }
+  .wordmark em { color: var(--accent); display: inline-block; font-style: italic; }
+  .cover-tagline {
+    font-family: var(--serif);
+    font-variation-settings: "opsz" 72;
+    font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+    line-height: 1.25;
+    font-weight: 300;
+    color: var(--ink);
+    max-width: 34ch;
+    font-style: italic;
+    border-left: 2px solid var(--accent);
+    padding-left: 1.2rem;
+  }
+  .cover-meta {
+    display: flex; gap: 3rem; flex-wrap: wrap; padding-top: 2rem;
+    border-top: 1px solid var(--line); margin-top: auto;
+  }
+  .cover-meta > div { display: flex; flex-direction: column; gap: 0.3rem; }
+  .cover-meta span { font-family: var(--mono); font-size: 0.68rem; color: var(--ink-mute); letter-spacing: 0.2em; text-transform: uppercase; }
+  .cover-meta strong { font-family: var(--serif); font-variation-settings: "opsz" 36; font-size: 1.15rem; font-weight: 400; color: var(--ink); }
+
+  .statement .title { font-size: clamp(3.5rem, 8vw, 7rem); max-width: 20ch; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; gap: 2.5rem; } }
+
+  .stage-row { display: grid; grid-template-columns: auto 1fr; gap: 3rem; align-items: baseline; padding: 2rem 0; border-bottom: 1px solid var(--line); }
+  .stage-num { font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.2em; color: var(--accent); }
+  .stage-h { font-family: var(--serif); font-variation-settings: "opsz" 72; font-size: clamp(1.8rem, 3vw, 2.5rem); line-height: 1.1; color: var(--ink); font-weight: 300; letter-spacing: -0.02em; }
+  .stage-p { font-family: var(--sans); font-size: 1rem; color: var(--ink-dim); line-height: 1.55; margin-top: 0.5rem; max-width: 50ch; }
+  @media (max-width: 700px) { .stage-row { grid-template-columns: 1fr; gap: 0.5rem; } }
+
+  .tri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .tri > div { padding: 1.8rem; border: 1px solid var(--line); background: var(--bg-2); min-height: 8rem; display: flex; flex-direction: column; gap: 0.6rem; }
+  .tri > div .k { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); }
+  .tri > div .v { font-family: var(--serif); font-variation-settings: "opsz" 72; font-size: 2rem; line-height: 1.1; color: var(--ink); font-weight: 300; }
+  @media (max-width: 900px) { .tri { grid-template-columns: 1fr; } }
+
+  .formula {
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--ink-dim);
+    background: var(--bg-2);
+    border-left: 2px solid var(--accent);
+    padding: 1.2rem 1.5rem;
+    max-width: 54ch;
+  }
+  .formula .out { color: var(--accent); font-size: 1.05rem; }
+
+  .live-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .live-grid > div { padding: 1.5rem 1.2rem; border: 1px solid var(--line); background: var(--bg-2); }
+  .live-grid .n { font-family: var(--serif); font-variation-settings: "opsz" 72; font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1; color: var(--accent); font-weight: 300; letter-spacing: -0.02em; }
+  .live-grid .l { font-family: var(--mono); font-size: 0.68rem; color: var(--ink-mute); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 0.6rem; line-height: 1.4; }
+  @media (max-width: 900px) { .live-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .stream { display: grid; grid-template-columns: auto 1fr; gap: 3rem; padding: 2rem 0; border-top: 2px solid var(--accent); margin-top: 1rem; }
+  .stream__n { font-family: var(--serif); font-variation-settings: "opsz" 144; font-size: clamp(5rem, 10vw, 8rem); line-height: 0.9; color: var(--accent); font-weight: 300; letter-spacing: -0.04em; }
+  .stream__body { display: flex; flex-direction: column; gap: 1.2rem; }
+  .stream__label { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink-mute); }
+  @media (max-width: 700px) { .stream { grid-template-columns: 1fr; gap: 1rem; } }
+
+  .ask-amount {
+    font-family: var(--serif);
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+    font-size: clamp(7rem, 15vw, 13rem);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    color: var(--accent);
+    font-weight: 300;
+  }
+  .ask-amount span { color: var(--ink); }
+  .ask-terms { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; border-top: 1px solid var(--line); padding-top: 2rem; margin-top: 2rem; }
+  .ask-terms > div { display: flex; flex-direction: column; gap: 0.4rem; }
+  .ask-terms span { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-mute); letter-spacing: 0.2em; text-transform: uppercase; }
+  .ask-terms strong { font-family: var(--serif); font-variation-settings: "opsz" 48; font-size: 1.5rem; font-weight: 400; color: var(--ink); }
+  .alloc { display: grid; grid-template-columns: 1fr auto; gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 0.95rem; color: var(--ink-dim); }
+  .alloc strong { color: var(--accent); font-weight: 500; }
+  @media (max-width: 900px) { .ask-terms { grid-template-columns: 1fr; } }
+
+  .btc-bg { position: relative; overflow: hidden; }
+  .btc-bg::before {
+    content: "₿"; position: absolute; right: -4rem; bottom: -8rem;
+    font-family: var(--serif); font-size: 42rem; color: var(--bg-3);
+    line-height: 0.8; z-index: 0; font-weight: 300;
+    pointer-events: none;
+  }
+  .btc-bg > * { position: relative; z-index: 2; }
+
+  @media print {
+    body::before { display: none; }
+    .brand-mark, .counter, .hint, .progress { display: none; }
+    main { height: auto; overflow: visible; scroll-snap-type: none; }
+    section.slide { page-break-after: always; min-height: 100vh; border: none; padding: 2cm; }
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(0.8rem); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  section.slide.in-view .slide__body > * { animation: rise 0.7s ease forwards; animation-delay: 0.1s; opacity: 0; }
+  section.slide.in-view .slide__body > *:nth-child(2) { animation-delay: 0.2s; }
+  section.slide.in-view .slide__body > *:nth-child(3) { animation-delay: 0.3s; }
+  section.slide.in-view .slide__body > *:nth-child(4) { animation-delay: 0.4s; }
+
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="progress__bar" id="bar"></div></div>
+<div class="counter" id="counter">01 / 20</div>
+<div class="brand-mark">NURI — SEED — 2026</div>
+<div class="hint">↓ scroll  ·  ↑↓ keys</div>
+
+<main id="main">
+
+  <!-- 01 TITLE -->
+  <section class="slide cover">
+    <div class="slide__head"><span class="section-label">01 · Title</span><span>Nuri — Investor Deck</span></div>
+    <div class="slide__body">
+      <div class="wordmark">Nuri<em>.</em></div>
+      <div class="cover-tagline">The money account for <strong class="accent">global cash</strong> and <strong class="accent">local spending</strong>.</div>
+      <div class="cover-meta">
+        <div><span>Round</span><strong>Seed — €2.5M</strong></div>
+        <div><span>Instrument</span><strong>SAFE · €10M cap</strong></div>
+        <div><span>Stage</span><strong>Live in 32 countries</strong></div>
+        <div><span>Date</span><strong>April 2026</strong></div>
+      </div>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>01 / 20</span></div>
+  </section>
+
+  <!-- 02 THE SHIFT -->
+  <section class="slide statement">
+    <div class="slide__head"><span class="section-label">02 · The shift</span><span>A new money model.</span></div>
+    <div class="slide__body">
+      <div class="kicker">The shift</div>
+      <h1 class="title">Bitcoin is becoming <em>global cash</em>.</h1>
+      <ul class="short">
+        <li>Bitcoin is the open global money layer.</li>
+        <li>Local currencies remain the everyday spending rails.</li>
+        <li>The winning product connects both.</li>
+      </ul>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>02 / 20</span></div>
+  </section>
+
+  <!-- 03 THE GAP -->
+  <section class="slide statement">
+    <div class="slide__head"><span class="section-label">03 · The gap</span><span>Why neither side works alone.</span></div>
+    <div class="slide__body">
+      <div class="kicker">The gap</div>
+      <h1 class="title">Banks have convenience.<br/>Wallets have <em>freedom</em>.</h1>
+      <ul class="short">
+        <li>Banks are easy, but custodial.</li>
+        <li>Wallets are open, but too technical.</li>
+        <li>Users need both in one product.</li>
+      </ul>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>03 / 20</span></div>
+  </section>
+
+  <!-- 04 THE CATEGORY -->
+  <section class="slide">
+    <div class="slide__head"><span class="section-label">04 · The category</span><span>A two-stage money account.</span></div>
+    <div class="slide__body">
+      <div class="kicker">The category</div>
+      <h1 class="title">Nuri is a <em>two-stage</em> money account.</h1>
+      <div>
+        <div class="stage-row">
+          <div class="stage-num">STAGE&nbsp;01</div>
+          <div>
+            <div class="stage-h">Permissionless wallet utility.</div>
+            <div class="stage-p">Save, send, receive. No bank-style friction. Open to everyone.</div>
+          </div>
+        </div>
+        <div class="stage-row">
+          <div class="stage-num">STAGE&nbsp;02</div>
+          <div>
+            <div class="stage-h">Regulated local rails.</div>
+            <div class="stage-p">Cards, IBAN, instant transfers, payouts, ATM cash access.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>04 / 20</span></div>
+  </section>
+
+  <!-- 05 STAGE 1 -->
+  <section class="slide">
+    <div class="slide__head"><span class="section-label">05 · Stage 1</span><span>Wallet utility.</span></div>
+    <div class="slide__body">
+      <div class="kicker">Stage 01</div>
+      <h1 class="title">Start with <em>wallet utility</em>.</h1>
+      <ul class="short">
+        <li>Save in bitcoin.</li>
+        <li>Send and receive digital cash.</li>
+        <li>Payment links and onchain transfers.</li>
+        <li>No bank-style friction for the core experience.</li>
+      </ul>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>05 / 20</span></div>
+  </section>
+
+  <!-- 06 STAGE 2 -->
+  <section class="slide">
+    <div class="slide__head"><span class="section-label">06 · Stage 2</span><span>Local rails.</span></div>
+    <div class="slide__body">
+      <div class="kicker">Stage 02</div>
+      <h1 class="title">Unlock <em>everyday</em> financial rails.</h1>
+      <ul class="short">
+        <li>Free Visa card · Apple Pay · Google Pay.</li>
+        <li>IBAN and SEPA instant transfers.</li>
+        <li>Local payout rails across corridors.</li>
+        <li>ATM cash access where supported.</li>
+      </ul>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>06 / 20</span></div>
+  </section>
+
+  <!-- 07 PRODUCT PROMISE -->
+  <section class="slide statement btc-bg">
+    <div class="slide__head"><span class="section-label">07 · Product promise</span><span>One account.</span></div>
+    <div class="slide__body">
+      <div class="kicker">The promise</div>
+      <h1 class="title">One account.<br/>Two layers of <em>utility</em>.</h1>
+      <div class="tri">
+        <div><div class="k">Global</div><div class="v">Cash.</div></div>
+        <div><div class="k">Local</div><div class="v">Spending.</div></div>
+        <div><div class="k">Always</div><div class="v">User-owned.</div></div>
+      </div>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>07 / 20</span></div>
+  </section>
+
+  <!-- 08 WHY NURI WINS -->
+  <section class="slide">
+    <div class="slide__head"><span class="section-label">08 · Why Nuri wins</span><span>Against the neobanks.</span></div>
+    <div class="slide__body">
+      <div class="kicker">Why Nuri wins</div>
+      <h1 class="title">Revolut offers <span class="mute">accounts</span>.<br/>Nuri offers <em>wallet utility</em>.</h1>
+      <ul class="short">
+        <li>Wallet utility first.</li>
+        <li>Account features second.</li>
+        <li>Ownership throughout.</li>
+      </ul>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>08 / 20</span></div>
+  </section>
+
+  <!-- 09 ARCHITECTURE -->
+  <section class="slide">
+    <div class="slide__head"><span class="section-label">09 · Architecture</span><span>Who owns what.</span></div>
+    <div class="slide__body">
+      <div class="kicker">Architecture</div>
+      <h1 class="title">The user <em>owns</em> the money.</h1>
+      <ul class="short">
+        <li>Passkey-secured self-custody. No seed phrase.</li>
+        <li>Public blockchain settlement — no proprietary infrastructure.</li>
+        <li>Regulated partner rails plugged in on top.</li>
+        <li>Partner changes → Nuri replaces the rail. Nuri disappears → users keep their money.</li>
+      </ul>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>09 / 20</span></div>
+  </section>
+
+  <!-- 10 LIVE TODAY -->
+  <section class="slide">
+    <div class="slide__head"><span class="section-label">10 · Live today</span><span>Not a concept.</span></div>
+    <div class="slide__body">
+      <div class="kicker">Live today</div>
+      <h1 class="title">This is already <em>operating</em>.</h1>
+      <div class="live-grid">
+        <div><div class="n">32</div><div class="l">Countries live</div></div>
+        <div><div class="n">iOS + Android</div><div class="l">On both app stores</div></div>
+        <div><div class="n">Free</div><div class="l">Visa · IBAN · SEPA instant</div></div>
+        <div><div class="n">€699</div><div class="l">No-KYC BTC purchase</div></div>
+      </div>
+      <div class="sub" style="margin-top:0.5rem;">
+        Live app. Card rails. Bitcoin purchase, conversion, and settlement. Cross-border payout coverage through partner corridors.
+      </div>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>10 / 20</span></div>
+  </section>
+
+  <!-- 11 BUSINESS MODEL OVERVIEW -->
+  <section class="slide">
+    <div class="slide__head"><span class="section-label">11 · Business model</span><span>Four money flows.</span></div>
+    <div class="slide__body">
+      <div class="kicker">Business model</div>
+      <h1 class="title">Nuri makes money when <em>money moves</em>.</h1>
+      <ul class="short">
+        <li><strong>01 · Conversions</strong> — take rate on currency swaps.</li>
+        <li><strong>02 · Transactions</strong> — frontend fee on routed flows.</li>
+        <li><strong>03 · Solver / spread</strong> — liquidity provision and intent solving.</li>
+        <li><strong>04 · Partner share</strong> — card, on/off-ramp, payouts.</li>
+      </ul>
+      <div class="sub" style="color:var(--ink-mute);">Transaction and flow business. Not a balance-sheet business.</div>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>11 / 20</span></div>
+  </section>
+
+  <!-- 12 STREAM 01 -->
+  <section class="slide">
+    <div class="slide__head"><span class="section-label">12 · Stream 01</span><span>Conversions.</span></div>
+    <div class="slide__body">
+      <div class="stream">
+        <div class="stream__n">01</div>
+        <div class="stream__body">
+          <div class="stream__label">Core engine</div>
+          <h1 class="title" style="font-size:clamp(2.5rem,5vw,4rem);">Conversions are the <em>core engine</em>.</h1>
+          <ul class="short">
+            <li>Users convert between bitcoin, digital cash, and local currencies.</li>
+            <li>Nuri earns a take rate on notional volume.</li>
+            <li>More activity, more revenue. No balance-sheet risk.</li>
+          </ul>
+          <div class="formula">
+            Conversion Revenue = <span>Conversion Volume</span> × <span class="out">Take Rate</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>12 / 20</span></div>
+  </section>
+
+  <!-- 13 STREAM 02 -->
+  <section class="slide">
+    <div class="slide__head"><span class="section-label">13 · Stream 02</span><span>Transactions.</span></div>
+    <div class="slide__body">
+      <div class="stream">
+        <div class="stream__n">02</div>
+        <div class="stream__body">
+          <div class="stream__label">Routed flow</div>
+          <h1 class="title" style="font-size:clamp(2.5rem,5vw,4rem);">Wallet activity creates <em>transaction revenue</em>.</h1>
+          <ul class="short">
+            <li>Pay-ins and pay-outs.</li>
+            <li>Routed wallet transactions.</li>
+            <li>Premium frontend flows — payment links, expedited routing.</li>
+          </ul>
+          <div class="formula">
+            Transaction Revenue = <span>Eligible Volume</span> × <span class="out">Frontend Fee</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>13 / 20</span></div>
+  </section>
+
+  <!-- 14 STREAM 03 -->
+  <section class="slide">
+    <div class="slide__head"><span class="section-label">14 · Stream 03</span><span>Liquidity.</span></div>
+    <div class="slide__body">
+      <div class="stream">
+        <div class="stream__n">03</div>
+        <div class="stream__body">
+          <div class="stream__label">Infrastructure upside</div>
+          <h1 class="title" style="font-size:clamp(2.5rem,5vw,4rem);">Nuri can <em>monetize liquidity</em>.</h1>
+          <ul class="short">
+            <li>Nuri answers intents on NEAR, CoW, and Arkade.</li>
+            <li>Provides liquidity where spreads are attractive.</li>
+            <li>Captive user flow is an edge. Scales with solver win rate.</li>
+          </ul>
+          <div class="formula">
+            Solver Revenue = <span>Volume Won</span> × <span class="out">Net Spread</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>14 / 20</span></div>
+  </section>
+
+  <!-- 15 STREAM 04 -->
+  <section class="slide">
+    <div class="slide__head"><span class="section-label">15 · Stream 04</span><span>Partner rails.</span></div>
+    <div class="slide__body">
+      <div class="stream">
+        <div class="stream__n">04</div>
+        <div class="stream__body">
+          <div class="stream__label">Rail-level upside</div>
+          <h1 class="title" style="font-size:clamp(2.5rem,5vw,4rem);">Partner rails add <em>upside</em>.</h1>
+          <ul class="short">
+            <li>Card spend volume — interchange share.</li>
+            <li>On-ramp and off-ramp volume share.</li>
+            <li>Payout rail revenue share — corridor by corridor.</li>
+          </ul>
+          <div class="formula">
+            Partner Revenue = <span>Partner Volume</span> × <span class="out">Rev Share Rate</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>15 / 20</span></div>
+  </section>
+
+  <!-- 16 WHY THIS SCALES -->
+  <section class="slide">
+    <div class="slide__head"><span class="section-label">16 · Why this scales</span><span>Structural leverage.</span></div>
+    <div class="slide__body">
+      <div class="kicker">Why this scales</div>
+      <h1 class="title">The model is <em>structurally lean</em>.</h1>
+      <ul class="short">
+        <li>Self-custodial balances — no lending risk, no custody burden.</li>
+        <li>Public blockchain infrastructure — no proprietary systems.</li>
+        <li>Licensed partner rails — no banking-core headcount at Nuri.</li>
+        <li>Capital-light, not capital-free. Lean, not costless.</li>
+      </ul>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>16 / 20</span></div>
+  </section>
+
+  <!-- 17 GO-TO-MARKET -->
+  <section class="slide">
+    <div class="slide__head"><span class="section-label">17 · Go-to-market</span><span>Wedge, then mainstream.</span></div>
+    <div class="slide__body">
+      <div class="kicker">Go-to-market</div>
+      <h1 class="title">Start with <em>bitcoiners</em>.<br/>Expand to <em>everyone else</em>.</h1>
+      <ul class="short">
+        <li>Bitcoiners who need everyday usability — our sharpest wedge.</li>
+        <li>Cross-border utility users — freelancers, nomads, remitters.</li>
+        <li>Non-technical mainstream users — unlocked by passkey UX.</li>
+        <li>Merchants and treasury power users — last.</li>
+      </ul>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>17 / 20</span></div>
+  </section>
+
+  <!-- 18 MOAT -->
+  <section class="slide">
+    <div class="slide__head"><span class="section-label">18 · Moat</span><span>Where value concentrates.</span></div>
+    <div class="slide__body">
+      <div class="kicker">Moat</div>
+      <h1 class="title">Frontend, brand,<br/>and <em>distribution</em> win.</h1>
+      <ul class="short">
+        <li>Mainstream-ready UX on top of self-custody.</li>
+        <li>Strong bitcoin-native credibility.</li>
+        <li>Wallet-native consumer brand.</li>
+        <li>Routing intelligence across interchangeable providers.</li>
+      </ul>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>18 / 20</span></div>
+  </section>
+
+  <!-- 19 STRATEGIC VALUE -->
+  <section class="slide">
+    <div class="slide__head"><span class="section-label">19 · Strategic value</span><span>Acquisition-grade asset.</span></div>
+    <div class="slide__body">
+      <div class="kicker">Strategic value</div>
+      <h1 class="title">Nuri can become an <em>acquisition-grade</em> asset.</h1>
+      <ul class="short">
+        <li>User distribution in a wallet-native channel.</li>
+        <li>Wallet-native financial frontend with regulated rail access.</li>
+        <li>Routing intelligence across corridors.</li>
+        <li>Strategic fit for banks, PSPs, issuers, and payment networks.</li>
+      </ul>
+    </div>
+    <div class="slide__foot"><span>Nuri</span><span>19 / 20</span></div>
+  </section>
+
+  <!-- 20 ASK -->
+  <section class="slide">
+    <div class="slide__head"><span class="section-label">20 · Ask</span><span>cim@nuri.com</span></div>
+    <div class="slide__body">
+      <div class="two-col">
+        <div>
+          <div class="kicker" style="margin-bottom:1rem;">We are raising</div>
+          <div class="ask-amount">€2.5<span>M</span></div>
+          <div class="ask-terms">
+            <div><span>Instrument</span><strong>SAFE</strong></div>
+            <div><span>Post-money cap</span><strong>€10M</strong></div>
+            <div><span>Max dilution</span><strong>25%</strong></div>
+          </div>
+          <div class="sub" style="margin-top:2rem;">
+            Capital to <strong class="accent">scale the category</strong>: distribution, product depth, corridor expansion, solver liquidity.
+          </div>
+        </div>
+        <div>
+          <div class="kicker" style="margin-bottom:1rem;">Use of funds</div>
+          <div class="alloc"><span>Team — 5 senior hires</span><strong>€1.0M</strong></div>
+          <div class="alloc"><span>Distribution — paid acquisition + SEO</span><strong>€800k</strong></div>
+          <div class="alloc"><span>Solver liquidity</span><strong>€500k</strong></div>
+          <div class="alloc"><span>Buffer</span><strong>€200k</strong></div>
+          <div class="alloc" style="border-top:2px solid var(--accent); border-bottom:none; padding-top:1rem; margin-top:0.5rem; font-size:1.15rem; color:var(--ink);"><span>Total</span><strong>€2.5M</strong></div>
+          <div class="sub" style="margin-top:1.5rem; color:var(--ink-mute); font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em;">
+            18 MONTHS TO CASHFLOW POSITIVE
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide__foot">
+      <span>cim@nuri.com · nuri.com</span>
+      <span>20 / 20</span>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  const main = document.getElementById('main');
+  const bar = document.getElementById('bar');
+  const counter = document.getElementById('counter');
+  const slides = Array.from(document.querySelectorAll('section.slide'));
+  const total = slides.length;
+
+  function update() {
+    const scrollTop = main.scrollTop;
+    const vh = window.innerHeight;
+    const idx = Math.min(total - 1, Math.round(scrollTop / vh));
+    const pct = ((idx + 1) / total) * 100;
+    bar.style.width = pct + '%';
+    counter.textContent = String(idx + 1).padStart(2,'0') + ' / ' + String(total).padStart(2,'0');
+  }
+  main.addEventListener('scroll', update, { passive: true });
+  update();
+
+  let busy = false;
+  document.addEventListener('keydown', (e) => {
+    if (busy) return;
+    const vh = window.innerHeight;
+    const idx = Math.round(main.scrollTop / vh);
+    let next = idx;
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { next = Math.min(total - 1, idx + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowUp' || e.key === 'PageUp') { next = Math.max(0, idx - 1); e.preventDefault(); }
+    else if (e.key === 'Home') { next = 0; }
+    else if (e.key === 'End') { next = total - 1; }
+    else return;
+    busy = true;
+    main.scrollTo({ top: next * vh, behavior: 'smooth' });
+    setTimeout(() => { busy = false; }, 500);
+  });
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(en => { if (en.isIntersecting) en.target.classList.add('in-view'); });
+  }, { threshold: 0.3 });
+  slides.forEach(s => obs.observe(s));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; script-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nuri Bitcoin Wallet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #D4D2D2;
+            background-image: url('./landing-v2.png');
+            background-position: top center;
+            background-repeat: no-repeat;
+            background-size: auto 100%;
+            color: #2C232E;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            padding-top: 30px;
+        }
+
+        .version {
+            position: absolute;
+            top: 11px;
+            right: 10px;
+            font-size: 12px;
+            opacity: 0.5;
+        }
+
+        @font-face {
+            font-family: 'SharpGroteskBold25';
+            src: url('./SharpGroteskBold25.woff2') format('woff2'),
+                 url('./SharpGroteskBold25.woff') format('woff');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'HarrietDisplayThin';
+            src: url('./Harriet-v2-Display-Thin.woff2') format('woff2'),
+                 url('./Harriet-v2-Display-Thin.woff') format('woff');
+            font-weight: 200;
+            font-style: normal;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .top-section {
+            margin-bottom: 28px;
+        }
+
+        .button-section {
+            margin-top: auto;
+            padding-bottom: 15px;
+        }
+
+        .input-field-wrapper {
+            width: 100%;
+            margin-bottom: 18px;
+        }
+
+        .input-field-card {
+            position: relative;
+            background: #E5E5E8;
+            border-radius: 4px 4px 0 0;
+            padding: 6px 16px 8px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .input-field-wrapper.focused .input-field-card {
+            background: #FFFFFF;
+        }
+
+        .input-field-wrapper.focused .input-field-input {
+            color: rgba(0, 0, 0, 0.87);
+        }
+
+        .input-field-label {
+            position: absolute;
+            top: 7px;
+            left: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            color: #6E9E96;
+            pointer-events: none;
+            transition: color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+            opacity: 1;
+            transform: translateY(7px);
+        }
+
+        .input-field-input {
+            padding: 21px 0 6px;
+            font-size: 16px;
+            letter-spacing: 0.15px;
+            color: #959196;
+            border: none;
+            background: transparent;
+            width: 100%;
+            flex: 1;
+            min-width: 0;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .input-field-input::placeholder {
+            color: #959196;
+        }
+
+        .input-field-check {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            display: none;
+        }
+
+        .input-field-indicator {
+            height: 1px;
+            width: 100%;
+            background: #CAC9CF;
+            transition: background 0.2s ease;
+        }
+
+        .input-field-wrapper.focused .input-field-label {
+            color: #6E9E96;
+            transform: translateY(-3px);
+        }
+
+        .input-field-wrapper.valid .input-field-label {
+            color: #6E9E96;
+            transform: translateY(-3px);
+        }
+
+        .input-field-wrapper.valid .input-field-input {
+            color: rgba(0, 0, 0, 0.87);
+        }
+
+        .input-field-wrapper.valid .input-field-check {
+            display: block;
+        }
+
+        .input-field-wrapper.valid .input-field-indicator {
+            background: #6E9E96;
+        }
+
+        .input-field-wrapper.focused:not(.valid) .input-field-indicator {
+            background: rgba(44, 35, 46, 0.4);
+        }
+
+
+        .create-button span {
+            line-height: 1;
+        }
+
+        .focus-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(212, 210, 210, 0.9);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+
+        .signup-focus .focus-overlay {
+            opacity: 1;
+            pointer-events: none;
+        }
+
+        .signup-focus .top-section,
+        .signup-focus .logo-ticker,
+        .signup-focus .logo-strip {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .signup-focus .container {
+            justify-content: flex-end;
+        }
+
+        .button-row {
+            position: relative;
+        }
+
+        .signup-focus .button-row {
+            gap: 0;
+        }
+
+        .button-row .create-button {
+            max-width: 100%;
+        }
+
+        .login-button {
+            transition: opacity 0.3s ease, transform 0.3s ease, max-width 0.3s ease, padding 0.3s ease;
+        }
+
+        .register-button {
+            transition: opacity 0.3s ease, transform 0.3s ease, flex 0.3s ease, max-width 0.3s ease;
+        }
+
+        .signup-focus .button-row .login-button {
+            opacity: 0;
+            transform: translateX(-32px);
+            pointer-events: none;
+            max-width: 0;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .signup-focus .button-row .register-button {
+            flex: 1 1 100%;
+            transform: translateX(0);
+        }
+        .input-field-wrapper.valid + .button-row .register-button {
+            border-color: #6E9E96;
+            border-width: 2px;
+            background: #D4D2D2;
+            color: #2C232E;
+            font-weight: 600;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .button-row .create-button {
+            flex: 1;
+            width: auto;
+        }
+
+        .button-row .register-button {
+            background: #D4D2D2;
+            color: #2C232E;
+            border: 1px solid #2C232E; border-width: 1px;
+        }
+
+        .button-row .register-button img {
+            height: 27px;
+            width: auto;
+        }
+
+        .hero-headline {
+            margin-bottom: 16px;
+            padding-top: 5px;
+            padding-left: 10px;
+        }
+
+        .headline-word {
+            display: block;
+            color: #FFFFFF;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .headline-word.bold {
+            font-family: 'SharpGroteskBold25', 'Inter', sans-serif;
+        }
+
+        .headline-word.thin {
+            font-family: 'HarrietDisplayThin', 'Times New Roman', serif;
+        }
+
+        .headline-word {
+            font-size: clamp(42px, 12.5vw, 58px);
+            line-height: 1;
+        }
+
+        .logo-ticker {
+            width: 100%;
+            overflow: hidden;
+            margin-bottom: 16px;
+            mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+        }
+
+        .logo-strip {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            animation: logo-scroll 36s linear infinite;
+            will-change: transform;
+            flex-wrap: nowrap;
+            min-width: max-content;
+        }
+
+        .logo-item {
+            font-size: 18px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.92);
+            padding: 0;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            font-family: 'HarrietDisplayThin', 'Times New Roman', serif;
+        }
+
+        .logo-item strong {
+            font-weight: 600;
+            letter-spacing: 0.04em;
+        }
+
+        .logo-item.apple {
+            letter-spacing: 0.08em;
+        }
+
+        .logo-item.apple::before {
+            content: "";
+            font-size: 22px;
+            margin-right: 6px;
+        }
+
+        @keyframes logo-scroll {
+            from {
+                transform: translateX(0);
+            }
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        .create-button {
+            background: #2C232E;
+            color: #FFFFFF;
+            border: none;
+            padding: 8px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 100px;
+            cursor: pointer;
+            width: 100%;
+            min-height: 54px;
+            transition: transform 0.2s, flex 0.3s ease, max-width 0.3s ease;
+            margin-bottom: 12px;
+            font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .create-button:active {
+            transform: scale(0.98);
+        }
+
+        .create-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .create-button img {
+            height: 27px;
+            width: auto;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        #status {
+            margin-top: 10px;
+            min-height: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="focus-overlay" aria-hidden="true"></div>
+    <div class="version">v5.1</div>
+    <div class="container">
+        <div class="top-section" aria-hidden="true">
+            <div class="hero-headline">
+                <span class="headline-word bold">Bitcoin</span>
+                <span class="headline-word thin">Credit</span>
+                <span class="headline-word bold">Card</span>
+            </div>
+            <div class="logo-ticker">
+                <div class="logo-strip">
+                    <span class="logo-item">GNOSIS PAY × NURI</span>
+                    <span class="logo-item">+ FREE VISA CARD</span>
+                    <span class="logo-item">+ FREE IBAN</span>
+                    <span class="logo-item">+ PAY</span>
+                    <span class="logo-item">+ BUY ₿ITCOIN</span>
+                    <span class="logo-item">+ S€PA INSTANT BANK ACCOUNT</span>
+                    <span class="logo-item">GNOSIS PAY × NURI</span>
+                    <span class="logo-item">+ FREE VISA CARD</span>
+                    <span class="logo-item">+ FREE IBAN</span>
+                    <span class="logo-item">+ PAY</span>
+                    <span class="logo-item">+ BUY ₿ITCOIN</span>
+                    <span class="logo-item">+ S€PA INSTANT BANK ACCOUNT</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-section">
+            <div id="status"></div>
+
+            <div class="input-field-wrapper">
+                <div class="input-field-card">
+                    <span class="input-field-label" id="email-label">Email</span>
+                    <input type="email" class="input-field-input" id="email-input" placeholder="satoshi@gmx.com" autocomplete="email" inputmode="email" aria-label="Email address" />
+                    <svg class="input-field-check" id="email-check" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+                        <path fill="#6E9E96" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.2 14.2-3.5-3.5 1.4-1.4 2.1 2.09 4.7-4.69 1.4 1.41-6.1 6.09z"/>
+                    </svg>
+                </div>
+                <div class="input-field-indicator" aria-hidden="true"></div>
+            </div>
+
+            <div class="button-row">
+                <button id="createBtn" type="button" class="create-button login-button" onclick="openOrCreateWallet()">
+                    <span>Login</span>
+                    <img src="passkey.png" alt="Passkey icon" />
+                </button>
+                <button type="button" class="create-button register-button">
+                    <span>Register</span>
+                    <img src="icon-nuri.svg" alt="Nuri logo" />
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        console.log('Bitcoin Wallet v5.1-PRF loaded - unified flow');
+        const emailWrapper = document.querySelector('.input-field-wrapper');
+        const emailInput = document.getElementById('email-input');
+        const emailRegex = /^[^\s@]+@([^\s@.]+\.)+[A-Za-z]{2,}$/;
+        const loginButton = document.querySelector('.login-button');
+        const registerButton = document.querySelector('.register-button');
+        const focusOverlay = document.querySelector('.focus-overlay');
+        const bodyEl = document.body;
+
+        function setSignupFocus(enabled) {
+            if (!bodyEl) return;
+            bodyEl.classList.toggle('signup-focus', enabled);
+        }
+
+        function updateEmailState() {
+            if (!emailWrapper || !emailInput) {
+                return;
+            }
+            const value = emailInput.value.trim();
+            const isValid = emailRegex.test(value);
+            emailWrapper.classList.toggle('valid', isValid);
+        }
+
+        if (emailInput && emailWrapper) {
+            emailInput.addEventListener('input', () => {
+                updateEmailState();
+            });
+            emailInput.addEventListener('focus', () => {
+                emailWrapper.classList.add('focused');
+                setSignupFocus(true);
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            });
+            emailInput.addEventListener('blur', () => {
+                emailWrapper.classList.remove('focused');
+                setSignupFocus(false);
+                updateEmailState();
+            });
+            updateEmailState();
+        }
+
+        if (registerButton && emailInput && emailWrapper) {
+            registerButton.addEventListener('click', (event) => {
+                if (!emailWrapper.classList.contains('valid')) {
+                    event.preventDefault();
+                    emailWrapper.classList.add('focused');
+                    setSignupFocus(true);
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                    emailInput.focus();
+                }
+            });
+        }
+
+
+        function showStatus(msg, type = '') {
+            console.log('[status]', type || 'info', msg);
+
+            const status = document.getElementById('status');
+            if (status) {
+                status.textContent = '';
+                status.className = '';
+            }
+        }
+
+        function postMessage(msg) {
+            console.log('Posting:', msg);
+            if (window.ReactNativeWebView) {
+                window.ReactNativeWebView.postMessage(msg);
+            }
+        }
+
+        const PRF_SALT_BYTES = [
+            110, 117, 114, 105, 45, 112, 114, 102, 45, 115, 97, 108, 116, 45, 118, 49
+        ];
+
+        function prfBytesToBase64(prfOutput) {
+            const prfBytes = new Uint8Array(prfOutput);
+            let binary = '';
+            for (let i = 0; i < prfBytes.byteLength; i++) {
+                binary += String.fromCharCode(prfBytes[i]);
+            }
+            return btoa(binary);
+        }
+
+        function decodeUserHandle(userHandle) {
+            if (!userHandle || userHandle.byteLength === 0) {
+                return 'recovered_user';
+            }
+            try {
+                return new TextDecoder().decode(userHandle);
+            } catch (e) {
+                console.log('Could not decode userHandle:', e);
+                return 'recovered_user';
+            }
+        }
+
+        function interpretAuthError(error) {
+            const message = (error && error.message ? error.message : '').toLowerCase();
+            if (error && error.name === 'NotAllowedError') {
+                if (message.includes('no passkeys') || message.includes('no credentials') || message.includes('no passkey') || message.includes('no matching')) {
+                    return 'no-passkey';
+                }
+                if (message.includes('cancel') || message.includes('abort') || message.includes('denied') || message.includes('timeout')) {
+                    return 'user-cancel';
+                }
+            }
+            return 'error';
+        }
+
+        // Helper function to check PRF support
+        function checkPRFSupport(extensionResults, operation = 'create') {
+            console.log('Checking PRF support:', extensionResults);
+
+            // For creation, check if PRF is enabled
+            if (operation === 'create') {
+                if (!extensionResults.prf) {
+                    return { supported: false, reason: 'No PRF extension in results' };
+                }
+                if (extensionResults.prf.enabled) {
+                    // PRF is enabled, might need authentication to get value
+                    return { supported: true, needsAuth: true };
+                }
+                if (extensionResults.prf.results && extensionResults.prf.results.first) {
+                    // Got PRF value directly
+                    return {
+                        supported: true,
+                        needsAuth: false,
+                        prfOutput: extensionResults.prf.results.first
+                    };
+                }
+                return { supported: false, reason: 'PRF not enabled' };
+            }
+
+            // For recovery/authentication, check if we got PRF results
+            if (operation === 'recover') {
+                if (!extensionResults.prf) {
+                    return { supported: false, reason: 'No PRF extension in results' };
+                }
+                if (!extensionResults.prf.results || !extensionResults.prf.results.first) {
+                    return { supported: false, reason: 'No PRF output available' };
+                }
+                return {
+                    supported: true,
+                    prfOutput: extensionResults.prf.results.first
+                };
+            }
+
+            return { supported: false, reason: 'Unknown operation' };
+        }
+
+        function showPRFError() {
+            console.error('PRF requirement not satisfied - passkey cannot be used.');
+            showStatus('', 'error');
+        }
+
+        async function runRecoveryFlow() {
+            try {
+                const challenge = crypto.getRandomValues(new Uint8Array(32));
+                const assertion = await navigator.credentials.get({
+                    publicKey: {
+                        challenge,
+                        rpId: 'nuri.com',
+                        timeout: 60000,
+                        userVerification: 'preferred',
+                        extensions: {
+                            prf: {
+                                eval: {
+                                    first: new Uint8Array(PRF_SALT_BYTES)
+                                }
+                            }
+                        }
+                    }
+                });
+
+                if (!assertion) {
+                    return { status: 'error', error: new Error('No passkey selected') };
+                }
+
+                const prfResult = assertion.getClientExtensionResults();
+                const prfCheck = checkPRFSupport(prfResult, 'recover');
+
+                if (!prfCheck.supported) {
+                    return { status: 'unsupported', reason: prfCheck.reason };
+                }
+
+                const prfBase64 = prfBytesToBase64(prfCheck.prfOutput);
+                const username = decodeUserHandle(assertion.response.userHandle);
+
+                return { status: 'success', prfBase64, username };
+            } catch (error) {
+                const classification = interpretAuthError(error);
+                if (classification === 'no-passkey') {
+                    return { status: 'no-passkey', error };
+                }
+                if (classification === 'user-cancel') {
+                    return { status: 'user-cancel', error };
+                }
+                return { status: 'error', error };
+            }
+        }
+
+        async function runCreationFlow(username) {
+            try {
+                const challenge = crypto.getRandomValues(new Uint8Array(32));
+                const credential = await navigator.credentials.create({
+                    publicKey: {
+                        challenge,
+                        rp: {
+                            name: 'Nuri Wallet',
+                            id: 'nuri.com'
+                        },
+                        user: {
+                            id: new TextEncoder().encode(username),
+                            name: username,
+                            displayName: username
+                        },
+                        pubKeyCredParams: [
+                            { alg: -7, type: 'public-key' },
+                            { alg: -257, type: 'public-key' }
+                        ],
+                        authenticatorSelection: {
+                            authenticatorAttachment: 'platform',
+                            userVerification: 'preferred',
+                            requireResidentKey: true,
+                            residentKey: 'required'
+                        },
+                        attestation: 'none',
+                        timeout: 60000,
+                        extensions: {
+                            prf: {
+                                eval: {
+                                    first: new Uint8Array(PRF_SALT_BYTES)
+                                }
+                            }
+                        }
+                    }
+                });
+
+                if (!credential) {
+                    return { status: 'error', error: new Error('Failed to create passkey') };
+                }
+
+                const prfResult = credential.getClientExtensionResults();
+                const prfCheck = checkPRFSupport(prfResult, 'create');
+
+                if (!prfCheck.supported) {
+                    return { status: 'unsupported', reason: prfCheck.reason };
+                }
+
+                let prfOutput = prfCheck.prfOutput;
+
+                if (prfCheck.needsAuth && !prfOutput) {
+                    const authChallenge = crypto.getRandomValues(new Uint8Array(32));
+                    try {
+                        const assertion = await navigator.credentials.get({
+                            publicKey: {
+                                challenge: authChallenge,
+                                rpId: 'nuri.com',
+                                timeout: 60000,
+                                userVerification: 'preferred',
+                                allowCredentials: [{
+                                    id: credential.rawId,
+                                    type: 'public-key'
+                                }],
+                                extensions: {
+                                    prf: {
+                                        eval: {
+                                            first: new Uint8Array(PRF_SALT_BYTES)
+                                        }
+                                    }
+                                }
+                            }
+                        });
+
+                        if (!assertion) {
+                            return { status: 'user-cancel', error: new Error('PRF authentication cancelled') };
+                        }
+
+                        const authPrfResult = assertion.getClientExtensionResults();
+                        const authPrfCheck = checkPRFSupport(authPrfResult, 'recover');
+
+                        if (!authPrfCheck.supported) {
+                            return { status: 'unsupported', reason: authPrfCheck.reason };
+                        }
+
+                        prfOutput = authPrfCheck.prfOutput;
+                    } catch (authError) {
+                        const classification = interpretAuthError(authError);
+                        if (classification === 'user-cancel') {
+                            return { status: 'user-cancel', error: authError };
+                        }
+                        if (classification === 'no-passkey') {
+                            return { status: 'error', error: new Error('Unable to finalize passkey setup') };
+                        }
+                        return { status: 'error', error: authError };
+                    }
+                }
+
+                if (!prfOutput) {
+                    return { status: 'error', error: new Error('No PRF output available') };
+                }
+
+                return {
+                    status: 'success',
+                    prfBase64: prfBytesToBase64(prfOutput),
+                    username
+                };
+            } catch (error) {
+                const classification = interpretAuthError(error);
+                if (classification === 'user-cancel') {
+                    return { status: 'user-cancel', error };
+                }
+                return { status: 'error', error };
+            }
+        }
+
+        async function createBitcoinWallet(options = {}) {
+            const { emitMessages = true, username: usernameOverride } = options;
+            const btn = document.getElementById('createBtn');
+            const originalContent = btn ? btn.innerHTML : '';
+            let keepDisabled = false;
+            let finalContent = originalContent;
+
+            if (btn) {
+                btn.disabled = true;
+            }
+
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const username = usernameOverride || params.get('username') || `bitcoin_user_${Date.now()}`;
+
+                showStatus('Creating your Bitcoin wallet...');
+
+                const result = await runCreationFlow(username);
+
+                if (result.status === 'success') {
+                    showStatus('✓ Wallet created successfully!', 'success');
+                    if (emitMessages) {
+                        postMessage(`create_success:${result.prfBase64}:${result.username}`);
+                    }
+                    keepDisabled = true;
+                    finalContent = '✓ Wallet Ready';
+                    return result;
+                }
+
+                if (result.status === 'user-cancel') {
+                    showStatus('Passkey setup cancelled. Try again when ready.');
+                    return result;
+                }
+
+                if (result.status === 'unsupported') {
+                    showPRFError();
+                    if (emitMessages) {
+                        postMessage('error:PRF not supported - this passkey cannot be used with Nuri. Please use Apple Passwords.');
+                    }
+                    return result;
+                }
+
+                const message = result.error?.message || 'Unknown error';
+                showStatus('');
+                if (emitMessages) {
+                    postMessage('error:' + message);
+                }
+                return result;
+            } catch (error) {
+                console.error('Create wallet error:', error);
+                const message = error?.message || 'Unknown error';
+                showStatus('');
+                if (emitMessages) {
+                    postMessage('error:' + message);
+                }
+                return { status: 'error', error };
+            } finally {
+                if (btn) {
+                    btn.innerHTML = keepDisabled ? finalContent : originalContent;
+                    btn.disabled = keepDisabled;
+                }
+            }
+        }
+
+        async function recoverWallet(options = {}) {
+            const { emitMessages = true } = options;
+
+            console.log('recoverWallet called v5.1-PRF');
+            showStatus('Authenticating with your passkey...', '');
+
+            const result = await runRecoveryFlow();
+
+            if (result.status === 'success') {
+                showStatus('✓ Passkey authenticated!', 'success');
+                if (emitMessages) {
+                    postMessage(`recover_success:${result.prfBase64}:${result.username}`);
+                }
+                return result;
+            }
+
+            if (result.status === 'no-passkey') {
+                showStatus('');
+                return result;
+            }
+
+            if (result.status === 'user-cancel') {
+                showStatus('Authentication cancelled');
+                return result;
+            }
+
+            if (result.status === 'unsupported') {
+                showStatus('');
+                if (emitMessages) {
+                    postMessage('error:PRF not supported - this passkey cannot decrypt Nuri wallets');
+                }
+                return result;
+            }
+
+            const message = result.error?.message || 'Unknown error';
+            showStatus('');
+            if (emitMessages) {
+                postMessage('error:' + message);
+            }
+            return result;
+        }
+
+        async function openOrCreateWallet() {
+            const btn = document.getElementById('createBtn');
+            if (!btn) {
+                console.warn('createBtn element not found');
+                return;
+            }
+
+            const originalContent = btn.innerHTML;
+            let keepDisabled = false;
+            let finalContent = originalContent;
+
+            btn.disabled = true;
+
+            try {
+                showStatus('Checking for an existing passkey...');
+
+                const recoveryResult = await runRecoveryFlow();
+
+                if (recoveryResult.status === 'success') {
+                    showStatus('✓ Passkey authenticated!', 'success');
+                    postMessage(`recover_success:${recoveryResult.prfBase64}:${recoveryResult.username}`);
+                    keepDisabled = true;
+                    finalContent = '✓ Wallet Ready';
+                    return;
+                }
+
+                if (recoveryResult.status === 'user-cancel') {
+                    showStatus('Authentication cancelled');
+                    return;
+                }
+
+                if (recoveryResult.status === 'unsupported') {
+                    showStatus('');
+                    postMessage('error:PRF not supported - this passkey cannot decrypt Nuri wallets');
+                    return;
+                }
+
+                if (recoveryResult.status === 'error' && recoveryResult.error) {
+                    throw recoveryResult.error;
+                }
+
+                const params = new URLSearchParams(window.location.search);
+                const username = params.get('username') || `bitcoin_user_${Date.now()}`;
+
+                showStatus('Creating your Bitcoin wallet...');
+
+                const creationResult = await runCreationFlow(username);
+
+                if (creationResult.status === 'success') {
+                    showStatus('✓ Wallet created successfully!', 'success');
+                    postMessage(`create_success:${creationResult.prfBase64}:${creationResult.username}`);
+                    keepDisabled = true;
+                    finalContent = '✓ Wallet Ready';
+                    return;
+                }
+
+                if (creationResult.status === 'user-cancel') {
+                    showStatus('Passkey setup cancelled. Try again when ready.');
+                    return;
+                }
+
+                if (creationResult.status === 'unsupported') {
+                    showPRFError();
+                    postMessage('error:PRF not supported - this passkey cannot be used with Nuri. Please use Apple Passwords.');
+                    return;
+                }
+
+                if (creationResult.status === 'error' && creationResult.error) {
+                    throw creationResult.error;
+                }
+
+            } catch (error) {
+                console.error('Open/create wallet error:', error);
+                const message = error?.message || 'Unknown error';
+                showStatus('');
+                postMessage('error:' + message);
+            } finally {
+                btn.innerHTML = keepDisabled ? finalContent : originalContent;
+                btn.disabled = keepDisabled;
+            }
+        }
+    </script>
+</body>
+</html>

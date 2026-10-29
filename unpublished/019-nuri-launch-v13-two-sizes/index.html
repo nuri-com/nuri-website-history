@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; script-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nuri — The Bitcoin Account.</title>
+<meta name="description" content="Bitcoin first. Stablecoins when useful. Local cash in and out. One simple self-custodial account.">
+<style>
+:root{
+  --bg:#ffffff;
+  --ink:#090909;
+  --soft:#f4f4f1;
+  --line:#ddddda;
+  --big:clamp(3.8rem,8vw,8.4rem);
+  --small:clamp(1.15rem,1.7vw,1.42rem);
+  --pad:clamp(24px,5vw,72px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:var(--small);
+  line-height:1.45;
+}
+body,button,a,p,span,strong,b,li,summary,th,td{font-size:var(--small)}
+h1,h2{
+  margin:0;
+  max-width:12ch;
+  font-family:inherit;
+  font-size:var(--big);
+  font-weight:700;
+  line-height:.93;
+  letter-spacing:-.055em;
+}
+a{color:inherit;text-underline-offset:.18em}
+.brand{
+  position:fixed;
+  z-index:50;
+  left:24px;
+  top:18px;
+  text-decoration:none;
+  font-weight:700;
+}
+.open{
+  position:fixed;
+  z-index:50;
+  right:24px;
+  top:14px;
+  padding:.62em .95em;
+  border:1px solid var(--ink);
+  border-radius:999px;
+  background:var(--ink);
+  color:#fff;
+  text-decoration:none;
+  font-weight:700;
+}
+.slide{
+  width:100%;
+  height:100svh;
+  min-height:100svh;
+  display:flex;
+  align-items:center;
+  padding:76px var(--pad) 48px;
+  scroll-snap-align:start;
+  scroll-snap-stop:always;
+  overflow:hidden;
+}
+.slide.soft{background:var(--soft)}
+.slide.dark{background:var(--ink);color:#fff}
+.content{
+  width:min(100%,1450px);
+  max-height:calc(100svh - 124px);
+  margin:auto;
+  overflow:hidden;
+}
+.lead{
+  max-width:50rem;
+  margin:1.45rem 0 0;
+}
+.actions{
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+  margin-top:1.7rem;
+  align-items:center;
+}
+.button{
+  display:inline-block;
+  padding:.66em .95em;
+  border:1px solid currentColor;
+  border-radius:999px;
+  text-decoration:none;
+  font-weight:700;
+}
+.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.dark .primary{background:#fff;color:var(--ink);border-color:#fff}
+.two{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:clamp(44px,8vw,140px);
+  align-items:center;
+}
+.three{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:30px;
+  margin-top:2rem;
+}
+.block{
+  border-top:1px solid var(--line);
+  padding-top:18px;
+}
+.block p{margin:.45rem 0}
+.rows{max-width:760px}
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:28px;
+  padding:14px 0;
+  border-bottom:1px solid var(--line);
+}
+.row:first-child{border-top:1px solid var(--line)}
+.dark .row{border-color:#303030}
+.rails{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0 34px;
+  max-width:980px;
+  margin-top:1.4rem;
+}
+.rails div{
+  padding:14px 0;
+  border-top:1px solid var(--line);
+}
+.rails div:nth-last-child(-n+2){border-bottom:1px solid var(--line)}
+.partners{
+  display:flex;
+  flex-wrap:wrap;
+  gap:18px 34px;
+  margin-top:1.5rem;
+}
+.partners strong{font-weight:700}
+.founder{
+  max-width:760px;
+  margin-top:1.4rem;
+  padding-top:18px;
+  border-top:1px solid var(--line);
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:36px;
+  margin-top:1.4rem;
+}
+.footer-grid p{margin:.42rem 0}
+dialog{
+  width:min(1050px,calc(100% - 32px));
+  max-height:88svh;
+  border:0;
+  padding:0;
+  background:#fff;
+  color:var(--ink);
+}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.modal{padding:28px;overflow:auto;max-height:88svh}
+.close{
+  border:1px solid var(--ink);
+  border-radius:999px;
+  background:#fff;
+  padding:.6em .9em;
+  cursor:pointer;
+  font-weight:700;
+}
+.table-wrap{overflow:auto;margin:1.5rem 0;border:1px solid var(--line)}
+table{border-collapse:collapse;min-width:1450px;width:100%}
+th,td{
+  padding:10px 12px;
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  text-align:center;
+  white-space:nowrap;
+}
+th:first-child{text-align:left}
+.nuri{background:var(--ink);color:#fff;font-weight:700}
+.no{color:#aaa}
+.partial{color:#777}
+@media(max-width:900px){
+  .two,.three,.rails,.footer-grid{grid-template-columns:1fr}
+  .rails div:nth-last-child(-n+2){border-bottom:0}
+  .rails div:last-child{border-bottom:1px solid var(--line)}
+}
+@media(max-width:720px){
+  :root{
+    --big:clamp(3.4rem,15vw,6.1rem);
+    --small:clamp(1.05rem,4.5vw,1.25rem);
+    --pad:22px;
+  }
+  .brand{left:18px}
+  .open{right:18px}
+  .slide{padding-top:82px;padding-bottom:44px}
+  .content{max-height:calc(100svh - 126px)}
+}
+</style>
+</head>
+<body>
+
+<a class="brand" href="#one">NURI</a>
+<a class="open" href="https://app.nuri.com/">Open free account</a>
+
+<section class="slide" id="one">
+  <div class="content">
+    <h1>The Bitcoin Account.</h1>
+    <p class="lead"><strong>Bitcoin first. Stable dollars and euros when useful. Local cash in and out.</strong></p>
+    <p class="lead">One simple self-custodial account.</p>
+    <div class="actions">
+      <a class="button primary" href="https://app.nuri.com/">Open free account</a>
+      <a href="#two">Scroll ↓</a>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="two">
+  <div class="content two">
+    <div><h2>Global Bitcoin.<br>Local Cash.</h2></div>
+    <div>
+      <p><strong>Send Bitcoin anywhere. On-chain or over Lightning.</strong></p>
+      <p>Hold stable dollars and euros.</p>
+      <p>Swap to local currency in seconds.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="three">
+  <div class="content two">
+    <div><h2>No exchange.<br>A wallet.</h2></div>
+    <div class="rows">
+      <div class="row"><strong>One passkey</strong><span>✓</span></div>
+      <div class="row"><strong>No seed phrase</strong><span>✓</span></div>
+      <div class="row"><strong>Self-custodial</strong><span>✓</span></div>
+      <div class="row"><strong>Multisig protected</strong><span>✓</span></div>
+      <div class="row"><strong>Browser · iOS · Android</strong><span>✓</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="four">
+  <div class="content two">
+    <div><h2>Bitcoin is digital cash.</h2></div>
+    <div>
+      <p><strong>Bitcoin was built as peer-to-peer electronic cash.</strong></p>
+      <p>Stablecoins are digital dollars and euros when you want stable value.</p>
+      <p>Bank, card and mobile money are ways in and out.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="five">
+  <div class="content two">
+    <div><h2>Cash in.<br>Cash out.</h2></div>
+    <div class="rails">
+      <div><strong>EUR</strong><br>SEPA · Visa</div>
+      <div><strong>USD</strong><br>ACH · card</div>
+      <div><strong>GBP</strong><br>Faster Payments</div>
+      <div><strong>TZS</strong><br>Mobile Money · SWIFT</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" id="six">
+  <div class="content">
+    <h2>Freedom money.</h2>
+    <p class="lead"><strong>Anyone should be free to own money and send it directly to anyone else.</strong></p>
+    <p class="lead">No middleman. No gatekeeper. Like handing someone cash.</p>
+    <p class="lead">Bitcoin made that possible. We make it simple enough for everyone.</p>
+  </div>
+</section>
+
+<section class="slide" id="seven">
+  <div class="content two">
+    <div><h2>If we disappear,<br>your money doesn’t.</h2></div>
+    <div>
+      <p><strong>The wallet is yours.</strong></p>
+      <p>Cards, banks and payment providers are services around it.</p>
+      <p>Nuri can disappear. A partner can disappear. Your self-custodial wallet is designed to remain yours.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="eight">
+  <div class="content two">
+    <div><h2>Regulated rails.<br>Independent wallet.</h2></div>
+    <div>
+      <p><strong>Use regulated services without giving them custody of your wallet.</strong></p>
+      <div class="partners"><strong>Wirex</strong><strong>Monerium</strong><strong>ClickPesa</strong></div>
+      <p>Card, banking, e-money and local payment services operate under their own licences and terms.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="nine">
+  <div class="content two">
+    <div><h2>Different by design.</h2></div>
+    <div>
+      <div class="rows">
+        <div class="row"><strong>Passkey self-custody</strong><span>✓</span></div>
+        <div class="row"><strong>Seedless multisig</strong><span>✓</span></div>
+        <div class="row"><strong>Bitcoin + stablecoins</strong><span>✓</span></div>
+        <div class="row"><strong>Card + banking rails</strong><span>✓</span></div>
+        <div class="row"><strong>Open source</strong><span>✓</span></div>
+      </div>
+      <div class="actions"><button class="button" onclick="compare.showModal()">Full comparison</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="ten">
+  <div class="content two">
+    <div><h2>The patient pioneers.</h2></div>
+    <div>
+      <p><strong>We grew up building internet money.</strong></p>
+      <p>Berlin. 2012 → today. Mining. Exchanges. Wallets. Smart contracts. Protocols. Payments.</p>
+      <div class="founder">
+        <p><strong>Emin Mahrt · Founder</strong></p>
+        <p>Bitcoin since the early 2010s. Wallets, protocols and payments.</p>
+      </div>
+      <p><strong>The goal: self-custody simple enough for everyone.</strong></p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="eleven">
+  <div class="content two">
+    <div><h2>Open for people.<br>Open for AI.</h2></div>
+    <div>
+      <p><strong>Same wallet. Explicit permissions.</strong></p>
+      <p>Open source · Markdown · OpenAPI · MCP</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="twelve">
+  <div class="content">
+    <h2>Support &amp; company.</h2>
+    <div class="footer-grid">
+      <div><p><strong>Product</strong></p><p><a href="https://app.nuri.com/">Wallet</a></p><p><a href="https://nuri.com/card-support">Card &amp; Bank Support</a></p></div>
+      <div><p><strong>Company</strong></p><p><a href="https://nuri.com/about">About</a></p><p><a href="https://nuri.com/contact">Contact</a></p></div>
+      <div><p><strong>Developers</strong></p><p><a href="https://nuri.com/developers">Developers</a></p><p><a href="https://nuri.com/docs">Docs</a></p><p><a href="https://nuri.com/mcp">MCP</a></p></div>
+      <div><p><strong>Legal</strong></p><p><a href="https://nuri.com/privacy-policy/">Privacy</a></p><p><a href="https://nuri.com/terms-of-service/">Terms</a></p></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" id="thirteen">
+  <div class="content">
+    <h2>Global Bitcoin.<br>Local Cash.</h2>
+    <div class="actions"><a class="button primary" href="https://app.nuri.com/">Open free account</a></div>
+  </div>
+</section>
+
+<dialog id="compare">
+  <div class="modal">
+    <h2 style="max-width:none">Full comparison.</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Capability</th><th class="nuri">Nuri</th><th>Cash App</th><th>Bitkey</th><th>Blitz</th><th>Muun</th><th>Strike</th><th>Wallet of Satoshi</th><th>Bitrefill</th><th>Bitwala</th><th>AQUA</th><th>Phoenix</th>
+        </tr></thead>
+        <tbody>
+          <tr><th>Global access</th><td class="nuri">✓</td><td class="no">—</td><td class="partial">~</td><td>✓</td><td>✓</td><td class="partial">~</td><td class="partial">~</td><td>✓</td><td class="partial">~</td><td>✓</td><td>✓</td></tr>
+          <tr><th>Self-custodial</th><td class="nuri">✓</td><td class="no">—</td><td>✓</td><td>✓</td><td>✓</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td>✓</td><td>✓</td><td>✓</td></tr>
+          <tr><th>No seed phrase</th><td class="nuri">✓</td><td class="no">—</td><td>✓</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="no">—</td><td class="partial">~</td><td>✓</td><td class="no">—</td><td class="no">—</td></tr>
+          <tr><th>Passkey-based</th><td class="nuri">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="no">—</td></tr>
+          <tr><th>Multisig protected</th><td class="nuri">✓</td><td class="no">—</td><td>✓</td><td class="no">—</td><td>✓</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="no">—</td></tr>
+          <tr><th>Bitcoin</th><td class="nuri">✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+          <tr><th>Lightning</th><td class="nuri">✓</td><td>✓</td><td class="no">—</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td class="partial">~</td><td>✓</td><td>✓</td></tr>
+          <tr><th>Stablecoins</th><td class="nuri">✓</td><td>✓</td><td class="no">—</td><td>✓</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="partial">~</td><td>✓</td><td>✓</td><td class="no">—</td></tr>
+          <tr><th>Card + bank rails</th><td class="nuri">✓</td><td>✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td>✓</td><td>✓</td><td class="partial">~</td><td class="no">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <button class="close" onclick="compare.close()">Close</button>
+  </div>
+</dialog>
+
+</body>
+</html>

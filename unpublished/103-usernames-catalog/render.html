@@ -1,0 +1,1624 @@
+<!doctype html>
+<html lang="en"><head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; script-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="robots" content="noindex,nofollow,noarchive"></head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Username &amp; avatar catalog</title>
+<meta name="description" content="2048 animals x 2048 modifiers, each with a pixel avatar you can confirm out loud.">
+<style>
+  :root{--paper:#e9ecf1;--panel:#fff;--ink:#12161d;--muted:#5c6675;
+        --line:#c9d0da;--focus:#1f4fd8;--hover:#f4f6f9}
+  *{box-sizing:border-box}
+  html{scroll-padding-top:80px}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font:16px/1.55 ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  header{padding:40px 0 26px}
+  .hero{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+  .hero img{width:112px;height:112px;image-rendering:pixelated;border:1px solid var(--line)}
+  h1{font-size:clamp(26px,4vw,36px);letter-spacing:-.02em;margin:0 0 6px;font-weight:640}
+  #heroName{margin:0;font-size:20px;font-weight:500}
+  #heroPhrase{margin:2px 0 0;color:var(--muted)}
+  header .lead{margin:14px 0 0;color:var(--muted);max-width:64ch}
+  .bar{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--line);padding:10px 0}
+  .bar .wrap{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  input,button,select{font:inherit;color:inherit;background:var(--panel);border:1px solid var(--line);padding:8px 12px}
+  button{cursor:pointer}
+  button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  #q{flex:1 1 240px;min-width:0}
+  .tabs{display:flex}
+  .tabs button+button{border-left:0}
+  :is(button,input,.chip,.tile):focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+  main{padding:20px 0 72px}
+  .meta{color:var(--muted);font-size:14px;margin:0 0 14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:1px;
+        background:var(--line);border:1px solid var(--line)}
+  .tile{display:flex;gap:12px;align-items:center;background:var(--panel);border:0;padding:12px;text-align:left;cursor:pointer}
+  .tile:hover{background:var(--hover)}
+  .tile img{width:56px;height:56px;image-rendering:pixelated;flex:0 0 auto}
+  .tile b{display:block;font:500 14px/1.35 ui-monospace,Menlo,monospace;word-break:break-all}
+  .tile em{display:block;font-style:normal;color:var(--muted);font-size:12px;margin-top:2px}
+  .letter{position:sticky;top:57px;background:var(--paper);padding:14px 0 6px;font-weight:640;
+          font-size:14px;color:var(--muted);border-bottom:1px solid var(--line)}
+  .chips{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border:1px solid var(--line);border-top:0;margin-bottom:2px}
+  .chip{background:var(--panel);border:0;padding:7px 10px;font-size:14px;cursor:pointer;font-family:ui-monospace,Menlo,monospace}
+  .chip:hover{background:var(--hover)}
+  .chip[aria-pressed="true"]{background:var(--ink);color:#fff}
+  .detail{background:var(--panel);border:1px solid var(--line);padding:16px;margin-bottom:18px}
+  .detail-head{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .detail-head img{width:72px;height:72px;image-rendering:pixelated}
+  .detail-head h2{margin:0;font-size:20px}
+  .detail-head p{margin:4px 0 0;color:var(--muted);font-size:14px}
+  .close{margin-left:auto}
+  .parts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1px;
+         background:var(--line);border:1px solid var(--line);margin-top:14px}
+  .part{background:var(--panel);padding:10px 12px}
+  .part span{display:block;color:var(--muted);font-size:12px}
+  .part b{font-weight:600}
+  .parade{display:flex;gap:1px;flex-wrap:wrap;background:var(--line);border:1px solid var(--line)}
+  .parade figure{margin:0;background:var(--panel);padding:10px;text-align:center;width:104px}
+  .parade img{width:72px;height:72px;image-rendering:pixelated}
+  .parade figcaption{font-size:12px;color:var(--muted);margin-top:6px}
+  footer{border-top:1px solid var(--line);padding:20px 0 48px;color:var(--muted);font-size:14px}
+  footer code{background:var(--panel);border:1px solid var(--line);padding:1px 5px}
+</style>
+
+<header class="wrap">
+  <div class="hero">
+    <img id="heroArt" alt="">
+    <div>
+      <h1>Names you can read out. Faces you can describe.</h1>
+      <p id="heroName" class="mono">&nbsp;</p>
+      <p id="heroPhrase">&nbsp;</p>
+    </div>
+  </div>
+  <p class="lead">Every account gets one adjective, one animal, and one creature drawn from a fixed
+  vocabulary of parts. Because each part has a name, two people can confirm an account over the
+  phone: “I see a red bear in a top hat on mint — same?”</p>
+</header>
+
+<div class="bar">
+  <div class="wrap">
+    <input id="q" placeholder="Search words, or paste a name or account number" aria-label="Search">
+    <div class="tabs" role="tablist">
+      <button role="tab" data-tab="names" class="on">Names</button>
+      <button role="tab" data-tab="animals">Animals</button>
+      <button role="tab" data-tab="modifiers">Modifiers</button>
+      <button role="tab" data-tab="parts">Faces</button>
+    </div>
+    <button id="roll">Roll 48</button>
+  </div>
+</div>
+
+<main class="wrap">
+  <div id="detail"></div>
+  <p class="meta" id="meta">Loading…</p>
+  <div id="view"></div>
+</main>
+
+<footer class="wrap">
+  <p id="entropy"></p>
+  <p>Data and code in this repo: <code>animals.json</code>, <code>adjectives.json</code>,
+  <code>sprites.json</code>, <code>avatar.ts</code>, <code>avatar.py</code>, <code>usernames.ts</code>,
+  <code>usernames.py</code>.</p>
+</footer>
+
+<script>
+const DATA = {"adjectives":["abiding","able","absolute","abundant","accurate","acrobatic","active","adaptive","adept","admired","adorable","adoring","adroit","aerial","aero","affable","ageless","agile","airborne","alert","alive","allegro","alluring","alpine","amazing","amber","ambitious","amethyst","amiable","ample","amused","amusing","analog","analytic","anchored","ancient","andante","android","angelic","angular","animate","animated","anointed","apex","apricot","apt","aqua","arboreal","arcane","arced","arctic","ardent","armored","aromatic","arranged","arresting","artful","artisan","artistic","ascending","ash","aspirant","aspiring","assiduous","assured","astral","astro","astute","atlantic","atomic","attentive","auburn","august","aurora","auroral","austere","authentic","autumnal","avid","avocado","awake","aware","awash","awesome","azure","balanced","balmy","banana","banded","banner","bardic","bare","barefoot","bashful","basil","bassy","beachy","beaming","bearded","bedecked","beguiling","beige","beloved","bemused","bendy","benign","best","big","binary","bionic","bisque","biting","black","bladed","blank","blazing","blessed","blissful","blithe","blond","blooming","blue","blueberry","blunt","blush","blustery","bold","bone","bonny","booming","boreal","bouncy","bounding","boundless","bounteous","braided","brainy","branched","brash","brass","brave","brawny","brazen","breakneck","breathing","breezy","brick","bridled","brief","bright","brilliant","brisk","bristled","broad","bronze","bronzed","brown","brushed","bubblegum","bubbly","buff","bulbous","bundled","buoyant","buoyed","burgundy","burly","burnished","bustling","busy","butter","buttery","buttoned","buzzing","byte","cabled","cadenced","calm","canary","candid","candied","candy","canny","canyon","capable","capital","capped","caramel","carbon","carbonic","cardinal","carefree","careful","caring","carmine","carrot","carved","cascade","cascading","cast","casual","cautious","cavern","cavernous","ceaseless","cedar","celadon","celery","celestial","centered","cerise","certain","cerulean","chained","chambered","champagne","champion","chaotic","charcoal","charged","charmed","charming","chased","chatty","checkered","cheeky","cheerful","cheery","cherished","cherry","cherubic","chestnut","chewy","chic","chili","chill","chiming","chipper","chiseled","chocolate","choice","choral","chorded","chosen","chromatic","chuckling","cinder","cinnamon","cipher","circling","circuit","citrine","citrus","civic","civil","clad","clanging","claret","clasped","classic","classy","clay","clean","clear","clever","clifftop","climbing","clinking","cloaked","cloud","cloudy","clover","clumsy","clustered","coal","coastal","cobalt","cocoa","coffee","cogent","cognac","coherent","coiled","coined","cold","collected","colorful","colossal","columnar","combed","comely","comfy","comic","comical","compact","compass","competent","complex","composed","concealed","concise","confident","conic","connected","constant","content","contented","convivial","copious","copper","coral","corded","cordial","corseted","cosmic","cosmical","cosy","cotton","coursing","courteous","courtly","covert","cozy","crafty","cragged","cranberry","cream","creamy","creative","credible","crescent","crested","crimson","crinkled","crisp","crispy","critical","crowned","crucial","crunchy","cryo","crystal","cuddly","cultured","cunning","curbed","curious","curled","curly","currant","current","curved","curvy","cute","cyan","cyber","cyclic","daffodil","daffy","dainty","dandelion","dandy","dapper","dappled","daring","darkening","darling","dashing","data","dauntless","dawning","dawnlit","daybreak","daydream","daylong","dazzled","dazzling","decent","decisive","decked","dedicated","deep","deepening","defiant","definite","deft","delicate","delighted","delta","denim","dense","desert","destined","detailed","devoted","devout","dewy","dextrous","dialed","diamond","digital","diligent","dimmed","dimpled","dipped","direct","discreet","distant","distinct","diurnal","diverse","divine","diving","dizzy","domed","dominant","doting","dotted","doubled","doughty","doughy","dove","downy","draconic","dreamlike","dreamy","drifting","driftwood","driven","droll","drone","druidic","drumming","dry","dual","dulcet","dune","duned","duplex","durable","dusk","dusklit","dusky","dusty","dutiful","dyed","dynamic","eager","earnest","earthy","eastern","easy","ebony","ebullient","echoed","echoing","eclectic","ecru","ecstatic","edged","eerie","effective","efficient","effulgent","effusive","eggplant","eggshell","elastic","elated","elder","electric","elegant","elemental","elevated","elite","eloquent","elusive","elven","embered","emerald","emergent","eminent","empathic","enameled","enchanted","endearing","endless","enduring","energetic","energized","engaging","engraved","enormous","enthused","enveloped","epic","equal","equine","errant","espresso","essential","esteemed","estuary","eternal","ethereal","ethical","euphonic","euphoric","even","evening","everglade","evergreen","evocative","evolving","exact","exalted","excellent","exciting","exemplary","exotic","expansive","expert","exploring","exquisite","extensive","extra","extreme","exuberant","exultant","fabled","fabulous","facet","faceted","facetious","facile","fae","fair","faithful","falling","famed","famous","fanciful","fancy","fanned","fantastic","far","fated","favorable","favored","fawn","fearless","fearsome","feathered","feathery","feisty","fenced","feral","fern","fertile","fervent","fervid","festal","festive","fetching","fielded","fiery","fig","filigree","fine","finespun","finest","finished","fire","firelit","firm","first","fit","fitted","fizzy","fjord","flagged","flaky","flame","flaming","flamingo","flanked","flared","flashy","flax","flecked","fledged","fleeced","fleet","fleeting","flexible","flint","flinty","floating","floral","floured","flowered","flowing","fluent","fluffy","fluid","fluted","flying","foam","foamy","focal","focused","folded","foliage","fond","forceful","forest","forested","forged","formal","formed","fortified","fortunate","forward","founded","fragrant","framed","frank","free","freeborn","freeform","freeing","freshened","fringed","frisky","frontier","frost","frosted","frosty","fruited","fruitful","fuchsia","fudgy","fueled","fulfilled","furled","furrowed","fusion","fuzzy","gabled","gainful","gaited","galactic","gallant","game","gaming","garlanded","garnet","gathered","gauzy","geared","gemmed","generous","genial","gentle","genuine","geodesic","germane","giant","giddy","gifted","gigantic","gilded","gilt","ginger","gingerly","gingery","girded","glacial","glacier","glad","gladsome","glassy","glazed","gleaming","gleeful","glib","gliding","glimmer","glimmered","glinted","glinting","globed","glorious","glossy","gloved","glowing","gold","golden","goldleaf","good","gossamer","gothic","graceful","gracile","gracious","graded","grained","grand","grandiose","granite","granular","grape","graphic","graphite","grass","grassy","grateful","graven","gray","great","green","greening","gridded","grinning","gritty","grooved","groovy","grotto","grounded","growing","grumpy","guarded","guiding","guileless","gunmetal","gusting","gusty","gutsy","halcyon","hale","hallowed","haloed","hammered","handmade","handsome","handy","hanging","happy","harbor","harbored","hardened","hardy","harmonic","harnessed","hasty","hatched","haunting","hazel","healthy","heartfelt","hearthlit","hearty","heather","heathered","heavenly","heeded","helical","helmed","helpful","heralded","herbal","heroic","hewn","hexa","hexed","hibiscus","hidden","high","highborn","highland","hilarious","hilly","hinged","historic","hollow","holly","hologram","homebound","honest","honey","honeycomb","honeyed","honorable","hooded","hooked","hopeful","horned","hot","hourly","huge","humble","humid","humming","hungry","hurried","hurtling","hushed","husky","hydro","hymnal","ice","iced","iconic","ideal","idle","illumined","imaged","imbued","immense","immortal","impartial","impish","incisive","indigo","infinite","ingenious","ingenuous","inked","inlaid","inland","inlet","inner","inscribed","inspired","instant","intense","intrepid","intricate","intuitive","inventive","inward","ionic","iris","iron","island","isle","isthmus","ivory","ivy","jade","jagged","jammy","jasmine","jaunty","jazzy","jellied","jet","jeweled","jocular","joined","jointed","jolly","journeyed","jovial","joyful","joyous","jubilant","jubilee","judicious","juicy","jumpy","jungled","juniper","keen","keenly","kelp","kelpy","khaki","kindled","kindly","kindred","kinetic","kissed","kited","knightly","knitted","knotted","knowing","labeled","laced","lacquered","laddered","lagoon","lakeside","lamplit","lanky","lanterned","lapis","lapping","large","laser","latte","latticed","laudable","laughing","launched","laureled","lavender","lavish","lawful","layered","lazy","lead","leading","leaf","leafy","lean","leaping","learned","ledged","leeward","legendary","legion","legit","leisurely","lemon","lemony","lengthy","lenient","lensed","level","liberal","liberated","lichened","licorice","lidded","lifelong","lifted","light","lightning","likely","lilac","lilting","limber","lime","limitless","limned","linen","linked","lipped","lissome","listening","lithe","lithic","littoral","lively","loamy","lobed","locked","lodged","lofted","lofty","logical","lone","lonesome","long","looming","looped","lordly","lotus","loud","lovable","lovely","loyal","lucent","lucid","lucky","luminal","luminous","lunar","lunate","luring","lush","lustrous","luxuriant","lyric","lyrical","magenta","magic","magical","magnetic","mahogany","main","maize","majestic","major","malachite","malleable","malted","mammoth","mango","mantled","maple","mapped","marble","marbled","marigold","marine","marked","maroon","marshy","marvelous","massive","masted","master","matchless","matte","mauve","maze","meadow","measured","mecha","medaled","mellow","melodic","melodious","melon","mercury","meridian","meringue","merry","mesa","metal","meteoric","mica","midday","midnight","mighty","mild","milky","mindful","mineral","mint","minty","mirrored","mirthful","mirthsome","mist","misty","mixed","moated","mobile","mocha","modeled","modern","modest","molten","momentary","momentous","mooned","moonlit","moored","moorland","morning","mortal","moss","mossgreen","mossy","motivated","motley","mottled","mountain","mounted","mouthed","moving","mulberry","muraled","murmuring","musical","mustard","mustered","mystic","mythic","named","nano","nascent","native","natural","nautical","navigable","navy","nearby","neat","nectar","needed","neon","nested","netted","neural","newborn","nifty","nightborn","nightly","nimble","nimbus","noble","noir","noisy","nomadic","noon","noonday","nordic","northern","notable","notched","noted","nourished","novel","nuanced","nuclear","nurturing","nutmeg","nutty","oak","oaken","oared","oasis","oat","obliging","observant","obsidian","ocean","oceanic","ochre","offbeat","offshore","oiled","okay","olden","olive","onward","onyx","opal","opaline","open","opening","operatic","optic","optimal","opulent","oracle","orange","orbital","orbiting","orchard","orchid","ordained","ordered","orderly","organic","original","ornate","outback","outbound","outgoing","outlined","outreach","outsized","outspoken","outward","ovate","overnight","oxblood","oyster","paced","pacific","padded","pagan","painted","painterly","paired","palatial","pale","palmy","pampas","paneled","panoramic","papaya","paper","paprika","parallel","paramount","parchment","parted","pastel","pastoral","patient","patterned","paved","pea","peaceable","peaceful","peach","peachy","peacock","pealing","pearl","pearled","pebbled","peculiar","peerless","pendant","pennant","pensive","peony","pepper","peppery","peppy","perennial","perfect","perky","permanent","perpetual","persimmon","pert","petal","petaled","pewter","phantom","phoenix","phosphor","photon","piedmont","pierced","piled","pillared","pillowy","pine","pink","pinnate","pinned","pioneer","piped","piquant","pistachio","pitch","pitched","pithy","pivotal","pixel","placid","plaited","planed","planted","plasma","plaster","plateau","plated","platinum","playful","pleasant","pleated","plentiful","pliant","plucky","plum","plumed","plunging","plush","pocketed","poetic","pointed","poised","polar","poled","polished","polite","polka","polymath","ponderous","pooled","poplar","poppy","popular","porcelain","porous","portaled","posh","positive","potent","poured","powder","powerful","practical","prairie","praised","prancing","prayerful","precious","precise","preening","premier","prepared","prescient","present","pressed","pretty","primal","prime","primrose","princely","printed","prismatic","pristine","private","prized","proactive","probing","prodigal","profound","prolific","prominent","promising","prompt","proper","proto","proud","provident","prowling","prudent","prussian","puce","pulsing","pumice","pumped","pumpkin","punchy","pure","purple","purposive","quaint","qualified","quality","quantum","quartz","questing","quick","quiet","quilted","quirky","quivered","quixotic","radial","radiant","radiantly","radish","rafted","railed","rain","rainbow","rainlit","raked","rakish","rambling","ramped","rapid","rapturous","rare","rascally","raspberry","raspy","rational","raven","ravishing","rayed","reaching","ready","real","rebel","receptive","red","redwood","reedy","reef","reefed","reeled","refined","reflected","refracted","refulgent","regal","regaled","reined","rejoicing","relaxed","reliable","remote","renewed","renowned","reputable","resilient","resined","resolute","resonant","restful","restless","retro","revered","reverent","rhapsodic","rhubarb","rhythmic","ribboned","rich","ridged","riding","right","righteous","rigorous","rimed","rimmed","ringed","riotous","rippled","rising","ritzy","riven","river","riverine","roaming","roaring","roasted","robotic","robust","rock","rocking","rocky","rogue","rolling","romantic","roofed","rooted","roped","rose","rosemary","rosewood","rosy","rouge","rough","round","rounded","roving","rowed","royal","ruby","ruddy","ruffled","rugged","rune","runic","rushing","russet","rust","rustic","rye","sable","sacred","saffron","sagacious","sage","sagebrush","sailing","saintly","sakura","salmon","salted","salty","salutary","sand","sanded","sandstone","sanguine","sapling","sapphire","sashed","sassy","sated","satin","satiny","saucy","savanna","savory","savvy","scalloped","scaly","scarlet","scattered","scenic","scented","scholarly","scoured","scrappy","scripted","scrolled","sculpted","sea","seaborne","seabound","seafoam","seasonal","seasoned","seaward","seaweed","secret","secretive","secure","sedate","sedulous","seeded","seeking","segmented","selfless","sensible","sepia","sequined","serene","shaded","shafted","shaggy","shale","shaped","sharp","sheer","shell","shelled","sheltered","sherbet","shifting","shining","shiny","shored","shrewd","shuttered","shy","sidereal","sienna","sighted","signaled","silent","silicon","silk","silken","silky","silly","silver","silvered","simple","sincere","sinewy","singing","singular","sinuous","skilled","skittish","sky","skyward","slanted","slate","slated","sleek","sleepy","slender","slick","sliding","slim","sloped","sly","small","smart","smelted","smiling","smitten","smoke","smoked","smooth","snappy","snow","snowbound","snowdrop","snowy","snug","soaring","social","soft","solar","solemn","solid","solstice","sonic","sonorous","soot","soothing","sound","sounded","southern","sovereign","spacious","spangled","spanned","sparkling","sparkly","spartan","spearmint","special","spectral","speedy","spice","spiced","spicy","spiraled","spired","spirited","splashed","splendid","spoked","spotless","spotted","sprigged","sprightly","sprinkled","spruce","spry","spurred","square","staccato","stacked","stained","stalwart","stamped","stardust","starlight","starlit","starry","stately","static","steadfast","steady","stealthy","steel","steeped","stellar","stemmed","steppe","stepped","sterling","stitched","stoic","stoked","stone","storm","stormy","stout","straight","stranded","strange","strapping","strategic","straw","strenuous","strewn","striking","stringed","striped","stroked","strong","strummed","strumming","studded","sturdy","stylish","suave","sublime","subtle","sudden","sugar","sugary","summery","summit","sumptuous","sunbaked","sundial","sunflower","sunlit","sunny","sunrise","sunset","sunshine","sunward","sunwise","superb","supple","supreme","sure","surefooted","surging","surpassing","svelte","swaddled","swank","swayed","sweeping","sweet","swelling","swept","swift","swirling","sylphic","sylvan","synergetic","synth","syrup","syrupy","tabled","tactful","taiga","talented","tall","tallgrass","tame","tan","tangerine","tangy","tapered","tapestried","tart","tasseled","taupe","tea","teal","techno","tectonic","teeming","temperate","tempered","tenacious","tender","tented","terraced","terracotta","terrific","tessellate","thankful","thatched","thermal","thick","thistle","thorough","thoughtful","threaded","thrifty","thriving","thunder","thundering","thunderous","tickled","tidal","tide","tidy","tiered","tilled","tilted","timbered","timeless","timely","tinseled","tiny","tipped","tireless","titan","titanic","toasted","toasty","toffee","tolerant","tomato","tonal","toned","tonic","topaz","topmost","topped","torched","torrid","totemic","tough","towering","tracked","tractable","trailing","trained","tranquil","treble","treelined","trellised","tremendous","trenchant","tressed","trilling","trim","triumphal","triumphant","tropic","tropical","true","trusted","trusty","tucked","tufted","tumbling","tundra","tuned","tuneful","turbo","turbulent","turquoise","turreted","twilight","twilit","twinkling","twirling","ubiquitous","ultra","umber","umbral","unassuming","unbeaten","unbending","unbound","unbowed","unbroken","uncanny","uncharted","undaunted","undeterred","undulant","unending","unerring","unfailing","unfurled","unhurried","uniform","unimpeded","unique","united","universal","unrivaled","unshakable","untamed","untrodden","unusual","unveiled","unwavering","upbeat","upbound","upcoast","upheld","uphill","upland","uplifted","uplifting","upright","upstream","urban","urbane","usable","useful","utmost","vagrant","valiant","valid","valley","valued","vaned","vanguard","vanilla","variegated","vast","vaulted","vector","vehement","veiled","veined","vellum","velvet","velvety","venerable","venerated","venturing","veracious","verdant","verdurous","verifiable","veritable","vermilion","vernal","versatile","vertical","vested","vibrant","vibrato","vicarious","victorial","victorious","vigilant","vigorous","vindicated","vine","vined","vineyard","vintage","violet","viridian","virtual","virtuosic","virtuous","visible","visionary","vital","vivacious","vivid","vocal","vociferous","volcanic","volcano","volitional","voltaic","voluminous","voracious","voyaging","wakeful","walled","walnut","waltzing","wandering","warm","warmed","wary","wasabi","watchful","water","watermark","watery","wave","wavy","waxed","waxen","wayfaring","wayward","wealthy","weathered","weaving","webbed","wedged","welcome","welcoming","wellspring","wellversed","western","westward","wetland","wharfside","wheat","wheeling","whetted","whimsical","whipped","whirled","whirling","whirlwind","whispering","whistling","white","whole","wholesome","wicker","wide","widened","widescale","wielded","wild","wildland","wildwood","willing","willow","willowy","wind","windborne","windswept","windward","windy","wine","wingborne","winged","winning","winnowed","winsome","winter","wintered","wintry","wired","wireless","wise","wisteria","wistful","witty","wizard","wondering","wondrous","wooded","wooled","woolly","workable","worldly","worshipful","worthy","wound","woven","wreathed","wrought","wyrd","yarned","yawning","yearlong","yearly","yearning","yielding","yonder","zaffre","zany","zealous","zenith","zephyr","zesty","zigzag","zinc","zippy","zonal","zoned"],"animals":["aardvark","aardwolf","abalone","abyssinian","acarid","accentor","acornworm","addax","adder","adjutant","admiral","agama","agouti","airedale","ajolote","akalat","akbash","akepa","akita","albacore","albatross","alethe","alligator","allosaurus","alpaca","alpine","amakihi","amazon","amberjack","ambush","ambushbug","ameiva","ammonite","amphipod","amphiuma","amurfalcon","anaconda","anchovy","angelfish","angelshark","anglerfish","angus","anhinga","ani","ankylosaur","anoa","anole","anopheles","ant","antbird","anteater","antelope","antlion","antmimic","antpitta","antshrike","antthrush","aoudad","apalis","apatosaurus","ape","aphid","apollo","apostlebird","appaloosa","arabian","aracari","arachnid","arapaima","archelon","archerfish","arcticchar","argali","argiope","arkshell","armadillo","armyworm","arowana","arrowcrab","arrowworm","asp","assassinbug","astrapia","attila","augersnail","auklet","aurochs","avadavat","avocet","axolotl","azawakh","babax","babbler","baboon","backswimmer","badger","bagworm","baldeagle","bamboorat","bananaquit","bandicoot","banteng","barb","barbastelle","barbel","barbet","barklouse","barnacle","barnowl","barnswallow","barracuda","barramundi","barredowl","barwing","basenji","basilisk","basketstar","basking","bass","basset","bat","bateleur","batfish","batfly","batis","bayowl","beachhopper","beagle","bear","bearcat","beardworm","beauceron","beaver","becard","bedbug","bee","beeeater","beefly","beetle","beewolf","beisa","bellbird","beluga","bengal","bergamasco","berrypecker","bessbug","betta","bettong","bharal","bichir","bichon","bigeye","bigeyetuna","bilby","billbug","billfish","binturong","birdwing","birman","bishopbird","bison","bitterling","bittern","bivalve","blackbird","blackbuck","blackcap","blackfly","blackkite","blackstork","blacktip","blackwidow","bleak","blenny","blesbok","blindmole","blister","blobfish","bloodhound","bloodstar","bloodworm","blowfly","bluebird","bluebottle","bluecrab","bluefin","bluefish","bluegill","bluejay","bluemarlin","blueshark","bluetang","bluethroat","bluetongue","bluewhale","bluntnose","boa","boarfish","boatbill","boatman","bobcat","bobolink","bobtail","bobwhite","boer","boerboel","bokmakierie","bolas","bollworm","bombardier","bombay","bonefish","bongo","bonito","bonnethead","bonnetshell","bonobo","bontebok","bookworm","boomslang","bootedeagle","bootlace","borer","borzoi","botfly","boto","boubou","bowerbird","bowfin","bowhead","boxcrab","boxelder","boxfish","brachiopod","brachiosaur","brahman","brambling","brant","bream","briard","brill","brilliant","brimstone","bristlebird","bristlehead","bristletail","brittlestar","broadbill","broadwing","brolga","brooktrout","brownsnake","browntrout","brubru","brumby","brushturkey","brydeswhale","buckeye","budgerigar","budworm","buffalo","buffalofish","bufflehead","bug","bulbul","bulldog","bulldogbat","bullfinch","bullfrog","bullhead","bullmastiff","bullray","bullshark","bullsnake","bullterrier","bumblebee","bunting","burbot","burmese","burrowerbug","bushbaby","bushbuck","bushdog","bushlark","bushmaster","bushshrike","bustard","butcherbird","butterfish","butterfly","buttonquail","buzzard","cacholote","cacique","cactusmouse","caddisfly","caecilian","caiman","cairn","calico","camaroptera","camel","camelspider","canaan","canary","canastero","candiru","cankerworm","canvasback","capelin","capuchin","capybara","caracal","caracara","cardinal","caribou","carp","carpenter","cashmere","cassowary","catbird","caterpillar","catfish","catshark","catsnake","cavefish","cavy","centipede","ceratosaur","cerianthid","cerith","cero","chachalaca","chafer","chaffinch","chalcid","chameleon","chamois","char","charolais","chartreux","chat","chatterer","checkerspot","cheetah","chevrotain","chickadee","chicken","chiffchaff","chigger","chihuahua","chimpanzee","chinchbug","chinchilla","chingolo","chinook","chipmunk","chiru","chital","chiton","chorusfrog","chough","chowchow","chub","chuckwalla","chukar","chum","cicada","cichlid","cinclodes","cissa","cisticola","civet","clam","clamworm","clawedfrog","clearwing","click","clingfish","clothesmoth","clownfish","clownloach","clydesdale","coati","cobia","cobra","cochoa","cockatiel","cockatoo","cockle","cockroach","coconutcrab","cod","coelacanth","coho","collie","colobus","colugo","comma","conch","condor","conehead","conesnail","conger","congoeel","conure","convict","coonhound","cooperhawk","coot","copepod","copper","copperhead","coquette","coral","coralsnake","corella","corgi","cormorant","cornetfish","cornsnake","corydoras","cotinga","cottonmouth","cottonrat","coucal","cougar","courser","cow","cowbird","cownoseray","cowrie","coyote","coypu","crab","crabeater","crabspider","crake","crane","cranefly","crappie","crawfish","crayfish","creekchub","creeper","crescent","cricket","cricketfrog","crimsonwing","criollo","croaker","crocodile","crombec","crossbill","crow","ctenophore","cuckoo","cuckoobee","curassow","curlew","curlytail","currawong","cururo","cuscus","cusk","cutlassfish","cutthroat","cuttlefish","cutworm","dab","dabchick","dace","dachshund","dacnis","dalmatian","damselbug","damselfish","damselfly","danio","darkling","darter","dartfish","dartfrog","darwinfrog","daygecko","deathadder","deathwatch","deer","deerfly","deerhound","deermouse","degu","deinonychus","dermestid","desman","devilfish","devilray","dhole","dibatag","dickcissel","diggerwasp","dilophosaur","dimetrodon","dingo","diplodocus","dipper","direwolf","discus","diskwing","diuca","diver","doberman","dobsonfly","dodo","doedicurus","dog","dogfish","dogwhelk","dolphin","dolphinfish","donkey","dorado","dormouse","dory","dotterel","douc","dove","dovekie","dowitcher","dragonet","dragonfish","dragonfly","drill","driverant","dromedary","drongo","drum","drywood","duck","dugong","duiker","dungbeetle","dungeness","dunlin","dunnart","dunnock","eagle","eagleowl","eagleray","eaglet","earwig","echidna","edmontosaur","eel","eelpout","efts","eggeater","egret","eider","elaenia","eland","electriceel","electricray","elephant","elfin","elfowl","elk","elkhound","elver","emerald","emperor","emu","emutail","endler","entelodont","ermine","escolar","euphonia","ewe","fairyfly","fairywren","falcon","fangtooth","fantail","fanworm","fathead","featherstar","fencelizard","fennec","fer","ferret","fiddlercrab","fieldfare","fieldmouse","fig","figbird","filefish","filesnake","finch","finfoot","fireback","firebelly","firebrat","firecrest","firefinch","firefly","firemouth","fireworm","fiscal","fisheagle","fisher","fishingcat","flamecrest","flamingo","flatworm","flea","fleshfly","flicker","flier","florican","flounder","flowerfly","flufftail","fly","flycatcher","flyingfish","flyingfox","flyingsnake","foamnest","forktail","fossa","fox","foxhound","francolin","freetail","friarbird","frigatebird","fritillary","frog","frogfish","froghopper","frogmouth","fruitbat","fruitdove","fruitfly","fulmar","fungusgnat","funnelweb","furseal","gadfly","gadwall","galago","gallimimus","gallinule","galliwasp","gallmidge","galloway","gallwasp","gannet","gar","garganey","garibaldi","garter","gatekeeper","gaur","gavial","gazelle","gecko","gelada","gemsbok","genet","geoduck","gerbil","gerenuk","gerygone","gharial","ghostbat","ghostcrab","ghostfish","ghostshrimp","giantcoot","gibbon","gilamonster","giraffe","glassfrog","glasslizard","glider","glowworm","glutton","glyptodon","gnat","gnatcatcher","gnateater","gnu","goanna","goat","goatfish","goblinshark","goby","godwit","goldcrest","goldeneagle","goldeneye","goldenorb","goldenrod","goldeye","goldfinch","goldfish","goliathfrog","goosander","goose","goosefish","gooseneck","gopher","gophersnake","goral","gorilla","goshawk","gourami","grackle","grassbird","grasshopper","grassowl","grassspider","grayling","graytail","grebe","greenbottle","greenfinch","greenfly","greenlet","greenlynx","greenpigeon","greenshank","greensnake","grenadier","greyhound","greyseal","greywhale","grison","grizzly","grosbeak","grounddove","groundhog","grouper","grouse","grub","grunion","grunt","grysbok","guan","guanaco","gudgeon","guenon","guillemot","guineafowl","guineapig","guitarfish","gull","gundi","guppy","gurnard","gyrfalcon","haddock","hadrosaur","haflinger","hagfish","hairstreak","hake","halibut","halictid","hamerkop","hamlet","hammerhead","hamster","handfish","hangingfly","hanoverian","harborseal","hare","harlequin","harpseal","harpshell","harpyeagle","harrier","harrishawk","hartebeest","harvestman","hatchetfish","havanese","hawfinch","hawk","hawkeagle","hawkmoth","hawkowl","headlouse","hearturchin","hedgehog","heliconian","hellbender","hemipode","henharrier","hercules","hereford","hermitcrab","heron","herring","hessianfly","hillstar","hippo","hirola","hoarybat","hoatzin","hobby","hog","hogfish","hognose","hogsucker","holstein","honeybee","honeyeater","honeyguide","hookworm","hoopoe","hornbill","hornedcoot","hornedfrog","hornero","hornet","hornetmoth","hornfly","hornshark","hornworm","horse","horsefly","horseshoe","houndshark","housegecko","housemouse","hoverfly","howler","hummingbird","humpback","huntsman","husky","hutia","hyaenodon","hydra","hydroid","hyena","hylia","hyrax","ibex","ibis","icefish","ichneumon","ichthyosaur","iguana","iguanodon","illadopsis","impala","inchworm","inconnu","indri","iora","irrawaddy","isopod","jabiru","jacamar","jacana","jackal","jackdaw","jackdempsey","jackfish","jaeger","jaguar","jaguarundi","jawfish","jay","jellyfish","jellynose","jerboa","jersey","jewelbeetle","jingle","jird","johndory","jumper","junco","junebug","junglecat","junglefowl","kagu","kakapo","kakariki","kaluga","kangaroo","kangaroorat","katydid","kea","keelback","keeshond","kelpfly","kestrel","khulan","kiang","kiko","killdeer","killifish","kingbird","kingcrab","kingfish","kingfisher","kinglet","kingquail","kingsnake","kingvulture","kinkajou","kipunji","kiskadee","kite","kittiwake","kiwi","knifefish","knot","koala","kob","kodiak","kodkod","koel","koi","kokanee","komodo","komondor","kookaburra","korat","kouprey","krait","kribensis","krill","kronosaurus","kudu","kuvasz","labrador","lacebug","lacewing","lackey","ladybird","ladybug","laika","laketrout","lammergeier","lamprey","lancelet","lancetfish","landcrab","langur","lanternfish","lapwing","lark","leafbird","leafcutter","leafhopper","leafminer","leafnose","leafroller","leaftail","leaftosser","leatherjack","lechwe","legless","lemming","lemonshark","lemur","lenok","leonberger","leopard","leopardcat","leopardfrog","leopardmoth","leopardseal","lice","limousin","limpet","limpkin","lingcod","linnet","linsang","liocichla","lion","lionfish","lizard","llama","loach","lobster","locust","logperch","logrunner","longclaw","longear","longhorn","longnosegar","longspur","longwing","lookdown","loon","looper","lorikeet","loris","lory","louse","lousefly","lovebird","lubber","lugworm","lumpfish","luna","lungfish","lurcher","lycaenid","lynx","lynxspider","lyrebird","macaque","macaw","mackerel","madtom","maggot","magpie","magpielark","mahi","mako","malamute","malimbe","malkoha","mallard","maltese","mamba","mammoth","manakin","manatee","mandrill","mangabey","manta","mantella","mantis","mantisfly","manucode","manul","manx","mara","marabou","marbledcat","margay","marlin","marmoset","marmot","marten","martin","maskedowl","mason","mastiff","mastodon","matamata","mayfly","meadowlark","mealworm","mealybug","medaka","medusa","meerkat","megaloceros","megalodon","megamouth","megatherium","menhaden","merganser","merlin","mesia","mesite","metalmark","midge","midwifetoad","milkfish","milksnake","milkystork","millipede","miner","minivet","mink","minke","minnow","mite","mittencrab","moa","mocassin","mockingbird","mola","mole","molecricket","molerat","mollusc","molly","moloch","monarch","mongoose","monitor","monkey","monkeyfrog","monkfish","monkseal","moonfish","moonjelly","moonrat","moonsnail","moorhen","moose","moray","morpho","mosasaur","mosquito","moth","motmot","mouflon","mouse","mousebird","mousespider","mudcrab","mudlark","mudminnow","mudpuppy","mudskipper","mudsnake","mule","mullet","munia","muntjac","murex","muriqui","murre","murrelet","muskellunge","muskox","muskrat","mussel","mustang","myna","myotis","myzomela","narrowmouth","narwhal","nautilus","nectarbat","needlefish","nematode","nene","nerite","netcasting","newt","nicator","nicobar","nightingale","nightjar","nightlizard","nightmonkey","nigrita","nilgai","noctule","noddy","nothosaur","nubian","nudibranch","numbat","numbfish","nunbird","nurseryweb","nurseshark","nutcracker","nuthatch","nutria","nyala","nymphalid","oakworm","oarfish","obelia","ocelot","ocicat","octopus","ogrefaced","oilbird","oilfish","okapi","olingo","olm","onager","oncilla","opah","openbill","opossum","orangetip","orangutan","orbweaver","orca","orfe","oribi","oriole","ormer","oryx","oscar","osprey","ostrich","otocinclus","otter","otterhound","ounce","ouzel","ovenbird","oviraptor","owl","owlet","owlfly","oxpecker","oxylabes","oyster","paca","pacarana","paddlefish","paddletail","pademelon","palila","palolo","palomino","pampascat","panda","pangolin","panther","paperclam","paperwasp","papillon","parakeet","pardalote","pardusco","parrot","parrotbill","parrotfish","parrotlet","partridge","patas","pauraque","peacock","peacockbass","peacockmoth","peafowl","peanutworm","peccary","peewit","pekingese","pelagic","pelican","penguin","penshell","perch","percheron","peregrine","periwinkle","permit","petrel","pewee","phainopepla","phalarope","pheasant","phoebe","piapiac","picathartes","pickerel","piculet","piedcrow","pig","pigeon","pigeonhawk","pika","pike","pilchard","pillbug","pilotbird","pilotfish","pinacate","pinfish","pinksalmon","pintail","piopio","pipefish","pipesnake","pipistrelle","pipit","piranha","pirateperch","pitta","pitviper","plaice","planarian","plantcutter","planthopper","plasterer","platy","platypus","pleco","plecostomus","plesiosaur","pliosaur","plott","plover","plushcap","pochard","pocketmouse","pointer","poisonfrog","polarbear","polecat","pollock","polyp","pomeranian","pompano","pondskater","pony","poodle","porbeagle","porcupine","porgy","porpoise","possum","potoo","potoroo","potterwasp","potto","prairiedog","pratincole","prawn","prinia","pronghorn","psyllid","ptarmigan","pteranodon","pterodactyl","pudu","puffadder","puffbird","pufferfish","puffin","puffleg","pug","puku","puli","puma","pumi","punkie","pupfish","purseweb","pygmyfalcon","pygmygoat","pygmymole","pygmyowl","pyralid","pyrrhuloxia","pyrrhura","python","quagga","quahog","quail","quailfinch","queenbee","quelea","quetzal","quillback","quokka","quoll","rabbit","raccoon","racer","racerunner","raftspider","ragdoll","ragfish","ragworm","rail","rainbowboa","rainbowfish","rainfrog","ram","raptor","rasbora","rat","ratel","ratfish","ratsnake","rattler","rattlesnake","raven","ray","rayadito","razorbill","razorclam","recluse","recurvebill","redant","redback","redbat","redbreast","redfish","redhead","redhorse","redkite","redpoll","redshank","redstart","redtail","reduvid","redwing","reedfrog","reedling","reefshark","reeve","reindeer","remora","retriever","rhea","rhino","rhinobeetle","rhinoceros","ribbonfish","ribbonworm","ricefish","ricerat","ridgeback","riffle","rifleman","rightwhale","ringedseal","ringlet","ringneck","roach","roadrunner","roan","robberfly","robin","rockcrab","rockdove","rockfish","rockfowl","rocklobster","rockrat","roller","roloway","rook","rorqual","rosefinch","rosella","rotifer","rottweiler","roughy","roundworm","rovebeetle","rubycrown","rubythroat","rudd","ruff","ruffe","saanen","saarloos","sable","sabrewing","sacspider","saddleback","saiga","sailfin","sailfish","sakerfalcon","saki","salamander","salmon","salmonshark","salp","saluki","sambar","samoyed","sandbar","sandboa","sandcat","sandcrab","sandcricket","sanddollar","sandeel","sanderling","sandfish","sandflea","sandfly","sandgrouse","sandhopper","sandlance","sandlizard","sandperch","sandpiper","sandrat","sandroller","sandtiger","sandviper","sandwasp","sapphire","sapsucker","sardine","satyr","sauger","sawfish","sawfly","sawscaled","sawshark","scad","scaleworm","scallop","scarab","scaup","schipperke","schnauzer","scorpion","scorpionfly","scoter","screamer","screechowl","screwworm","scrubbird","scrubfowl","scrubtit","sculpin","scup","seaanemone","seaangel","seabass","seabiscuit","seabream","seacow","seacucumber","seadragon","seaeagle","seafan","seahare","seahorse","seakrait","seal","sealily","sealion","sealyham","seamouse","seaotter","seapen","seapig","searobin","seaslug","seasnake","seaspider","seasquirt","seaurchin","seaweedfly","seawhip","sedgefrog","seedbug","seedeater","seedsnipe","seiwhale","sergeant","seriema","serin","serotine","serow","serpenteagle","sertularia","serval","setter","sevengill","severum","shad","shama","shark","sharpbill","shearwater","sheathbill","sheep","sheepdog","sheepshead","sheetweb","shelduck","shepherd","shiba","shieldback","shieldbug","shikoku","shiner","shingleback","shipworm","shire","shoebill","shorecrab","shortnosegar","shortwing","shovelnose","shrew","shrike","shrimp","siamang","siamese","sicklebill","sidewinder","sierrafinch","silkmoth","silkyshark","silverdollar","silvereye","silverfish","silverside","simmental","siphonophore","siren","siskin","sitatunga","sittella","sixgill","skate","skimmer","skink","skipjack","skipper","skua","skunk","skylark","slider","sloth","slothbear","sloughi","slowworm","slug","smelt","smew","smilodon","snail","snake","snakeeagle","snakefly","snakehead","snapper","snipe","snipefly","snook","snoutbeetle","snowcap","snowcrab","snowfinch","snowflea","snowyowl","sockeye","softshell","soldierfly","sole","solenodon","solifuge","solitaire","songlark","sootyowl","sootywing","sora","sowbug","spadebill","spadefish","spadefoot","spaniel","sparrow","sparrowhawk","spearfish","sphinx","sphynx","spider","spidercrab","spiderhunter","spidermonkey","spinebill","spinetail","spinnershark","spinosaurus","spinymouse","spinytail","spitting","spittlebug","spitz","sponge","spoonbill","spoonworm","spottedgar","spottedray","sprat","springbok","springfrog","springhare","springtail","squashbug","squatlobster","squid","squirrel","squirrelfish","stablefly","stagbeetle","stalkedjelly","starfish","stargazer","starling","starthroat","steelhead","steenbok","stegosaurus","steppeeagle","sterlet","stickinsect","stickleback","stiletto","stilt","stinger","stingray","stinkbug","stint","stitchbird","stoat","stockdove","stomatopod","stonechat","stonecrab","stonefish","stonefly","stoneroller","stork","streamertail","sturgeon","styracosaur","sucker","sugarbird","sugarglider","sulphur","sunbear","sunbird","sunbittern","sundial","sunfish","sungazer","sungrebe","suni","sunspider","sunstar","surfclam","surgeonfish","suricate","surili","surinam","swallow","swallowtail","swamphen","swamprat","swan","swellshark","swift","swiftlet","swordfish","swordtail","sylph","syrphid","tabby","tachinid","tadpole","tahr","tailless","taimen","taipan","takhi","takin","talapoin","tamaraw","tamarin","tanager","tang","tanuki","tapaculo","tapeworm","tapir","tarantula","tardigrade","tarpon","tarsier","tattler","tautog","tawnyeagle","tawnyowl","tayra","tchagra","teal","tegu","tench","tenrec","termite","tern","terrapin","terrier","terrorbird","tesia","tetra","thickknee","thornback","thornbill","thornbird","thornydevil","thrasher","thresher","thrips","thrush","thylacine","tickmite","tiger","tigerbeetle","tigerfish","tigermoth","tigershark","tigersnake","tilapia","tilefish","tinamou","tinkerbird","tityra","toad","toadfish","toadlet","toggenburg","tokay","tomatofrog","tommyruff","tonkinese","topi","topsnail","torpedoray","tortoise","tortoisebug","toucan","toucanet","towhee","tragopan","trainbearer","trakehner","trapdoor","treeboa","treecreeper","treefrog","treehopper","treepie","treerunner","treeshrew","treesquirrel","trevally","triceratops","triggerfish","triller","tripletail","triton","trogon","troodon","tropicbird","trout","troutperch","trunkfish","tsessebe","tsetse","tuatara","tubenose","tubeworm","tucuxi","tuftedcheek","tumblebug","tuna","tunicate","tunshell","turaco","turbansnail","turbot","turkey","turnstone","turtle","turtledove","twite","tyrannosaur","uakari","uintathere","umbrellabird","underwing","unicornfish","univalve","urial","utahraptor","vaquita","veery","velociraptor","velvetworm","vendace","verdin","vervet","viceroy","vicuna","vinegarfly","vinesnake","violetear","viper","viperfish","vireo","viscacha","vizsla","vole","volute","vulture","wagtail","wagyu","wahoo","walkingstick","wallaby","wallaroo","wallcreeper","walleye","walllizard","walrus","wanderer","wapiti","warblefly","warbler","warmouth","warthog","wasp","waterboatman","waterbuck","waterbug","waterdog","waterdragon","waterflea","watersnake","waterstrider","waterthrush","watervole","wattlebird","wattleeye","waxbill","waxwing","waxyfrog","weakfish","weasel","weaver","webworm","weddell","weebill","weeverfish","weevil","weimaraner","wentletrap","weta","wetapunga","whale","whalefish","whaleshark","wheatear","whelk","whimbrel","whinchat","whipbird","whippet","whipscorpion","whipsnake","whiptail","whistler","whiteadmiral","whiteeye","whitefish","whitefly","whitemarlin","whitestork","whitethroat","whitetip","whiting","whydah","widowspider","wigeon","wildcat","wildebeest","willet","winkle","wireworm","wobbegong","wolf","wolffish","wolfhound","wolfsnake","wolfspider","wolverine","wombat","woodborer","woodchuck","woodcock","woodcreeper","woodfrog","woodhoopoe","woodlark","woodmouse","woodnymph","woodpecker","woodpigeon","woodrat","woodshrike","woodstar","woodswallow","woodwasp","woollybat","woollybear","woollymonkey","woollyneck","worm","wrasse","wren","wrentit","wryneck","xenops","xolo","yak","yellowfin","yellowhammer","yellowjacket","yellowlegs","yellowtail","yellowthroat","yuhina","zander","zebra","zebraduiker","zebrafish","zebrashark","zebraspider","zebratail","zebu","zeledonia","zokor","zorilla"],"sprites":{"species":{"bear":["................","..DDD......DDD..",".DAAAD....DAAAD.",".DACAD....DACAD.",".DAAADDDDDDAAAD.",".DAAAAAAAAAAAAD.",".DAAAAAAAAAAAAD.",".DAAKAAAAAAKAAD.",".DAAKAAAAAAKAAD.",".DAAAACCCCAAAAD.",".DAAAACKKCAAAAD.",".DAAAACCCCAAAAD.","..DAAAAAAAAAAD..","...DDAAAAAADD...",".....DDDDDD.....","................"],"fox":["................","..D..........D..","..DD........DD..",".DAAD......DAAD.",".DACAD....DACAD.",".DAAAADDDDAAAAD.",".DAAAAAAAAAAAAD.",".DAAKAAAAAAKAAD.",".DAAKAAAAAAKAAD.","..DAAAACCAAAAD..","..DAAACCCCAAAD..","...DAACKKCAAD...","....DACCCCAD....",".....DACCAD.....","......DDDD......","................"],"cat":["................","..DD........DD..",".DAAD......DAAD.",".DACAD....DACAD.",".DAAAADDDDAAAAD.",".DAAAAAAAAAAAAD.",".DAAKAAAAAAKAAD.",".DAAKAAAAAAKAAD.","KDAAAACCCCAAAADK",".DAAAACKKCAAAAD.","KDAAAACCCCAAAADK",".DAAAAACCAAAAAD.","..DAAAAAAAAAAD..","...DDAAAAAADD...",".....DDDDDD.....","................"],"rabbit":["..DD........DD..","..DAD......DAD..","..DAD......DAD..","..DPD......DPD..","..DAD......DAD..","..DAAD....DAAD..","...DAADDDDAAD...","...DAAAAAAAAD...","...DAKAAAAKAD...","...DAKAAAAKAD...","...DAACCCCAAD...","...DAACKKCAAD...","....DACCCCAD....","....DAAAAAAD....",".....DDDDDD.....","................"],"owl":["................","..DD........DD..","..DAD......DAD..",".DAAADDDDDDAAAD.",".DAAAAAAAAAAAAD.",".DAACCCCCCCCAAD.",".DACEEKCCKEECAD.",".DACEKKCCKKECAD.",".DACEEKCCKEECAD.",".DAACCCPPCCCAAD.",".DAAAACPPCAAAAD.",".DAAAAACCAAAAAD.","..DAAAAAAAAAAD..","...DDAAAAAADD...",".....DDDDDD.....","................"],"frog":["................","..DDD......DDD..",".DEEED....DEEED.",".DEKED....DEKED.",".DEEEDDDDDDEEED.",".DAAAAAAAAAAAAD.","DAAAAAAAAAAAAAAD","DAAAAAAAAAAAAAAD","DAAKAAAAAAAAKAAD","DAAAAAAAAAAAAAAD",".DAAAAAAAAAAAAD.",".DAAKKKKKKKKAAD.","..DAAAAAAAAAAD..","...DDAAAAAADD...",".....DDDDDD.....","................"],"mouse":["................",".DDDD......DDDD.","DAAAAD....DAAAAD","DAPPAD....DAPPAD","DAPPAD....DAPPAD","DAAAADDDDDDAAAAD",".DAAAAAAAAAAAAD.","..DAAAAAAAAAAD..","..DAAKAAAAKAAD..","..DAAKAAAAKAAD..","...DAAACCAAAD...","....DAACCAAD....",".....DACCAD.....","......DPPD......",".......DD.......","................"],"pig":["................","..DD........DD..","..DAD......DAD..",".DAAAD....DAAAD.",".DAAAADDDDAAAAD.",".DAAAAAAAAAAAAD.","DAAAAAAAAAAAAAAD","DAAKAAAAAAAAKAAD","DAAKAAAAAAAAKAAD","DAAAAAAAAAAAAAAD",".DAAAPPPPPPAAAD.",".DAAAPKPPKPAAAD.","..DAAPPPPPPAAD..","...DDAAAAAADD...",".....DDDDDD.....","................"],"elephant":["................",".....DDDDDD.....","..DDDAAAAAADDD..",".DAADAAAAAADAAD.","DAAADAAAAAADAAAD","DAAADAKAAKADAAAD","DAAADAKAAKADAAAD","DAAADAAAAAADAAAD","DAAADAAAAAADAAAD",".DAADAAAAAADAAD.","..DDDAAAAAADDD..",".....DAAAAD.....","......DAAD......","......DAAD......",".....DAAD.......",".....DDD........"],"lion":["....DBBBBBBD....","..DBBBBBBBBBBD..",".DBBBBBBBBBBBBD.","DBBBDDDDDDDDBBBD","DBBDAAAAAAAADBBD","DBBDAKAAAAKADBBD","DBBDAKAAAAKADBBD","DBBDAAAAAAAADBBD","DBBDAACCCCAADBBD","DBBDAACKKCAADBBD","DBBDAACCCCAADBBD",".DBBDAAAAAADBBD.",".DBBBDDDDDDBBBD.","..DBBBBBBBBBBD..","...DBBBBBBBBD...",".....DDDDDD....."],"deer":[".D.D......D.D...",".DDD......DDD...","..D........D....","..D.DD..DD.D....","..DDAD..DADD....","...DAADDAAD.....","...DAAAAAAD.....","...DAKAAKAD.....","...DAKAAKAD.....","...DAAAAAAD.....","...DAACCAAD.....","....DACCAD......","....DAKKAD......","....DAAAAD......",".....DDDD.......","................"],"koala":["................",".DDD........DDD.","DACAD......DACAD","DACCAD....DACCAD","DACCADDDDDDACCAD",".DAAAAAAAAAAAAD.",".DAAAAAAAAAAAAD.",".DAAKAAAAAAKAAD.",".DAAKAAAAAAKAAD.",".DAAAACKKCAAAAD.",".DAAAACKKCAAAAD.","..DAAAACCAAAAD..","...DAAAAAAAAD...","....DDAAAADD....","......DDDD......","................"]},"accessories":{"nothing":["................","................","................","................","................","................","................","................","................","................","................","................","................","................","................","................"],"a top hat":[".....HHHHHH.....",".....HHHHHH.....",".....HHHHHH.....",".....IIIIII.....","...HHHHHHHHHH...","................","................","................","................","................","................","................","................","................","................","................"],"a cap":["................",".....HHHHHH.....","....HHHHHHHH....","....HHHHHHHHII..","................","................","................","................","................","................","................","................","................","................","................","................"],"a crown":["................","....H.H..H.H....","....HHHHHHHH....","....HIHHHHIH....","....HHHHHHHH....","................","................","................","................","................","................","................","................","................","................","................"],"a beanie":[".......HH.......",".....HHHHHH.....","....HHHHHHHH....","....HHHHHHHH....","...IIIIIIIIII...","................","................","................","................","................","................","................","................","................","................","................"],"a party hat":[".......H........","......HHH.......","......HIH.......",".....HHHHH......",".....HHIHH......","....HHHHHHH.....","................","................","................","................","................","................","................","................","................","................"],"a bow":["................","................","...HH..HH.......","...HHIIHH.......","...HH..HH.......","................","................","................","................","................","................","................","................","................","................","................"],"a flower":["................","...H.H..........","...HIH..........","...H.H..........","....I...........","................","................","................","................","................","................","................","................","................","................","................"]},"fur":{"red":["#d23c2e","#96271d","#f3b6a8"],"orange":["#e8802a","#a9541a","#f7cca0"],"yellow":["#e8bf2b","#a8871a","#f7e6a8"],"green":["#3f9d54","#256336","#bfe3c6"],"teal":["#2a9d9d","#186a6a","#b6e3e3"],"blue":["#3566c4","#20408a","#bcd0f2"],"purple":["#7a4bc0","#4d2c84","#d5c3f0"],"pink":["#dd5f9c","#a03668","#f7c9de"],"brown":["#8a5a34","#5b3820","#dcc0a2"],"grey":["#8b93a0","#5b616c","#d7dbe1"],"black":["#3a3f47","#22262b","#a9b0ba"],"white":["#eef1f5","#b9c0ca","#ffffff"]},"accColor":{"red":["#cf3b2e","#7d2019"],"yellow":["#e9c02c","#a5851a"],"green":["#35915b","#1e5936"],"blue":["#2f5fc0","#1c3a7d"],"purple":["#7245bb","#452a76"],"black":["#2b2f36","#14171b"]},"background":{"cream":"#f4efe4","mint":"#d9f0e2","sky":"#d7e6f7","lilac":"#e5ddf5","rose":"#f7dee4","sand":"#f0e2c8","slate":"#dfe3e9","olive":"#e2ead0"},"hatDy":{"bear":0,"fox":1,"cat":0,"rabbit":2,"owl":0,"frog":1,"mouse":1,"pig":0,"elephant":0,"lion":0,"deer":1,"koala":0}}};
+const { adjectives: ADJECTIVES, animals: ANIMALS, sprites: S } = DATA;
+const SPECIES = Object.keys(S.species), ACCESSORIES = Object.keys(S.accessories),
+      FURS = Object.keys(S.fur), ACCC = Object.keys(S.accColor), BGS = Object.keys(S.background);
+const BITS = 11, SLOT = 1 << BITS, MAX_ID = SLOT * SLOT - 1;
+const adjIx = new Map(ADJECTIVES.map((w, i) => [w, i]));
+const aniIx = new Map(ANIMALS.map((w, i) => [w, i]));
+const VARIANTS = SPECIES.length * FURS.length * (1 + (ACCESSORIES.length - 1) * ACCC.length) * BGS.length;
+/* RULES:BEGIN (generated by scripts/species-rules.py - do not hand-edit) */
+const SPECIES_RULES = [
+  ["oviraptor", "frog"],
+  ["velociraptor", "frog"],
+  ["troodon", "frog"],
+  ["dimetrodon", "frog"],
+  ["diplodocus", "frog"],
+  ["pteranodon", "frog"],
+  ["pterodactyl", "frog"],
+  ["tadpole", "frog"],
+  ["tegu", "frog"],
+  ["shingleback", "frog"],
+  ["surinam", "frog"],
+  ["goanna", "frog"],
+  ["doedicurus", "mouse"],
+  ["glyptodon", "mouse"],
+  ["megaloceros", "deer"],
+  ["uintathere", "deer"],
+  ["tamaraw", "deer"],
+  ["takhi", "deer"],
+  ["trakehner", "deer"],
+  ["vicuna", "deer"],
+  ["appaloosa", "deer"],
+  ["arabian", "deer"],
+  ["argali", "deer"],
+  ["caribou", "deer"],
+  ["nilgai", "deer"],
+  ["serow", "deer"],
+  ["dromedary", "deer"],
+  ["megatherium", "koala"],
+  ["thylacine", "fox"],
+  ["tanuki", "fox"],
+  ["bergamasco", "fox"],
+  ["cairn", "fox"],
+  ["pekingese", "fox"],
+  ["pomeranian", "fox"],
+  ["manx", "cat"],
+  ["tonkinese", "cat"],
+  ["cavy", "mouse"],
+  ["desman", "mouse"],
+  ["glutton", "mouse"],
+  ["gundi", "mouse"],
+  ["guenon", "mouse"],
+  ["kipunji", "mouse"],
+  ["mangabey", "mouse"],
+  ["roloway", "mouse"],
+  ["vervet", "mouse"],
+  ["skunk", "mouse"],
+  ["solenodon", "mouse"],
+  ["stoat", "mouse"],
+  ["tayra", "mouse"],
+  ["woodchuck", "mouse"],
+  ["zokor", "mouse"],
+  ["zorilla", "mouse"],
+  ["pipistrelle", "mouse"],
+  ["noctule", "mouse"],
+  ["siamang", "bear"],
+  ["utahraptor", "frog"],
+  ["leafminer", null],
+  ["raptor", "owl"],
+  ["tit", "owl"],
+  ["accentor", "owl"],
+  ["akalat", "owl"],
+  ["akepa", "owl"],
+  ["alethe", "owl"],
+  ["amakihi", "owl"],
+  ["apalis", "owl"],
+  ["avadavat", "owl"],
+  ["babax", "owl"],
+  ["babbler", "owl"],
+  ["bananaquit", "owl"],
+  ["becard", "owl"],
+  ["blackcap", "owl"],
+  ["bobolink", "owl"],
+  ["bobwhite", "owl"],
+  ["boubou", "owl"],
+  ["brubru", "owl"],
+  ["bulbul", "owl"],
+  ["cacholote", "owl"],
+  ["cacique", "owl"],
+  ["camaroptera", "owl"],
+  ["canastero", "owl"],
+  ["caracara", "owl"],
+  ["chickadee", "owl"],
+  ["chiffchaff", "owl"],
+  ["chingolo", "owl"],
+  ["chukar", "owl"],
+  ["cinclodes", "owl"],
+  ["cissa", "owl"],
+  ["cisticola", "owl"],
+  ["cochoa", "owl"],
+  ["conure", "owl"],
+  ["courser", "owl"],
+  ["crombec", "owl"],
+  ["curlew", "owl"],
+  ["currawong", "owl"],
+  ["dacnis", "owl"],
+  ["dickcissel", "owl"],
+  ["dipper", "owl"],
+  ["diuca", "owl"],
+  ["dowitcher", "owl"],
+  ["drongo", "owl"],
+  ["dunnock", "owl"],
+  ["elaenia", "owl"],
+  ["euphonia", "owl"],
+  ["fieldfare", "owl"],
+  ["fireback", "owl"],
+  ["fiscal", "owl"],
+  ["flicker", "owl"],
+  ["florican", "owl"],
+  ["francolin", "owl"],
+  ["gerygone", "owl"],
+  ["godwit", "owl"],
+  ["grackle", "owl"],
+  ["greenshank", "owl"],
+  ["hamerkop", "owl"],
+  ["harlequin", "owl"],
+  ["hemipode", "owl"],
+  ["hoopoe", "owl"],
+  ["hornero", "owl"],
+  ["hylia", "owl"],
+  ["iora", "owl"],
+  ["jacamar", "owl"],
+  ["jacana", "owl"],
+  ["junco", "owl"],
+  ["kagu", "owl"],
+  ["kinglet", "owl"],
+  ["kiskadee", "owl"],
+  ["koel", "owl"],
+  ["linnet", "owl"],
+  ["logrunner", "owl"],
+  ["longclaw", "owl"],
+  ["longspur", "owl"],
+  ["lory", "owl"],
+  ["mallard", "owl"],
+  ["mesia", "owl"],
+  ["mesite", "owl"],
+  ["miner", "owl"],
+  ["minivet", "owl"],
+  ["munia", "owl"],
+  ["nene", "owl"],
+  ["nightingale", "owl"],
+  ["nigrita", "owl"],
+  ["ouzel", "owl"],
+  ["palila", "owl"],
+  ["pardalote", "owl"],
+  ["pardusco", "owl"],
+  ["peewit", "owl"],
+  ["phainopepla", "owl"],
+  ["phalarope", "owl"],
+  ["phoebe", "owl"],
+  ["piapiac", "owl"],
+  ["piculet", "owl"],
+  ["piopio", "owl"],
+  ["pipit", "owl"],
+  ["plushcap", "owl"],
+  ["prinia", "owl"],
+  ["ptarmigan", "owl"],
+  ["puffleg", "owl"],
+  ["pyrrhuloxia", "owl"],
+  ["pyrrhura", "owl"],
+  ["reeve", "owl"],
+  ["rifleman", "owl"],
+  ["screamer", "owl"],
+  ["serin", "owl"],
+  ["shama", "owl"],
+  ["siskin", "owl"],
+  ["sittella", "owl"],
+  ["sora", "owl"],
+  ["stint", "owl"],
+  ["sylph", "owl"],
+  ["tattler", "owl"],
+  ["tchagra", "owl"],
+  ["tesia", "owl"],
+  ["thickknee", "owl"],
+  ["thrasher", "owl"],
+  ["towhee", "owl"],
+  ["tragopan", "owl"],
+  ["triller", "owl"],
+  ["tuftedcheek", "owl"],
+  ["twite", "owl"],
+  ["veery", "owl"],
+  ["verdin", "owl"],
+  ["wheatear", "owl"],
+  ["whimbrel", "owl"],
+  ["whistler", "owl"],
+  ["whiteeye", "owl"],
+  ["willet", "owl"],
+  ["woodnymph", "owl"],
+  ["woollyneck", "owl"],
+  ["wryneck", "owl"],
+  ["xenops", "owl"],
+  ["yuhina", "owl"],
+  ["zeledonia", "owl"],
+  ["yellowhammer", "owl"],
+  ["ceratosaur", "frog"],
+  ["ceratops", "frog"],
+  ["ratsnake", "frog"],
+  ["rattlesnake", "frog"],
+  ["rattler", "frog"],
+  ["whiptail", "frog"],
+  ["catsnake", "frog"],
+  ["bullfrog", "frog"],
+  ["curlytail", "frog"],
+  ["paddletail", "frog"],
+  ["mantella", "frog"],
+  ["bluetongue", "frog"],
+  ["keelback", "frog"],
+  ["pratincole", "owl"],
+  ["albatross", "owl"],
+  ["batis", "owl"],
+  ["nicator", "owl"],
+  ["picathartes", "owl"],
+  ["brambling", "owl"],
+  ["cowbird", "owl"],
+  ["bullfinch", "owl"],
+  ["manucode", "owl"],
+  ["garganey", "owl"],
+  ["reedling", "owl"],
+  ["bustard", "owl"],
+  ["hillstar", "owl"],
+  ["redstart", "owl"],
+  ["woodstar", "owl"],
+  ["pigeon", "owl"],
+  ["killdeer", "owl"],
+  ["trainbearer", "owl"],
+  ["brant", "owl"],
+  ["brilliant", "owl"],
+  ["plantcutter", "owl"],
+  ["elfin", "owl"],
+  ["finfoot", "owl"],
+  ["redpoll", "owl"],
+  ["redshank", "owl"],
+  ["kea", "owl"],
+  ["kangaroorat", "mouse"],
+  ["bulldogbat", "mouse"],
+  ["deermouse", "mouse"],
+  ["groundhog", "mouse"],
+  ["hedgehog", "mouse"],
+  ["suricate", "mouse"],
+  ["polecat", "mouse"],
+  ["freetail", "mouse"],
+  ["diskwing", "mouse"],
+  ["bearcat", "cat"],
+  ["charolais", "deer"],
+  ["sealyham", "fox"],
+  ["firebrat", null],
+  ["pirateperch", null],
+  ["sprat", null],
+  ["zebratail", null],
+  ["batfly", null],
+  ["tunicate", null],
+  ["pinacate", null],
+  ["dogwhelk", null],
+  ["capelin", null],
+  ["paperclam", null],
+  ["paperwasp", null],
+  ["tapeworm", null],
+  ["barramundi", null],
+  ["gourami", null],
+  ["bullray", null],
+  ["cownoseray", null],
+  ["graytail", null],
+  ["peacockbass", null],
+  ["buckeye", null],
+  ["peacockmoth", null],
+  ["crappie", null],
+  ["lanternfish", null],
+  ["brooktrout", null],
+  ["bullhead", null],
+  ["cowrie", null],
+  ["beardworm", null],
+  ["woollybear", null],
+  ["beewolf", null],
+  ["wolfspider", null],
+  ["antlion", null],
+  ["jewelbeetle", null],
+  ["rhinobeetle", null],
+  ["tigerbeetle", null],
+  ["billbug", null],
+  ["tortoisebug", null],
+  ["leopardmoth", null],
+  ["tigermoth", null],
+  ["redhorse", null],
+  ["dragonfly", null],
+  ["horsefly", null],
+  ["owlfly", null],
+  ["snakefly", null],
+  ["bobtail", null],
+  ["springtail", null],
+  ["tripletail", null],
+  ["yellowtail", null],
+  ["sootywing", null],
+  ["geoduck", null],
+  ["goosefish", null],
+  ["gooseneck", null],
+  ["tommyruff", null],
+  ["wolfsnake", "frog"],
+  ["catshark", null],
+  ["hognose", "frog"],
+  ["hogsucker", null],
+  ["quahog", null],
+  ["deerfly", null],
+  ["mousespider", null],
+  ["bullsnake", "frog"],
+  ["pewee", "owl"],
+  ["purseweb", null],
+  ["camelspider", null],
+  ["lynxspider", null],
+  ["zebraspider", null],
+  ["honeyguide", "owl"],
+  ["violetear", "owl"],
+  ["kingfisher", "owl"],
+  ["fishingcat", "cat"],
+  ["beeeater", "owl"],
+  ["honeyeater", "owl"],
+  ["bateleur", "owl"],
+  ["flyingfox", "mouse"],
+  ["flyingsquirrel", "mouse"],
+  ["prairiedog", "mouse"],
+  ["guineapig", "mouse"],
+  ["seacow", "elephant"],
+  ["catfish", null],
+  ["dogfish", null],
+  ["lionfish", null],
+  ["frogfish", null],
+  ["frogmouth", "owl"],
+  ["froghopper", null],
+  ["catbird", "owl"],
+  ["mousebird", "owl"],
+  ["birdwing", null],
+  ["bokmakierie", "owl"],
+  ["caterpillar", null],
+  ["rayadito", "owl"],
+  ["basset", "fox"],
+  ["mammoth", "elephant"],
+  ["anteater", "mouse"],
+  ["antelope", "deer"],
+  ["flyingdragon", "frog"],
+  ["flycatcher", "owl"],
+  ["dragonfish", null],
+  ["dragonet", null],
+  ["seadragon", null],
+  ["coralsnake", "frog"],
+  ["wormlizard", "frog"],
+  ["slowworm", "frog"],
+  ["boarfish", null],
+  ["alligatorgar", null],
+  ["leopardseal", null],
+  ["seal", null],
+  ["sealyham", "fox"],
+  ["aardwolf", "lion"],
+  ["tasmaniandevil", "koala"],
+  ["thornydevil", "frog"],
+  ["otterhound", "fox"],
+  ["hoppermouse", "mouse"],
+  ["cricketfrog", "frog"],
+  ["gnatcatcher", "owl"],
+  ["pigtail", "mouse"],
+  ["swallowtail", null],
+  ["winghead", null],
+  ["lacewing", null],
+  ["cuckoobee", null],
+  ["sandroller", null],
+  ["leafroller", null],
+  ["weaverant", null],
+  ["orbweaver", null],
+  ["cranefly", null],
+  ["snipefly", null],
+  ["cockchafer", null],
+  ["cockle", null],
+  ["cockroach", null],
+  ["roadrunner", "owl"],
+  ["racerunner", "frog"],
+  ["ruffe", null],
+  ["iguana", "frog"],
+  ["guanaco", "deer"],
+  ["eggeater", "frog"],
+  ["waterdog", "frog"],
+  ["congoeel", "frog"],
+  ["eagleray", null],
+  ["zebrashark", null],
+  ["leopardshark", null],
+  ["bullshark", null],
+  ["cowshark", null],
+  ["squirrelfish", null],
+  ["porcupinefish", null],
+  ["parrotfish", null],
+  ["batfish", null],
+  ["toadfish", null],
+  ["elephantfish", null],
+  ["ratfish", null],
+  ["rabbitfish", null],
+  ["foxface", null],
+  ["foxfish", null],
+  ["cowfish", null],
+  ["hogfish", null],
+  ["goatfish", null],
+  ["wolffish", null],
+  ["hawkfish", null],
+  ["houndfish", null],
+  ["lizardfish", null],
+  ["searobin", null],
+  ["sanddiver", null],
+  ["crestfish", null],
+  ["snakemackerel", null],
+  ["viperfish", null],
+  ["cutthroat", null],
+  ["starling", "owl"],
+  ["starthroat", "owl"],
+  ["jackdaw", "owl"],
+  ["jackrabbit", "rabbit"],
+  ["duckling", "owl"],
+  ["gosling", "owl"],
+  ["mollymawk", "owl"],
+  ["leaftail", "frog"],
+  ["leaftosser", "owl"],
+  ["barbet", "owl"],
+  ["barbastelle", "mouse"],
+  ["swordtail", null],
+  ["spidermonkey", "mouse"],
+  ["spiderhunter", "owl"],
+  ["webfoot", "owl"],
+  ["prongtail", null],
+  ["tigerwing", null],
+  ["glasswing", null],
+  ["clearwing", null],
+  ["underwing", null],
+  ["rattail", null],
+  ["seamouse", null],
+  ["seapig", null],
+  ["seapen", null],
+  ["crownofthorns", null],
+  ["cocktail", null],
+  ["stiltbug", null],
+  ["snipeel", null],
+  ["figeater", null],
+  ["hawkmoth", null],
+  ["kitefin", null],
+  ["fowlertoad", "frog"],
+  ["billfish", null],
+  ["crestedgecko", "frog"],
+  ["bear", "bear"],
+  ["grizzly", "bear"],
+  ["panda", "bear"],
+  ["kodiak", "bear"],
+  ["wolf", "fox"],
+  ["fox", "fox"],
+  ["jackal", "fox"],
+  ["coyote", "fox"],
+  ["dingo", "fox"],
+  ["dhole", "fox"],
+  ["fennec", "fox"],
+  ["dog", "fox"],
+  ["hound", "fox"],
+  ["corgi", "fox"],
+  ["collie", "fox"],
+  ["terrier", "fox"],
+  ["mastiff", "fox"],
+  ["spaniel", "fox"],
+  ["retriever", "fox"],
+  ["shepherd", "fox"],
+  ["husky", "fox"],
+  ["spitz", "fox"],
+  ["shiba", "fox"],
+  ["beagle", "fox"],
+  ["poodle", "fox"],
+  ["pug", "fox"],
+  ["labrador", "fox"],
+  ["malamute", "fox"],
+  ["chihuahua", "fox"],
+  ["dachshund", "fox"],
+  ["dalmatian", "fox"],
+  ["doberman", "fox"],
+  ["rottweiler", "fox"],
+  ["samoyed", "fox"],
+  ["schnauzer", "fox"],
+  ["setter", "fox"],
+  ["pointer", "fox"],
+  ["papillon", "fox"],
+  ["havanese", "fox"],
+  ["bichon", "fox"],
+  ["maltese", "fox"],
+  ["basenji", "fox"],
+  ["borzoi", "fox"],
+  ["briard", "fox"],
+  ["akbash", "fox"],
+  ["akita", "fox"],
+  ["airedale", "fox"],
+  ["beauceron", "fox"],
+  ["leonberger", "fox"],
+  ["kuvasz", "fox"],
+  ["saluki", "fox"],
+  ["sloughi", "fox"],
+  ["azawakh", "fox"],
+  ["keeshond", "fox"],
+  ["elkhound", "fox"],
+  ["lurcher", "fox"],
+  ["puli", "fox"],
+  ["pumi", "fox"],
+  ["canaan", "fox"],
+  ["saarloos", "fox"],
+  ["schipperke", "fox"],
+  ["vizsla", "fox"],
+  ["weimaraner", "fox"],
+  ["whippet", "fox"],
+  ["xolo", "fox"],
+  ["komondor", "fox"],
+  ["laika", "fox"],
+  ["shikoku", "fox"],
+  ["chowchow", "fox"],
+  ["cat", "cat"],
+  ["ocelot", "cat"],
+  ["margay", "cat"],
+  ["serval", "cat"],
+  ["caracal", "cat"],
+  ["lynx", "cat"],
+  ["bobcat", "cat"],
+  ["kodkod", "cat"],
+  ["oncilla", "cat"],
+  ["jaguarundi", "cat"],
+  ["manul", "cat"],
+  ["sphynx", "cat"],
+  ["tabby", "cat"],
+  ["calico", "cat"],
+  ["burmese", "cat"],
+  ["siamese", "cat"],
+  ["ragdoll", "cat"],
+  ["korat", "cat"],
+  ["chartreux", "cat"],
+  ["birman", "cat"],
+  ["abyssinian", "cat"],
+  ["fossa", "cat"],
+  ["binturong", "cat"],
+  ["lion", "lion"],
+  ["tiger", "lion"],
+  ["jaguar", "lion"],
+  ["leopard", "lion"],
+  ["cheetah", "lion"],
+  ["cougar", "lion"],
+  ["puma", "lion"],
+  ["panther", "lion"],
+  ["ounce", "lion"],
+  ["smilodon", "lion"],
+  ["hyaen", "lion"],
+  ["pig", "pig"],
+  ["hog", "pig"],
+  ["boar", "pig"],
+  ["peccary", "pig"],
+  ["warthog", "pig"],
+  ["tapir", "pig"],
+  ["hippo", "pig"],
+  ["rhino", "pig"],
+  ["rabbit", "rabbit"],
+  ["hare", "rabbit"],
+  ["pika", "rabbit"],
+  ["cottontail", "rabbit"],
+  ["deer", "deer"],
+  ["elk", "deer"],
+  ["moose", "deer"],
+  ["gazelle", "deer"],
+  ["impala", "deer"],
+  ["kudu", "deer"],
+  ["nyala", "deer"],
+  ["bongo", "deer"],
+  ["eland", "deer"],
+  ["oryx", "deer"],
+  ["gemsbok", "deer"],
+  ["duiker", "deer"],
+  ["gerenuk", "deer"],
+  ["dibatag", "deer"],
+  ["saiga", "deer"],
+  ["suni", "deer"],
+  ["steenbok", "deer"],
+  ["springbok", "deer"],
+  ["pronghorn", "deer"],
+  ["chiru", "deer"],
+  ["goat", "deer"],
+  ["sheep", "deer"],
+  ["ibex", "deer"],
+  ["chamois", "deer"],
+  ["tahr", "deer"],
+  ["takin", "deer"],
+  ["muskox", "deer"],
+  ["bison", "deer"],
+  ["buffalo", "deer"],
+  ["yak", "deer"],
+  ["cow", "deer"],
+  ["bull", "deer"],
+  ["aurochs", "deer"],
+  ["gaur", "deer"],
+  ["banteng", "deer"],
+  ["anoa", "deer"],
+  ["horse", "deer"],
+  ["zebra", "deer"],
+  ["quagga", "deer"],
+  ["donkey", "deer"],
+  ["mule", "deer"],
+  ["onager", "deer"],
+  ["kiang", "deer"],
+  ["khulan", "deer"],
+  ["giraffe", "deer"],
+  ["okapi", "deer"],
+  ["camel", "deer"],
+  ["llama", "deer"],
+  ["alpaca", "deer"],
+  ["guanaco", "deer"],
+  ["chevrotain", "deer"],
+  ["muntjac", "deer"],
+  ["pudu", "deer"],
+  ["buck", "deer"],
+  ["wildebeest", "deer"],
+  ["gnu", "deer"],
+  ["hartebeest", "deer"],
+  ["bontebok", "deer"],
+  ["blesbok", "deer"],
+  ["ram", "deer"],
+  ["ewe", "deer"],
+  ["angus", "deer"],
+  ["brahman", "deer"],
+  ["cashmere", "deer"],
+  ["mouflon", "deer"],
+  ["urial", "deer"],
+  ["wagyu", "deer"],
+  ["simmental", "deer"],
+  ["zebu", "deer"],
+  ["kouprey", "deer"],
+  ["nubian", "deer"],
+  ["kiko", "deer"],
+  ["saanen", "deer"],
+  ["toggenburg", "deer"],
+  ["jersey", "deer"],
+  ["holstein", "deer"],
+  ["hereford", "deer"],
+  ["limousin", "deer"],
+  ["haflinger", "deer"],
+  ["hanoverian", "deer"],
+  ["clydesdale", "deer"],
+  ["percheron", "deer"],
+  ["mustang", "deer"],
+  ["brumby", "deer"],
+  ["boer", "deer"],
+  ["criollo", "deer"],
+  ["palomino", "deer"],
+  ["chital", "deer"],
+  ["sambar", "deer"],
+  ["wapiti", "deer"],
+  ["topi", "deer"],
+  ["tsessebe", "deer"],
+  ["hirola", "deer"],
+  ["kob", "deer"],
+  ["puku", "deer"],
+  ["lechwe", "deer"],
+  ["sitatunga", "deer"],
+  ["bharal", "deer"],
+  ["goral", "deer"],
+  ["addax", "deer"],
+  ["aoudad", "deer"],
+  ["oribi", "deer"],
+  ["grysbok", "deer"],
+  ["elephant", "elephant"],
+  ["mastodon", "elephant"],
+  ["dugong", "elephant"],
+  ["manatee", "elephant"],
+  ["kangaroo", "koala"],
+  ["wallaby", "koala"],
+  ["koala", "koala"],
+  ["wombat", "koala"],
+  ["quoll", "koala"],
+  ["quokka", "koala"],
+  ["numbat", "koala"],
+  ["bilby", "koala"],
+  ["cuscus", "koala"],
+  ["pademelon", "koala"],
+  ["potoroo", "koala"],
+  ["bandicoot", "koala"],
+  ["bettong", "koala"],
+  ["wallaroo", "koala"],
+  ["sugarglider", "koala"],
+  ["glider", "mouse"],
+  ["gorilla", "bear"],
+  ["chimpanzee", "bear"],
+  ["orangutan", "bear"],
+  ["bonobo", "bear"],
+  ["baboon", "bear"],
+  ["mandrill", "bear"],
+  ["gibbon", "bear"],
+  ["ape", "bear"],
+  ["drill", "bear"],
+  ["gelada", "bear"],
+  ["marmoset", "mouse"],
+  ["tamarin", "mouse"],
+  ["tarsier", "mouse"],
+  ["bushbaby", "mouse"],
+  ["lemur", "mouse"],
+  ["loris", "mouse"],
+  ["galago", "mouse"],
+  ["monkey", "mouse"],
+  ["macaque", "mouse"],
+  ["langur", "mouse"],
+  ["colobus", "mouse"],
+  ["capuchin", "mouse"],
+  ["howler", "mouse"],
+  ["uakari", "mouse"],
+  ["saki", "mouse"],
+  ["talapoin", "mouse"],
+  ["patas", "mouse"],
+  ["surili", "mouse"],
+  ["muriqui", "mouse"],
+  ["indri", "mouse"],
+  ["potto", "mouse"],
+  ["douc", "mouse"],
+  ["aardvark", "pig"],
+  ["sloth", "koala"],
+  ["armadillo", "mouse"],
+  ["pangolin", "mouse"],
+  ["shrew", "mouse"],
+  ["mole", "mouse"],
+  ["hedgehog", "mouse"],
+  ["tenrec", "mouse"],
+  ["weasel", "mouse"],
+  ["ferret", "mouse"],
+  ["mink", "mouse"],
+  ["otter", "mouse"],
+  ["badger", "mouse"],
+  ["wolverine", "mouse"],
+  ["marten", "mouse"],
+  ["fisher", "mouse"],
+  ["sable", "mouse"],
+  ["raccoon", "mouse"],
+  ["coati", "mouse"],
+  ["kinkajou", "mouse"],
+  ["olingo", "mouse"],
+  ["meerkat", "mouse"],
+  ["suricate", "mouse"],
+  ["mongoose", "mouse"],
+  ["civet", "mouse"],
+  ["genet", "mouse"],
+  ["hyrax", "mouse"],
+  ["chipmunk", "mouse"],
+  ["groundhog", "mouse"],
+  ["marmot", "mouse"],
+  ["squirrel", "mouse"],
+  ["hamster", "mouse"],
+  ["gerbil", "mouse"],
+  ["chinchilla", "mouse"],
+  ["capybara", "mouse"],
+  ["beaver", "mouse"],
+  ["porcupine", "mouse"],
+  ["gopher", "mouse"],
+  ["mouse", "mouse"],
+  ["rat", "mouse"],
+  ["vole", "mouse"],
+  ["lemming", "mouse"],
+  ["jerboa", "mouse"],
+  ["bat", "mouse"],
+  ["agouti", "mouse"],
+  ["echidna", "mouse"],
+  ["entelodont", "pig"],
+  ["ermine", "mouse"],
+  ["grison", "mouse"],
+  ["colugo", "mouse"],
+  ["dunnart", "mouse"],
+  ["opossum", "mouse"],
+  ["possum", "mouse"],
+  ["paca", "mouse"],
+  ["mara", "mouse"],
+  ["viscacha", "mouse"],
+  ["hutia", "mouse"],
+  ["coypu", "mouse"],
+  ["nutria", "mouse"],
+  ["degu", "mouse"],
+  ["jird", "mouse"],
+  ["bird", "owl"],
+  ["owl", "owl"],
+  ["eagle", "owl"],
+  ["hawk", "owl"],
+  ["falcon", "owl"],
+  ["kite", "owl"],
+  ["harrier", "owl"],
+  ["buzzard", "owl"],
+  ["vulture", "owl"],
+  ["condor", "owl"],
+  ["osprey", "owl"],
+  ["kestrel", "owl"],
+  ["merlin", "owl"],
+  ["hobby", "owl"],
+  ["gull", "owl"],
+  ["tern", "owl"],
+  ["albatross", "owl"],
+  ["petrel", "owl"],
+  ["shearwater", "owl"],
+  ["fulmar", "owl"],
+  ["gannet", "owl"],
+  ["pelican", "owl"],
+  ["cormorant", "owl"],
+  ["anhinga", "owl"],
+  ["dove", "owl"],
+  ["pigeon", "owl"],
+  ["dodo", "owl"],
+  ["parrot", "owl"],
+  ["macaw", "owl"],
+  ["cockatoo", "owl"],
+  ["parakeet", "owl"],
+  ["budgerigar", "owl"],
+  ["turkey", "owl"],
+  ["chicken", "owl"],
+  ["grouse", "owl"],
+  ["quail", "owl"],
+  ["pheasant", "owl"],
+  ["partridge", "owl"],
+  ["peacock", "owl"],
+  ["peafowl", "owl"],
+  ["curassow", "owl"],
+  ["chachalaca", "owl"],
+  ["finch", "owl"],
+  ["sparrow", "owl"],
+  ["bunting", "owl"],
+  ["tanager", "owl"],
+  ["cardinal", "owl"],
+  ["grosbeak", "owl"],
+  ["canary", "owl"],
+  ["crow", "owl"],
+  ["raven", "owl"],
+  ["rook", "owl"],
+  ["jay", "owl"],
+  ["magpie", "owl"],
+  ["chough", "owl"],
+  ["nutcracker", "owl"],
+  ["starling", "owl"],
+  ["myna", "owl"],
+  ["pecker", "owl"],
+  ["bill", "owl"],
+  ["wren", "owl"],
+  ["thrush", "owl"],
+  ["robin", "owl"],
+  ["chat", "owl"],
+  ["catcher", "owl"],
+  ["warbler", "owl"],
+  ["greenlet", "owl"],
+  ["swallow", "owl"],
+  ["swift", "owl"],
+  ["martin", "owl"],
+  ["eater", "owl"],
+  ["penguin", "owl"],
+  ["auk", "owl"],
+  ["murre", "owl"],
+  ["guillemot", "owl"],
+  ["ostrich", "owl"],
+  ["emu", "owl"],
+  ["rhea", "owl"],
+  ["cassowary", "owl"],
+  ["kiwi", "owl"],
+  ["moa", "owl"],
+  ["tinamou", "owl"],
+  ["hoatzin", "owl"],
+  ["seriema", "owl"],
+  ["tail", "owl"],
+  ["wing", "owl"],
+  ["throat", "owl"],
+  ["breast", "owl"],
+  ["shrike", "owl"],
+  ["lark", "owl"],
+  ["creeper", "owl"],
+  ["nuthatch", "owl"],
+  ["pie", "owl"],
+  ["fowl", "owl"],
+  ["duck", "owl"],
+  ["goose", "owl"],
+  ["swan", "owl"],
+  ["teal", "owl"],
+  ["wigeon", "owl"],
+  ["gadwall", "owl"],
+  ["merganser", "owl"],
+  ["smew", "owl"],
+  ["eider", "owl"],
+  ["scoter", "owl"],
+  ["goldeneye", "owl"],
+  ["bufflehead", "owl"],
+  ["canvasback", "owl"],
+  ["redhead", "owl"],
+  ["scaup", "owl"],
+  ["pochard", "owl"],
+  ["grebe", "owl"],
+  ["dabchick", "owl"],
+  ["loon", "owl"],
+  ["diver", "owl"],
+  ["rail", "owl"],
+  ["crake", "owl"],
+  ["coot", "owl"],
+  ["hen", "owl"],
+  ["gallinule", "owl"],
+  ["swamphen", "owl"],
+  ["crane", "owl"],
+  ["brolga", "owl"],
+  ["limpkin", "owl"],
+  ["heron", "owl"],
+  ["egret", "owl"],
+  ["bittern", "owl"],
+  ["stork", "owl"],
+  ["jabiru", "owl"],
+  ["marabou", "owl"],
+  ["saddleback", "owl"],
+  ["adjutant", "owl"],
+  ["ibis", "owl"],
+  ["flamingo", "owl"],
+  ["piper", "owl"],
+  ["plover", "owl"],
+  ["dotterel", "owl"],
+  ["oystercatcher", "owl"],
+  ["avocet", "owl"],
+  ["stilt", "owl"],
+  ["turnstone", "owl"],
+  ["sanderling", "owl"],
+  ["dunlin", "owl"],
+  ["knot", "owl"],
+  ["ruff", "owl"],
+  ["snipe", "owl"],
+  ["cock", "owl"],
+  ["kittiwake", "owl"],
+  ["noddy", "owl"],
+  ["skimmer", "owl"],
+  ["jaeger", "owl"],
+  ["skua", "owl"],
+  ["puffin", "owl"],
+  ["dovekie", "owl"],
+  ["booby", "owl"],
+  ["tubenose", "owl"],
+  ["cuckoo", "owl"],
+  ["coucal", "owl"],
+  ["malkoha", "owl"],
+  ["toucan", "owl"],
+  ["aracari", "owl"],
+  ["motmot", "owl"],
+  ["trogon", "owl"],
+  ["quetzal", "owl"],
+  ["roller", "owl"],
+  ["tityra", "owl"],
+  ["cotinga", "owl"],
+  ["manakin", "owl"],
+  ["vireo", "owl"],
+  ["thrush", "owl"],
+  ["pitta", "owl"],
+  ["kaka", "owl"],
+  ["keet", "owl"],
+  ["rosella", "owl"],
+  ["corella", "owl"],
+  ["cockatiel", "owl"],
+  ["galah", "owl"],
+  ["nicobar", "owl"],
+  ["turaco", "owl"],
+  ["guan", "owl"],
+  ["sandgrouse", "owl"],
+  ["weaver", "owl"],
+  ["whydah", "owl"],
+  ["malimbe", "owl"],
+  ["quelea", "owl"],
+  ["myzomela", "owl"],
+  ["whipbird", "owl"],
+  ["picathartes", "owl"],
+  ["kookaburra", "owl"],
+  ["potoo", "owl"],
+  ["pauraque", "owl"],
+  ["nightjar", "owl"],
+  ["oilbird", "owl"],
+  ["darter", "owl"],
+  ["firecrest", "owl"],
+  ["goldcrest", "owl"],
+  ["flamecrest", "owl"],
+  ["frog", "frog"],
+  ["toad", "frog"],
+  ["salamander", "frog"],
+  ["newt", "frog"],
+  ["axolotl", "frog"],
+  ["caecilian", "frog"],
+  ["hellbender", "frog"],
+  ["olm", "frog"],
+  ["snake", "frog"],
+  ["viper", "frog"],
+  ["cobra", "frog"],
+  ["python", "frog"],
+  ["boa", "frog"],
+  ["mamba", "frog"],
+  ["krait", "frog"],
+  ["taipan", "frog"],
+  ["adder", "frog"],
+  ["copperhead", "frog"],
+  ["cottonmouth", "frog"],
+  ["garter", "frog"],
+  ["anaconda", "frog"],
+  ["chuckwalla", "frog"],
+  ["lizard", "frog"],
+  ["gecko", "frog"],
+  ["iguana", "frog"],
+  ["chameleon", "frog"],
+  ["skink", "frog"],
+  ["monitor", "frog"],
+  ["komodo", "frog"],
+  ["dragon", "frog"],
+  ["gila", "frog"],
+  ["moloch", "frog"],
+  ["tuatara", "frog"],
+  ["turtle", "frog"],
+  ["tortoise", "frog"],
+  ["terrapin", "frog"],
+  ["crocodile", "frog"],
+  ["alligator", "frog"],
+  ["caiman", "frog"],
+  ["gharial", "frog"],
+  ["gavial", "frog"],
+  ["saur", "frog"],
+  ["whiptail", "frog"],
+  ["racer", "frog"],
+  ["rattler", "frog"],
+  ["sidewinder", "frog"],
+  ["bushmaster", "frog"],
+  ["boomslang", "frog"],
+  ["sawscaled", "frog"],
+  ["basilisk", "frog"],
+  ["ameiva", "frog"],
+  ["agama", "frog"],
+  ["anole", "frog"],
+  ["galliwasp", "frog"],
+  ["slider", "frog"],
+  ["matamata", "frog"],
+  ["mudpuppy", "frog"],
+  ["siren", "frog"],
+  ["tokay", "frog"],
+  ["legless", "frog"],
+  ["fish", null],
+  ["shark", null],
+  ["ray", null],
+  ["eel", null],
+  ["tuna", null],
+  ["trout", null],
+  ["salmon", null],
+  ["carp", null],
+  ["perch", null],
+  ["pike", null],
+  ["moray", null],
+  ["cod", null],
+  ["bass", null],
+  ["char", null],
+  ["gar", null],
+  ["goby", null],
+  ["jack", null],
+  ["tang", null],
+  ["tip", null],
+  ["gill", null],
+  ["ling", null],
+  ["mackerel", null],
+  ["sucker", null],
+  ["star", null],
+  ["urchin", null],
+  ["damsel", null],
+  ["tetra", null],
+  ["danio", null],
+  ["rasbora", null],
+  ["barb", null],
+  ["loach", null],
+  ["corydoras", null],
+  ["pleco", null],
+  ["otocinclus", null],
+  ["guppy", null],
+  ["molly", null],
+  ["platy", null],
+  ["dace", null],
+  ["chub", null],
+  ["shiner", null],
+  ["goldfish", null],
+  ["koi", null],
+  ["orfe", null],
+  ["rudd", null],
+  ["tench", null],
+  ["bream", null],
+  ["walleye", null],
+  ["sauger", null],
+  ["zander", null],
+  ["mullet", null],
+  ["cobia", null],
+  ["dorado", null],
+  ["mahi", null],
+  ["wahoo", null],
+  ["bonito", null],
+  ["skipjack", null],
+  ["tarpon", null],
+  ["snook", null],
+  ["barracuda", null],
+  ["wrasse", null],
+  ["monkfish", null],
+  ["goosefish", null],
+  ["boxfish", null],
+  ["filefish", null],
+  ["pufferfish", null],
+  ["trunkfish", null],
+  ["balloonfish", null],
+  ["sunfish", null],
+  ["mola", null],
+  ["lookdown", null],
+  ["permit", null],
+  ["leatherjack", null],
+  ["unicorn", null],
+  ["naso", null],
+  ["surgeonfish", null],
+  ["chromis", null],
+  ["sculpin", null],
+  ["poacher", null],
+  ["gurnard", null],
+  ["dartfish", null],
+  ["flea", null],
+  ["sandlance", null],
+  ["sandeels", null],
+  ["greenling", null],
+  ["sleeper", null],
+  ["greenland", null],
+  ["basking", null],
+  ["megamouth", null],
+  ["bonnethead", null],
+  ["wobbegong", null],
+  ["rattail", null],
+  ["eelpout", null],
+  ["cusk", null],
+  ["hake", null],
+  ["haddock", null],
+  ["pollock", null],
+  ["whiting", null],
+  ["blenny", null],
+  ["goby", null],
+  ["soldierfish", null],
+  ["bigeye", null],
+  ["anchovy", null],
+  ["sardine", null],
+  ["pilchard", null],
+  ["herring", null],
+  ["shad", null],
+  ["menhaden", null],
+  ["smelt", null],
+  ["capelin", null],
+  ["inconnu", null],
+  ["taimen", null],
+  ["lenok", null],
+  ["arapaima", null],
+  ["bichir", null],
+  ["bowfin", null],
+  ["sturgeon", null],
+  ["piranha", null],
+  ["coelacanth", null],
+  ["opah", null],
+  ["oarfish", null],
+  ["manta", null],
+  ["mobula", null],
+  ["electric", null],
+  ["skate", null],
+  ["guitarfish", null],
+  ["thornback", null],
+  ["sawfish", null],
+  ["carpetshark", null],
+  ["hornshark", null],
+  ["thresher", null],
+  ["sandbar", null],
+  ["oilfish", null],
+  ["escolar", null],
+  ["cutlassfish", null],
+  ["greeneye", null],
+  ["eelpout", null],
+  ["fangtooth", null],
+  ["gulper", null],
+  ["hatchetfish", null],
+  ["lanternfish", null],
+  ["squid", null],
+  ["octopus", null],
+  ["nautilus", null],
+  ["spirula", null],
+  ["argonaut", null],
+  ["anemone", null],
+  ["sponge", null],
+  ["sanddollar", null],
+  ["seaangel", null],
+  ["seahare", null],
+  ["nudibranch", null],
+  ["seacucumber", null],
+  ["bootlace", null],
+  ["spider", null],
+  ["web", null],
+  ["crab", null],
+  ["lobster", null],
+  ["shrimp", null],
+  ["snail", null],
+  ["slug", null],
+  ["clam", null],
+  ["oyster", null],
+  ["mussel", null],
+  ["scallop", null],
+  ["coral", null],
+  ["sponge", null],
+  ["worm", null],
+  ["ant", null],
+  ["bee", null],
+  ["wasp", null],
+  ["fly", null],
+  ["moth", null],
+  ["bug", null],
+  ["hopper", null],
+  ["cricket", null],
+  ["midge", null],
+  ["gnat", null],
+  ["scorpion", null],
+  ["centipede", null],
+  ["millipede", null],
+  ["mosquito", null],
+  ["aphid", null],
+  ["cicada", null],
+  ["leech", null],
+  ["krill", null],
+  ["flea", null],
+  ["pen", null],
+  ["tardigrade", null],
+  ["rotifer", null],
+  ["bryozoan", null],
+  ["brachiopod", null],
+  ["chiton", null],
+  ["limpet", null],
+  ["whelk", null],
+  ["cowrie", null],
+  ["cone", null],
+  ["olive", null],
+  ["murex", null],
+  ["volute", null],
+  ["tun", null],
+  ["winkle", null],
+  ["periwinkle", null],
+  ["nerite", null],
+  ["topsnail", null],
+  ["wentletrap", null],
+  ["janthina", null],
+  ["seasnail", null],
+  ["violet", null],
+];
+/* RULES:END */
+const FUR_ALIAS = { gray: "grey" };
+function speciesForAnimal(word){
+  word = word.toLowerCase();
+  for(const [sub, sp] of SPECIES_RULES) if(word.includes(sub)) return sp;
+  return null;
+}
+function furForAdjective(word){
+  word = word.toLowerCase();
+  if(word in S.fur) return word;
+  return FUR_ALIAS[word] ?? null;
+}
+function blinkLids(species){
+  const FACE = new Set(["A", "B", "C", "E", "P"]);
+  const grid = S.species[species], lids = [];
+  for(let y = 0; y <= 8; y++){
+    const row = grid[y];
+    let x = 0;
+    while(x < 16){
+      if(row[x] !== "K"){ x++; continue; }
+      const x0 = x;
+      while(x < 16 && row[x] === "K") x++;
+      if(x - x0 >= 1 && x - x0 <= 3 && x0 > 0 && x < 16 && FACE.has(row[x0 - 1]) && FACE.has(row[x])){
+        const lx = x0 - 1, lw = (x - x0) + 2;
+        let ly = y, lh = 1;
+        if(y > 0 && [...Array(lw)].every((_, i) => grid[y - 1][lx + i] === "E")){ ly = y - 1; lh = 2; }
+        lids.push({ x: lx, y: ly, w: lw, h: lh });
+      }
+    }
+  }
+  return lids;
+}
+
+const nameFromId = (id, sep = "-") => ADJECTIVES[id >>> BITS] + sep + ANIMALS[id & (SLOT - 1)];
+function idFromName(n){
+  const m = n.toLowerCase().trim().split(/[-_ ]/);
+  if(m.length !== 2) return null;
+  const i = adjIx.get(m[0]), j = aniIx.get(m[1]);
+  return i === undefined || j === undefined ? null : (i << BITS) | j;
+}
+function randomId(){
+  const b = new Uint32Array(1);
+  for(;;){ crypto.getRandomValues(b); const id = b[0] % (MAX_ID + 1);
+    if(ADJECTIVES[id >>> BITS] !== ANIMALS[id & (SLOT - 1)]) return id; }
+}
+function fnv1a(s, seed){ let h = seed >>> 0;
+  for(let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  return h >>> 0; }
+
+function partsFromSeed(seed, name){
+  const a = fnv1a(seed, 0x01000193), b = fnv1a(seed, 0x7fffffff);
+  let animal, adjective;
+  if(name){
+    const bits = name.toLowerCase().trim().split(/[-_ ]/);
+    if(bits.length === 2) [adjective, animal] = bits;
+  }
+  const accessory = ACCESSORIES[(a >>> 16) % ACCESSORIES.length];
+  return { species: (animal && speciesForAnimal(animal)) || SPECIES[a % SPECIES.length],
+           fur: (adjective && furForAdjective(adjective)) || FURS[(a >>> 8) % FURS.length], accessory,
+           accessoryColor: accessory === "nothing" ? null : ACCC[b % ACCC.length],
+           background: BGS[(b >>> 8) % BGS.length] };
+}
+function phrase(p){
+  const head = `a ${p.fur} ${p.species}`;
+  let acc;
+  if(p.accessory === "nothing") acc = " with a bare head";
+  else { const m = p.accessory.match(/^(an?) (.+)$/);
+    acc = m ? ` wearing ${m[1]} ${p.accessoryColor} ${m[2]}` : ` wearing ${p.accessoryColor} ${p.accessory}`; }
+  return `${head}${acc}, on ${p.background}`;
+}
+const shade = (hex, f) => { const n = parseInt(hex.slice(1), 16);
+  return "#" + [(n>>16)&255,(n>>8)&255,n&255].map(v => Math.round(v*f).toString(16).padStart(2,"0")).join(""); };
+
+function svgFromParts(p, size = 96, seed = "", animate = true){
+  const [A,B,C] = S.fur[p.fur];
+  const [H,I] = p.accessoryColor ? S.accColor[p.accessoryColor] : ["#000","#000"];
+  const pal = { A, B, C, D: p.fur === "white" ? "#7e8794" : shade(A, .55),
+                K: "#1c1e22", E: "#ffffff", P: "#e79aa8", H, I };
+  let cells = "";
+  const put = (g, off) => { for(let y = 0; y < 16; y++){ const row = g[y]; let x = 0;
+    while(x < 16){ const ch = row[x];
+      if(ch === "." || y + off < 0 || y + off > 15){ x++; continue; }
+      let w = 1; while(x + w < 16 && row[x + w] === ch) w++;
+      cells += `<rect x="${x}" y="${y+off}" width="${w}" height="1" fill="${pal[ch]}"/>`; x += w; } } };
+  put(S.species[p.species], 0);
+  put(S.accessories[p.accessory], S.hatDy[p.species] || 0);
+  let body = cells;
+  if(animate){
+    const lidFill = S.fur[p.fur][0];
+    const a = fnv1a(seed, 0x01000193), b = fnv1a(seed, 0x7fffffff);
+    const off = (a % 52) / 10, off2 = (b % 31) / 10;
+    const lids = blinkLids(p.species).map(l =>
+      `<rect x="${l.x}" y="${l.y}" width="${l.w}" height="0" fill="${lidFill}">`
+      + `<animate attributeName="height" values="0;0;${l.h};0;0" `
+      + `keyTimes="0;0.88;0.92;0.96;1" dur="5.2s" begin="-${off.toFixed(1)}s" `
+      + `repeatCount="indefinite"/></rect>`).join("");
+    body = `<g><animateTransform attributeName="transform" type="translate" `
+      + `values="0 0;0 1;0 0" keyTimes="0;0.5;1" dur="3.1s" begin="-${off2.toFixed(1)}s" `
+      + `repeatCount="indefinite"/>${body}${lids}</g>`;
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="${size}" height="${size}"`
+    + ` shape-rendering="crispEdges" role="img" aria-label="${phrase(p)}">`
+    + `<rect width="16" height="16" fill="${S.background[p.background]}"/>${body}</svg>`;
+}
+const uri = (p, seed = "") => "data:image/svg+xml;utf8," + encodeURIComponent(svgFromParts(p, 96, seed));
+
+// --- ui -------------------------------------------------------------------
+let tab = "names", query = "", selected = null, rollIds = [];
+const view = document.getElementById("view"), meta = document.getElementById("meta"),
+      detail = document.getElementById("detail");
+
+function tile(name, id){
+  const p = partsFromSeed(name, name);
+  const b = document.createElement("button");
+  b.className = "tile"; b.type = "button";
+  b.innerHTML = `<img src="${uri(p, name)}" alt=""><div><b>${name}</b><em>${phrase(p)}</em></div>`;
+  b.onclick = async () => {
+    const em = b.querySelector("em"), was = em.textContent;
+    try{ await navigator.clipboard.writeText(name); em.textContent = "copied";
+      setTimeout(() => em.textContent = was, 900); }catch{}
+  };
+  return b;
+}
+
+function renderNames(){
+  const q = query.toLowerCase().trim(), grid = document.createElement("div");
+  grid.className = "grid";
+  let ids;
+  if(q){
+    const exact = idFromName(q);
+    if(exact !== null) ids = [exact];
+    else if(!adjIx.has(q) && !aniIx.has(q) && !ADJECTIVES.some(w => w.includes(q)) && !ANIMALS.some(w => w.includes(q))){
+      // not a word from either list: treat it as an account identifier and show its face
+      const p = partsFromSeed(q);
+      meta.textContent = "Not a catalog word, so this is the face that identifier gets.";
+      const box = document.createElement("div"); box.className = "detail";
+      box.innerHTML = `<div class="detail-head"><img src="${uri(p, q)}" alt="">`
+        + `<div><h2 class="mono">${q}</h2><p>${phrase(p)}</p></div></div>`;
+      view.replaceChildren(box); return;
+    } else {
+      ids = [];
+      for(const [w, i] of adjIx) if(w.includes(q) && ids.length < 48)
+        for(let k = 0; k < 3; k++) ids.push((i << BITS) | (fnv1a(w + k, 7) % SLOT));
+      for(const [w, j] of aniIx) if(w.includes(q) && ids.length < 96)
+        for(let k = 0; k < 3; k++) ids.push(((fnv1a(w + k, 11) % SLOT) << BITS) | j);
+      ids = ids.slice(0, 96);
+    }
+    meta.textContent = `${ids.length} name${ids.length === 1 ? "" : "s"} for “${q}”. Click to copy.`;
+  } else {
+    if(!rollIds.length) rollIds = Array.from({length: 48}, randomId);
+    ids = rollIds;
+    meta.textContent = "48 of 4,194,304 names. Click to copy.";
+  }
+  for(const id of ids) grid.appendChild(tile(nameFromId(id), id));
+  view.replaceChildren(grid);
+}
+
+function renderWords(list){
+  const words = list === "animals" ? ANIMALS : ADJECTIVES, q = query.toLowerCase().trim();
+  const hits = q ? words.filter(w => w.includes(q)) : words;
+  meta.textContent = q ? `${hits.length} of ${words.length} ${list} contain “${q}”.`
+                       : `All ${words.length} ${list}, alphabetical. Pick one for sample names.`;
+  const frag = document.createDocumentFragment();
+  let letter = "", chips = null;
+  for(const w of hits){
+    if(w[0] !== letter){
+      letter = w[0];
+      const h = document.createElement("div"); h.className = "letter"; h.textContent = letter; frag.appendChild(h);
+      chips = document.createElement("div"); chips.className = "chips"; frag.appendChild(chips);
+    }
+    const c = document.createElement("button");
+    c.className = "chip"; c.type = "button"; c.textContent = w;
+    c.setAttribute("aria-pressed", String(selected?.word === w && selected?.list === list));
+    c.onclick = () => select(list, w);
+    chips.appendChild(c);
+  }
+  if(!hits.length){ const p = document.createElement("p"); p.className = "meta";
+    p.textContent = `No ${list} match “${q}”.`; frag.appendChild(p); }
+  view.replaceChildren(frag);
+}
+
+function parade(title, items){
+  const wrapEl = document.createElement("div");
+  const h = document.createElement("div"); h.className = "letter"; h.textContent = title;
+  const row = document.createElement("div"); row.className = "parade";
+  for(const [label, parts] of items){
+    const f = document.createElement("figure");
+    f.innerHTML = `<img src="${uri(parts, label)}" alt="${phrase(parts)}"><figcaption>${label}</figcaption>`;
+    row.appendChild(f);
+  }
+  wrapEl.append(h, row); return wrapEl;
+}
+
+function renderParts(){
+  meta.textContent = `Every part has a name, so every face has a sentence. `
+    + `${SPECIES.length} animals x ${FURS.length} colours x ${ACCESSORIES.length} accessories `
+    + `x ${ACCC.length} accessory colours x ${BGS.length} backgrounds.`;
+  const base = { species: "bear", fur: "brown", accessory: "nothing", accessoryColor: null, background: "cream" };
+  const frag = document.createDocumentFragment();
+  frag.appendChild(parade("Animals", SPECIES.map(s => [s, { ...base, species: s }])));
+  frag.appendChild(parade("Colours", FURS.map(f => [f, { ...base, fur: f }])));
+  frag.appendChild(parade("Accessories", ACCESSORIES.map(a =>
+    [a, { ...base, accessory: a, accessoryColor: a === "nothing" ? null : "red" }])));
+  frag.appendChild(parade("Accessory colours", ACCC.map(c =>
+    [c, { ...base, accessory: "a top hat", accessoryColor: c }])));
+  frag.appendChild(parade("Backgrounds", BGS.map(b => [b, { ...base, background: b }])));
+  view.replaceChildren(frag);
+}
+
+function renderDetail(){
+  if(!selected){ detail.replaceChildren(); return; }
+  const { list, word } = selected, isAnimal = list === "animals";
+  const fixed = isAnimal ? aniIx.get(word) : adjIx.get(word);
+  const sampleId = isAnimal ? ((fnv1a(word, 3) % SLOT) << BITS) | fixed
+                            : (fixed << BITS) | (fnv1a(word, 3) % SLOT);
+  const sample = nameFromId(sampleId), p = partsFromSeed(sample, sample);
+  const box = document.createElement("div"); box.className = "detail";
+  box.innerHTML = `<div class="detail-head"><img src="${uri(p, sample)}" alt="">`
+    + `<div><h2 class="mono">${word}</h2>`
+    + `<p>${isAnimal ? "Animal" : "Modifier"} · index ${fixed} · appears in 2,048 names</p></div></div>`;
+  const close = document.createElement("button");
+  close.className = "close"; close.textContent = "Clear"; close.onclick = () => select(null);
+  box.querySelector(".detail-head").appendChild(close);
+  const grid = document.createElement("div"); grid.className = "grid";
+  grid.style.marginTop = "14px";
+  for(let k = 0; k < 8; k++){
+    const other = fnv1a(word + ":" + k, 5) % SLOT;
+    const id = isAnimal ? (other << BITS) | fixed : (fixed << BITS) | other;
+    grid.appendChild(tile(nameFromId(id), id));
+  }
+  box.appendChild(grid);
+  detail.replaceChildren(box);
+}
+
+function select(list, word){
+  selected = list ? { list, word } : null;
+  history.replaceState(null, "", selected ? `#${list}/${word}` : " ");
+  renderDetail(); render();
+}
+function render(){
+  if(tab === "names") renderNames();
+  else if(tab === "parts") renderParts();
+  else renderWords(tab);
+  document.querySelectorAll("[data-tab]").forEach(b => b.classList.toggle("on", b.dataset.tab === tab));
+}
+
+document.querySelectorAll("[data-tab]").forEach(b => b.onclick = () => { tab = b.dataset.tab; render(); });
+document.getElementById("roll").onclick = () => {
+  rollIds = []; tab = "names"; query = ""; document.getElementById("q").value = ""; render(); };
+let t;
+document.getElementById("q").addEventListener("input", e => {
+  query = e.target.value; clearTimeout(t);
+  t = setTimeout(() => { if(tab === "parts") tab = "names"; render(); }, 120); });
+
+const heroId = randomId(), heroName = nameFromId(heroId), heroParts = partsFromSeed(heroName, heroName);
+document.getElementById("heroArt").src = uri(heroParts, heroName);
+document.getElementById("heroName").textContent = heroName;
+document.getElementById("heroPhrase").textContent = phrase(heroParts);
+document.getElementById("entropy").textContent =
+  `4,194,304 names and ${VARIANTS.toLocaleString()} distinct faces. Derived from independent parts `
+  + `of the same hash, so name plus face is about 37 bits to confirm — far past what two people `
+  + `mistype, though a face alone is only 1 in ${VARIANTS.toLocaleString()}.`;
+
+const m = location.hash.match(/^#(animals|modifiers)\/([a-z]+)$/);
+if(m && (m[1] === "animals" ? aniIx.has(m[2]) : adjIx.has(m[2]))){
+  selected = { list: m[1], word: m[2] }; tab = m[1]; renderDetail();
+}
+render();
+</script>
+</html>

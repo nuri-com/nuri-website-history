@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nuri — Bitcoin first. Payments everywhere.</title>
+<meta name="description" content="A simple self-custodial wallet for Bitcoin, Lightning and stable money.">
+<style>
+:root{
+  --bg:#f7f6f1;
+  --ink:#111111;
+  --muted:#66655f;
+  --line:#d9d7cf;
+  --card:#ffffff;
+  --accent:#ff6a3d;
+  --soft:#efeee8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(1120px,calc(100% - 32px));margin:0 auto}
+nav{
+  height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--line);
+}
+.brand{font-weight:800;letter-spacing:.18em;font-size:15px}
+.nav-actions{display:flex;gap:10px;align-items:center}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:46px;padding:0 18px;border-radius:999px;
+  border:1px solid var(--ink);font-weight:700;font-size:14px;
+}
+.btn.primary{background:var(--ink);color:white}
+.btn.ghost{background:transparent}
+.hero{
+  padding:92px 0 76px;
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:56px;
+  align-items:end;
+}
+.eyebrow{
+  font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:18px
+}
+h1{
+  font-family:Georgia,"Times New Roman",serif;
+  font-weight:400;
+  font-size:clamp(58px,8vw,110px);
+  line-height:.92;
+  letter-spacing:-.055em;
+  margin:0 0 28px;
+}
+.lead{
+  max-width:680px;
+  font-size:clamp(20px,2.1vw,28px);
+  line-height:1.28;
+  color:#2e2e2b;
+  margin:0 0 28px;
+}
+.micro{
+  color:var(--muted);
+  font-size:15px;
+  line-height:1.6;
+}
+.hero-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:26px;
+  min-height:410px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.wallet-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+.wallet-row:last-child{border-bottom:0}
+.wallet-label{font-weight:700}
+.wallet-sub{font-size:13px;color:var(--muted);margin-top:4px}
+.wallet-val{font-family:Georgia,serif;font-size:28px}
+.section{padding:78px 0;border-top:1px solid var(--line)}
+.section h2{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(42px,5vw,72px);
+  line-height:.98;
+  letter-spacing:-.04em;
+  font-weight:400;
+  margin:0 0 24px;
+}
+.section-intro{
+  max-width:720px;color:#373733;font-size:20px;line-height:1.5;margin:0 0 44px
+}
+.money-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:20px
+}
+.money-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:32px;
+}
+.money-card h3{
+  font-size:14px;letter-spacing:.12em;text-transform:uppercase;
+  margin:0 0 20px;color:var(--accent)
+}
+.money-card .big{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:48px;line-height:1.02;letter-spacing:-.04em;margin-bottom:18px
+}
+.money-card p{font-size:18px;line-height:1.5;color:#353532;margin:0 0 24px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  border:1px solid var(--line);
+  padding:9px 12px;border-radius:999px;font-size:13px;font-weight:700;background:var(--soft)
+}
+.bridge{
+  margin-top:20px;
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:26px 30px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  background:#111;color:#fff;
+}
+.bridge .bigline{font-family:Georgia,serif;font-size:clamp(28px,3.8vw,52px);line-height:1}
+.bridge .arrow{font-size:34px;opacity:.8}
+.three{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px
+}
+.feature{
+  padding:26px;border-top:1px solid var(--ink)
+}
+.feature .num{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--accent);margin-bottom:22px}
+.feature h3{font-size:24px;margin:0 0 10px}
+.feature p{margin:0;color:var(--muted);line-height:1.55}
+.compare{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:var(--card)
+}
+.compare > div{padding:28px;border-right:1px solid var(--line)}
+.compare > div:last-child{border-right:0}
+.compare h4{margin:0 0 16px;font-size:14px;text-transform:uppercase;letter-spacing:.09em}
+.compare p{margin:0;color:var(--muted);line-height:1.55}
+.compare .nuri{background:#111;color:white}
+.compare .nuri p{color:#d8d8d2}
+.story{
+  display:grid;grid-template-columns:.9fr 1.1fr;gap:40px;align-items:start
+}
+.story-box{
+  border:1px solid var(--line);border-radius:28px;padding:30px;background:var(--card)
+}
+.story-box strong{display:block;font-size:20px;margin-bottom:8px}
+.story-box p{margin:0;color:var(--muted);line-height:1.55}
+.cta{
+  padding:86px 0 100px;
+  text-align:center;
+  border-top:1px solid var(--line)
+}
+.cta h2{
+  font-family:Georgia,serif;
+  font-size:clamp(52px,7vw,94px);
+  font-weight:400;
+  letter-spacing:-.05em;
+  line-height:.94;
+  margin:0 0 24px
+}
+.cta p{font-size:20px;color:var(--muted);margin:0 0 28px}
+footer{border-top:1px solid var(--line);padding:26px 0 42px;color:var(--muted);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+@media(max-width:850px){
+  nav{height:64px}
+  .hero{grid-template-columns:1fr;padding:68px 0 56px;gap:32px}
+  .hero-card{min-height:0}
+  .money-grid,.three,.story{grid-template-columns:1fr}
+  .compare{grid-template-columns:1fr}
+  .compare>div{border-right:0;border-bottom:1px solid var(--line)}
+  .compare>div:last-child{border-bottom:0}
+  .bridge{flex-direction:column;align-items:flex-start}
+  .bridge .arrow{transform:rotate(90deg)}
+}
+@media(max-width:560px){
+  .wrap{width:min(100% - 22px,1120px)}
+  .nav-actions .ghost{display:none}
+  h1{font-size:58px}
+  .lead{font-size:20px}
+  .money-card,.story-box,.hero-card{border-radius:22px}
+  .section{padding:58px 0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand">NURI</div>
+    <div class="nav-actions">
+      <a class="btn ghost" href="#how">How it works</a>
+      <a class="btn primary" href="https://app.nuri.com">Open wallet</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Bitcoin-first self-custody</div>
+      <h1>Bitcoin first.<br>Payments everywhere.</h1>
+      <p class="lead">A simple self-custodial wallet for Bitcoin, Lightning and stable money.</p>
+      <p class="micro">Own it. Send it. Receive it. Pay with it.<br>No seed phrase. No password. Just your passkey.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:28px">
+        <a class="btn primary" href="https://app.nuri.com">Create wallet</a>
+        <a class="btn ghost" href="#money">See how it works</a>
+      </div>
+    </div>
+
+    <div class="hero-card" aria-label="wallet preview">
+      <div>
+        <div class="micro" style="margin-bottom:8px">YOUR WALLET</div>
+        <div class="wallet-row">
+          <div><div class="wallet-label">Bitcoin</div><div class="wallet-sub">Native internet money</div></div>
+          <div class="wallet-val">₿</div>
+        </div>
+        <div class="wallet-row">
+          <div><div class="wallet-label">Lightning</div><div class="wallet-sub">Fast Bitcoin payments</div></div>
+          <div class="wallet-val">⚡</div>
+        </div>
+        <div class="wallet-row">
+          <div><div class="wallet-label">USD / EUR</div><div class="wallet-sub">Stable internet cash</div></div>
+          <div class="wallet-val">$ €</div>
+        </div>
+      </div>
+      <div class="micro">One wallet. Your keys. Your choice.</div>
+    </div>
+  </section>
+</div>
+
+<section class="section" id="money">
+  <div class="wrap">
+    <div class="eyebrow">One wallet, two worlds</div>
+    <h2>Internet money.<br>Local money.</h2>
+    <p class="section-intro">Own and transact globally on the internet, then connect to the local payment rails available where you live.</p>
+
+    <div class="money-grid">
+      <article class="money-card">
+        <h3>Internet Money</h3>
+        <div class="big">Owned by you.</div>
+        <p>Bitcoin, Lightning and stablecoins for peer-to-peer payments between people — and software.</p>
+        <div class="chips">
+          <span class="chip">Bitcoin</span>
+          <span class="chip">Lightning</span>
+          <span class="chip">Stable USD</span>
+          <span class="chip">Stable EUR</span>
+          <span class="chip">AI-ready</span>
+        </div>
+      </article>
+
+      <article class="money-card">
+        <h3>Local Money</h3>
+        <div class="big">Useful where you are.</div>
+        <p>Convert, spend or cash out through the payment rails supported in your country.</p>
+        <div class="chips">
+          <span class="chip">Visa</span>
+          <span class="chip">IBAN</span>
+          <span class="chip">ACH</span>
+          <span class="chip">Mobile Money</span>
+          <span class="chip">Bank transfer</span>
+        </div>
+      </article>
+    </div>
+
+    <div class="bridge">
+      <div class="bigline">Internet Money</div>
+      <div class="arrow">↔</div>
+      <div class="bigline">Local Money</div>
+      <div class="micro" style="color:#c8c8c2">Move between both in one wallet.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="eyebrow">Electronic cash, made simple</div>
+    <h2>Own it. Move it. Use it.</h2>
+    <div class="three">
+      <div class="feature">
+        <div class="num">01</div>
+        <h3>Own</h3>
+        <p>Passkey-secured self-custody. No exchange holding your Bitcoin. No seed phrase in normal use.</p>
+      </div>
+      <div class="feature">
+        <div class="num">02</div>
+        <h3>Move</h3>
+        <p>Send and receive Bitcoin, Lightning and stable money person-to-person across the internet.</p>
+      </div>
+      <div class="feature">
+        <div class="num">03</div>
+        <h3>Use</h3>
+        <p>Pay online, convert currencies, or connect local card, bank and mobile-money rails where available.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="eyebrow">Why Nuri</div>
+    <h2>Easy like banking.<br>Yours like Bitcoin.</h2>
+
+    <div class="compare">
+      <div>
+        <h4>Traditional Bitcoin wallets</h4>
+        <p>You own the money, but the UX often assumes you already understand wallets, recovery and networks.</p>
+      </div>
+      <div>
+        <h4>Banks & exchanges</h4>
+        <p>Easy to use, but custody and access depend on the provider and its rules.</p>
+      </div>
+      <div class="nuri">
+        <h4>Nuri</h4>
+        <p>Self-custody with a mainstream interface: passkeys, Bitcoin + Lightning, stable money and local rails around the wallet.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap story">
+    <div>
+      <div class="eyebrow">Wallet first. Services second.</div>
+      <h2>Bitcoin stays yours.</h2>
+      <p class="section-intro">Cards, bank accounts and mobile-money services can change by country. Your wallet remains the center.</p>
+    </div>
+    <div class="story-box">
+      <strong>Bitcoin + Lightning</strong>
+      <p>Core wallet layer.</p>
+      <hr style="border:0;border-top:1px solid var(--line);margin:22px 0">
+      <strong>Stable money</strong>
+      <p>Optional digital cash for everyday pricing and settlement.</p>
+      <hr style="border:0;border-top:1px solid var(--line);margin:22px 0">
+      <strong>Local rails</strong>
+      <p>Visa, bank transfers, ACH, IBAN and mobile money where supported.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap story">
+    <div>
+      <div class="eyebrow">For humans and software</div>
+      <h2>Internet money for people and AI.</h2>
+      <p class="section-intro">Use the same self-custodial wallet from mobile, web or permissioned agent interfaces.</p>
+    </div>
+    <div class="story-box">
+      <strong>You control the wallet.</strong>
+      <p>Software can be given specific permissions without becoming the owner of your money.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <h2>Own your money.<br>Use it everywhere.</h2>
+    <p>Bitcoin first. Stable money when useful. Local rails when needed.</p>
+    <a class="btn primary" href="https://app.nuri.com">Create your wallet</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>NURI — self-custodial by design.</span>
+    <span>Bitcoin · Lightning · Stablecoins · Local rails</span>
+  </div>
+</footer>
+</body>
+</html>

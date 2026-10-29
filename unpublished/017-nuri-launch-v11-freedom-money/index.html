@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; script-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nuri — Freedom money.</title>
+<meta name="description" content="Bitcoin & Lightning, self-custody and local payment rails. Freedom money for everyone.">
+<style>
+:root{
+  --bg:#fff; --ink:#0a0a0a; --muted:#747474; --soft:#f5f5f2; --line:#e5e5e1;
+  --h:clamp(3.9rem,7.7vw,8.2rem); --b:clamp(1.05rem,1.8vw,1.34rem);
+  --pad:clamp(26px,5vw,78px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+a{color:inherit;text-underline-offset:.18em}
+p,a,span,strong,b,li,summary,button{font-size:var(--b);line-height:1.4}
+h1,h2{
+  font:700 var(--h)/.94 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  letter-spacing:-.055em;margin:0;max-width:11ch
+}
+.brand{
+  position:fixed;z-index:80;left:22px;top:18px;
+  font-size:1rem;font-weight:800;letter-spacing:.08em;text-decoration:none
+}
+.top-cta{
+  position:fixed;z-index:80;right:22px;top:13px;
+  background:var(--ink);color:#fff;text-decoration:none;border-radius:999px;
+  padding:.72em 1.05em;font-size:.95rem;font-weight:700
+}
+.slide{
+  min-height:100svh;height:100svh;scroll-snap-align:start;scroll-snap-stop:always;
+  display:flex;align-items:center;padding:78px var(--pad) 54px;overflow:hidden
+}
+.slide.soft{background:var(--soft)}
+.slide.dark{background:var(--ink);color:#fff}
+.content{width:min(100%,1480px);margin:auto;max-height:calc(100svh - 132px);overflow:hidden}
+.lead{max-width:52rem;margin:1.4rem 0 0}
+.muted{color:var(--muted)}
+.dark .muted{color:#bcbcbc}
+.actions{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:1.7rem}
+.button{
+  display:inline-block;background:var(--ink);color:#fff;border:1px solid var(--ink);
+  border-radius:999px;padding:.76em 1.08em;text-decoration:none;font-weight:700
+}
+.dark .button{background:#fff;color:var(--ink);border-color:#fff}
+.secondary{font-weight:600}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:clamp(50px,8vw,140px);align-items:center}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:2rem}
+.feature{border-top:1px solid var(--line);padding-top:18px}
+.feature strong{display:block;margin-bottom:.45rem}
+.row{display:flex;justify-content:space-between;gap:28px;padding:15px 0;border-bottom:1px solid var(--line)}
+.row:first-child{border-top:1px solid var(--line)}
+.dark .row{border-color:#2d2d2d}
+.big{font-size:clamp(2.7rem,5.2vw,5.8rem);font-weight:700;letter-spacing:-.045em;line-height:.96;margin:0}
+.rail-list{display:grid;grid-template-columns:1fr 1fr;gap:0 34px;margin-top:1.4rem;max-width:980px}
+.rail-list div{padding:14px 0;border-top:1px solid var(--line)}
+.rail-list div:nth-last-child(-n+2){border-bottom:1px solid var(--line)}
+.partner-line{display:flex;flex-wrap:wrap;gap:16px 34px;margin-top:1.4rem}
+.partner-line span{font-weight:700}
+.read{margin-top:1.3rem;border:0;background:transparent;padding:0;text-decoration:underline;text-underline-offset:.18em;cursor:pointer;font-weight:600;color:inherit}
+.full-table-wrap{width:100%;margin-top:1rem;overflow:auto;border:1px solid var(--line);background:#fff;max-height:51svh}
+.full-table{border-collapse:collapse;min-width:1500px;width:100%}
+.full-table th,.full-table td{padding:6px 8px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;white-space:nowrap;font-size:.72rem}
+.full-table th:first-child{position:sticky;left:0;z-index:3;background:#fff;text-align:left;min-width:200px}
+.full-table thead th{position:sticky;top:0;z-index:2;background:var(--soft);font-weight:700}
+.full-table thead th:first-child{z-index:4}
+.full-table .nuri{background:var(--ink);color:#fff;font-weight:800}
+.full-table .yes{font-weight:800}
+.full-table .no{color:#aaa}
+.full-table .partial{color:#777}
+.founder{max-width:760px;border-top:1px solid var(--line);padding-top:18px;margin-top:1.5rem}
+.founder strong{display:block;font-size:clamp(1.55rem,2.5vw,2.2rem);margin-bottom:.35rem}
+.footer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:38px;margin-top:1.5rem}
+.footer-grid p{margin:.42rem 0}
+.footer-grid a{font-size:1rem;color:#555}
+.legal{font-size:.92rem;color:var(--muted);max-width:900px;margin-top:2rem}
+dialog{width:min(760px,calc(100% - 32px));border:0;border-radius:18px;padding:0;background:#fff;color:var(--ink);box-shadow:0 24px 90px rgba(0,0,0,.22)}
+dialog::backdrop{background:rgba(0,0,0,.3);backdrop-filter:blur(4px)}
+.modal{padding:30px}
+.modal h3{font-size:clamp(2rem,4vw,3.4rem);line-height:1;letter-spacing:-.04em;margin:0 0 1rem}
+.modal p,.modal li,.modal a{font-size:1.04rem;line-height:1.55}
+.close{border:0;background:var(--soft);border-radius:999px;padding:.65em .9em;cursor:pointer;font-weight:700}
+@media(max-width:900px){
+  .two,.three,.rail-list,.footer-grid{grid-template-columns:1fr}
+  .rail-list div:nth-last-child(-n+2){border-bottom:0}
+  .rail-list div:last-child{border-bottom:1px solid var(--line)}
+}
+@media(max-width:720px){
+  :root{--h:clamp(3.2rem,15vw,6.2rem);--b:clamp(1rem,4.4vw,1.18rem);--pad:22px}
+  .slide{padding-top:84px;padding-bottom:48px}
+  .content{max-height:calc(100svh - 132px)}
+  .full-table-wrap{max-height:44svh}
+}
+</style>
+</head>
+<body>
+
+<a class="brand" href="#s1">NURI</a>
+<a class="top-cta" href="https://app.nuri.com/">Open free wallet</a>
+
+<section class="slide" id="s1"><div class="content">
+  <h1>Freedom money.</h1>
+  <p class="lead"><strong>Bitcoin &amp; Lightning. Own it. Hold it. Send it directly.</strong></p>
+  <p class="lead muted">No middlemen. No gatekeepers. One simple self-custodial wallet.</p>
+  <div class="actions"><a class="button" href="https://app.nuri.com/">Open free wallet</a><a class="secondary" href="#s2">Scroll ↓</a></div>
+</div></section>
+
+<section class="slide soft" id="s2"><div class="content two">
+  <div><h2>Freedom to transact.</h2></div>
+  <div>
+    <p class="lead"><strong>We believe the freedom to hold, own and send electronic cash is a human right — like free speech.</strong></p>
+    <p>Anyone to anyone. Directly. The same basic freedom you have when you hand physical cash to someone on the street.</p>
+  </div>
+</div></section>
+
+<section class="slide" id="s3"><div class="content two">
+  <div><h2>Bitcoin made the promise.</h2></div>
+  <div>
+    <p class="lead"><strong>Peer-to-peer electronic cash.</strong></p>
+    <p>Bitcoin did this. We did not invent it.</p>
+    <p class="muted">Our job is to make that promise simple enough for everyone to actually use.</p>
+  </div>
+</div></section>
+
+<section class="slide soft" id="s4"><div class="content">
+  <h2>Bitcoin first.<br>Then everything else.</h2>
+  <div class="three">
+    <div class="feature"><strong>1 · Bitcoin &amp; Lightning</strong><p>Open internet money.</p><p class="muted">Own it yourself. Send it peer to peer. Use it globally.</p></div>
+    <div class="feature"><strong>2 · Digital dollars &amp; euros</strong><p>Stablecoins when you want them.</p><p class="muted">Useful for online payments and stable local value.</p></div>
+    <div class="feature"><strong>3 · Local currencies</strong><p>Cash in. Cash out. Spend locally.</p><p class="muted">Bank, card and mobile-money rails when you need them.</p></div>
+  </div>
+</div></section>
+
+<section class="slide" id="s5"><div class="content two">
+  <div><h2>Self-custody is the point.</h2></div>
+  <div>
+    <p class="lead"><strong>If somebody else controls the wallet, you depend on them.</strong></p>
+    <p>Self-custody means the wallet itself is yours.</p>
+    <div class="row"><strong>One passkey</strong><span>✓</span></div>
+    <div class="row"><strong>No seed phrase</strong><span>✓</span></div>
+    <div class="row"><strong>Multisig protected</strong><span>✓</span></div>
+    <div class="row"><strong>Recovery without Nuri</strong><span>✓</span></div>
+  </div>
+</div></section>
+
+<section class="slide dark" id="s6"><div class="content">
+  <h2>If we disappear,<br>your money doesn’t.</h2>
+  <p class="lead"><strong>Nuri, a bank, a card provider or another service can disappear. Your self-custodial wallet is designed not to disappear with them.</strong></p>
+  <p class="lead muted">Wallet first. Services second.</p>
+</div></section>
+
+<section class="slide" id="s7"><div class="content two">
+  <div><h2>Local money stays local.</h2></div>
+  <div>
+    <p class="lead"><strong>Use local currencies when local life needs them.</strong></p>
+    <div class="rail-list">
+      <div><strong>EUR</strong><br><span class="muted">SEPA · Visa · swap in / out</span></div>
+      <div><strong>USD</strong><br><span class="muted">ACH · card · swap in / out</span></div>
+      <div><strong>GBP</strong><br><span class="muted">Faster Payments</span></div>
+      <div><strong>TZS</strong><br><span class="muted">Mobile Money · SWIFT</span></div>
+    </div>
+    <p class="muted">Bitcoin &amp; Lightning remain the open internet layer. Local rails are ways in and out.</p>
+  </div>
+</div></section>
+
+<section class="slide soft" id="s8"><div class="content two">
+  <div><h2>Regulated rails.<br>Independent wallet.</h2></div>
+  <div>
+    <p class="lead"><strong>Use regulated services without giving them custody of your wallet.</strong></p>
+    <div class="partner-line"><span>Wirex</span><span>Monerium</span><span>ClickPesa</span></div>
+    <p class="muted">Card, banking and e-money services are provided under the licences and rules of the relevant providers. The self-custodial wallet remains separate.</p>
+    <button class="read" onclick="partners.showModal()">Read more →</button>
+  </div>
+</div></section>
+
+<section class="slide" id="s9"><div class="content">
+  <h2 style="max-width:none;font-size:clamp(3rem,5.3vw,6rem)">How Nuri compares.</h2>
+  <div class="full-table-wrap">
+    <table class="full-table">
+      <thead><tr>
+        <th>Capability</th><th class="nuri">Nuri</th><th>Cash App</th><th>Bitkey</th><th>Blitz</th><th>Muun</th><th>Strike</th><th>Wallet of Satoshi</th><th>Bitrefill</th><th>Bitwala</th><th>AQUA</th><th>Phoenix</th>
+      </tr></thead>
+      <tbody>
+        <tr><th>Global access</th><td class="yes nuri">✓</td><td class="no">—</td><td class="partial">~</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">~</td><td class="partial">~</td><td class="yes">✓</td><td class="partial">~</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><th>Self-custodial</th><td class="yes nuri">✓</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><th>No seed phrase</th><td class="yes nuri">✓</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="no">—</td><td class="partial">~</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td></tr>
+        <tr><th>Passkey-based</th><td class="yes nuri">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="no">—</td></tr>
+        <tr><th>Multisig protected</th><td class="yes nuri">✓</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="no">—</td></tr>
+        <tr><th>Recovery without vendor</th><td class="yes nuri">✓</td><td class="no">—</td><td class="yes">✓</td><td class="partial">~</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="partial">~</td><td class="partial">~</td><td class="yes">✓</td></tr>
+        <tr><th>Web + iOS + Android</th><td class="yes nuri">✓</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+        <tr><th>Bitcoin &amp; Lightning</th><td class="yes nuri">✓</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">~</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><th>Stablecoins</th><td class="yes nuri">✓</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="partial">~</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+        <tr><th>Card + bank transfers</th><td class="yes nuri">✓</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">~</td><td class="no">—</td></tr>
+        <tr><th>Open source · MIT</th><td class="yes nuri">✓</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="partial">~</td><td class="no">—</td><td class="partial">~</td><td class="partial">~</td><td class="no">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div></section>
+
+<section class="slide soft" id="s10"><div class="content two">
+  <div><h2>The patient pioneers.</h2></div>
+  <div>
+    <p class="lead"><strong>We grew up building internet money.</strong></p>
+    <p>Berlin. 2012 → today. Mining. Exchanges. Wallets. DAOs. Smart contracts. Protocols. Payments.</p>
+    <p class="muted">Cim Topal, Emil Wagner and Lennard Evertz are part of that long builder story. For now, the public founder profile starts with Emin.</p>
+    <div class="founder">
+      <strong>Emin Mahrt</strong>
+      <span>Founder · Product</span>
+      <p class="muted">Bitcoin since the early 2010s. Wallets, protocols and payments. Former product leadership at Börse Stuttgart Digital Exchange.</p>
+    </div>
+    <p><strong>The goal after all those years: self-custody simple enough for everyone.</strong></p>
+  </div>
+</div></section>
+
+<section class="slide" id="s11"><div class="content two">
+  <div><h2>Open for people.<br>Open for AI.</h2></div>
+  <div>
+    <p class="lead"><strong>Same wallet. Same rules. Explicit permissions.</strong></p>
+    <p class="muted">Humans use Nuri directly. Software and AI can use the same wallet through permissions the owner controls.</p>
+    <p>Open source · Markdown · llms.txt · OpenAPI · MCP</p>
+  </div>
+</div></section>
+
+<section class="slide soft" id="s12"><div class="content">
+  <h2 style="max-width:none">Support, company & legal.</h2>
+  <div class="footer-grid">
+    <div><p><strong>Product</strong></p><p><a href="https://app.nuri.com/">Open wallet</a></p><p><a href="https://nuri.com/card-support">Card &amp; Bank Support</a></p></div>
+    <div><p><strong>Company</strong></p><p><a href="https://nuri.com/about">About</a></p><p><a href="https://nuri.com/contact">Contact</a></p></div>
+    <div><p><strong>Developers</strong></p><p><a href="https://nuri.com/developers">Developers</a></p><p><a href="https://nuri.com/docs">Documentation</a></p><p><a href="https://nuri.com/mcp">MCP</a></p></div>
+    <div><p><strong>Legal</strong></p><p><a href="https://nuri.com/privacy-policy/">Privacy</a></p><p><a href="https://nuri.com/terms-of-service/">Terms</a></p></div>
+  </div>
+  <p class="legal">Nuri is operated by Nurisoft Development OÜ, Tallinn, Estonia. Nuri is not a bank. Self-custody describes the crypto wallet, not card or bank balances. Regulated financial services are provided by licensed third parties under separate terms.</p>
+</div></section>
+
+<section class="slide dark" id="s13"><div class="content">
+  <h2>Freedom money.<br>For everyone.</h2>
+  <p class="lead"><strong>Bitcoin first. Stable money when you want it. Local money when you need it.</strong></p>
+  <div class="actions"><a class="button" href="https://app.nuri.com/">Open free wallet</a></div>
+</div></section>
+
+<dialog id="partners"><div class="modal">
+  <h3>Regulated services, separate from the wallet.</h3>
+  <p>Nuri connects the self-custodial wallet to regulated and specialist providers for card, banking, e-money and local payment services. These services have their own licences, eligibility and terms.</p>
+  <p><strong>The important boundary:</strong> those providers do not become the custody layer for the self-custodial wallet.</p>
+  <button class="close" onclick="partners.close()">Close</button>
+</div></dialog>
+
+</body>
+</html>
