@@ -7,6 +7,7 @@ flowchart LR
 
 ## 2026-10-29 — [RELEASE] v0.1.0
 
+- `6370abf` Curated the public preview to 69 working English/German static editions: unpublished drafts first, published below, with language filters and legacy viewer links preserved. Raw, blank, test and other-language captures remain in the full repository archive.
 - `ec6153e` Published 324 numbered landing-page versions, 147 static editions, copy deck, catalogue, and previous/next browser.
 - Public raw editions received script/network guards; all public HTML is `noindex`. Encrypted source history and local capture metadata stayed out of the public repository.
 - Verification: public validator zero failures, static browser QA 147/147, GitLeaks no findings.

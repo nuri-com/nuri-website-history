@@ -1,6 +1,6 @@
 # Nuri Website History
 
-Public, clickable archive of **324 Nuri landing-page versions**: 175 published captures and 149 unpublished designs. It contains 147 self-contained static editions and 177 original-only captures.
+Public, clickable archive of **324 Nuri landing-page versions**: 175 published captures and 149 unpublished designs. The clean preview shows **69 working English and German static editions**, with unpublished drafts first and published below.
 
 **Browse:** https://nuri-com.github.io/nuri-website-history/
 
@@ -14,27 +14,27 @@ Public, clickable archive of **324 Nuri landing-page versions**: 175 published c
 ```mermaid
 flowchart LR
   A["Private source archive<br/>f3f424d"] --> B["Reviewed public export<br/>ec6153e"]
-  B --> C["147 static editions"]
-  B --> D["177 guarded raw editions"]
-  C --> E["GitHub Pages browser"]
-  D --> E
+  B --> C["Full 324-version repository"]
+  B --> D["69 working EN/DE editions<br/>6370abf"]
+  D --> E["Clean GitHub Pages preview"]
+  C --> F["Raw and test captures<br/>hidden from preview"]
 ```
 
 ## User journey
 
 ```mermaid
 flowchart LR
-  A["Open archive"] --> B["Choose published or unpublished"]
-  B --> C["Open a numbered version"]
+  A["Open clean preview"] --> B["Filter English or Deutsch"]
+  B --> C["Browse unpublished drafts first"]
   C --> D["Previous or next"]
   D --> C
-  C --> E["Open static or raw file"]
+  C --> E["Published static page below"]
 ```
 
 ## Navigate
 
-- **All versions:** `index.html`
-- **Previous/next viewer:** `viewer.html?i=0`
+- **Clean preview:** `index.html`
+- **Previous/next viewer:** `viewer.html?v=2` (legacy `?i=49` also works)
 - **Current landing-page copy:** `COPY.md`
 - **Machine-readable catalogue:** `manifest.json`
 - **Published versions:** `published/`
@@ -54,11 +54,12 @@ This public export omits encrypted Git bundles, release assets, local capture me
 python3 verify_public.py
 ```
 
-Expected: 324 versions, 147 static editions, 633 HTML files, zero failures. Browser QA on the export: 147/147 static pages, zero external requests, zero failures after excluding the intentionally different raw-original comparison. GitLeaks: no findings.
+Expected: 324 archived versions, 147 static editions, 69 curated preview entries, 633 HTML files, zero failures. Full-export browser QA: 147/147 static pages, zero external requests. Curated-preview QA: 69/69 pages render, filters show 51 English and 18 German entries, unpublished first, legacy `i=49` works. GitLeaks: no findings.
 
 ## Status
 
 - **Version:** 0.1.0
 - **Updated:** 2026-10-29 by Hermes
 - **Public export revision:** `ec6153e086e15ad56b33e14641577d2b18a1dbdb`
+- **Clean preview revision:** `6370abfa398e1bab05c7102224b276bed5503542`
 - **Deployment:** GitHub Pages, https://nuri-com.github.io/nuri-website-history/
