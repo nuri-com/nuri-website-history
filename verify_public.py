@@ -52,14 +52,16 @@ for href in parser.links:
     check((ROOT / target).exists(), f"dead index link: {href}")
 
 viewer = (ROOT / "viewer.html").read_text()
-match = re.search(r"const list = (\[.*\]);\s*const i =", viewer, re.S)
+match = re.search(r"const list = (\[.*\]);\s*const params", viewer, re.S)
 check(match is not None, "viewer list not found")
 if match:
     entries = json.loads(match.group(1))
-    check(len(entries) == 324, f"viewer has {len(entries)} entries")
+    check(len(entries) == 69, f"viewer has {len(entries)} curated entries")
+    check(entries[0]["status"] == "unpublished", "unpublished drafts are not first")
+    check(entries[-1]["status"] == "published", "published entries are not last")
+    check({entry["lang"] for entry in entries} == {"EN", "DE"}, "preview contains a language other than EN/DE")
     for entry in entries:
         check((ROOT / entry["path"]).is_file(), f"viewer target missing: {entry['path']}")
-        check((ROOT / entry["orig"]).is_file(), f"viewer original missing: {entry['orig']}")
 
 for forbidden in ("capture.json", "ethers.umd.min.js"):
     check(not list(ROOT.rglob(forbidden)), f"excluded file remains: {forbidden}")
