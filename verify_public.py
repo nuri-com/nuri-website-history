@@ -66,7 +66,7 @@ for forbidden in ("capture.json", "ethers.umd.min.js"):
 for pattern in ("*.age", "*.bundle", ".env", "*.pem"):
     check(not list(ROOT.rglob(pattern)), f"private artifact remains: {pattern}")
 
-files = [p for p in ROOT.rglob("*") if p.is_file()]
+files = [p for p in ROOT.rglob("*") if p.is_file() and ".git" not in p.relative_to(ROOT).parts]
 check(max(p.stat().st_size for p in files) < 100_000_000, "file exceeds GitHub's 100 MB limit")
 check(sum(p.stat().st_size for p in files) < 1_000_000_000, "site exceeds 1 GB")
 
