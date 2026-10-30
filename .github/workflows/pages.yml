@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  actions: write
   pages: write
   id-token: write
 
@@ -28,3 +29,11 @@ jobs:
           path: .
       - id: deployment
         uses: actions/deploy-pages@v4
+      # Pages keeps its own copy once published; drop the bundle so it stops filling org Actions storage.
+      - name: Delete published Pages bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" \
+            --jq '.artifacts[] | select(.name == "github-pages") | .id' |
+            xargs -r -I{} gh api -X DELETE "repos/${{ github.repository }}/actions/artifacts/{}"
